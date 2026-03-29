@@ -294,7 +294,7 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
                 <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wide text-center">
                   Ganancia
                 </label>
-                <div className="flex items-center border border-slate-200 dark:border-dark-border rounded-lg overflow-hidden bg-white dark:bg-dark-elevated shadow-[0_1px_2px_rgba(0,0,0,0.02)] h-[36px]">
+                <div className="flex items-center border border-slate-200 dark:border-dark-border rounded-lg overflow-hidden bg-white dark:bg-dark-elevated shadow-sm h-[36px]">
                   <button
                     type="button"
                     onClick={() => setMargenLocal(Math.max(0, margenLocal - 5))}

@@ -168,7 +168,7 @@ export default function ModalGestionCategorias({
         <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-dark-card">
           
           {/* Controles Fijos */}
-          <div className="p-5 flex flex-col md:flex-row gap-4 border-b border-gray-100 dark:border-dark-border bg-white dark:bg-dark-card z-10 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_20px_-10px_rgba(0,0,0,0.2)]">
+          <div className="p-5 flex flex-col md:flex-row gap-4 border-b border-gray-100 dark:border-dark-border bg-white dark:bg-dark-card z-10 shadow-soft">
             
             {/* Buscador */}
             <div className="flex-1">

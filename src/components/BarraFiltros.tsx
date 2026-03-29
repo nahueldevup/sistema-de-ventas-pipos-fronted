@@ -224,7 +224,7 @@ export default function BarraFiltros({
 
   return (
     <div
-      className={`absolute top-[calc(100%+12px)] right-0 w-[850px] max-w-[90vw] bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] p-5 z-50 transition-all duration-200 origin-top-right ${
+      className={`absolute top-[calc(100%+12px)] right-0 w-[850px] max-w-[90vw] bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-2xl shadow-dropdown p-5 z-50 transition-all duration-200 origin-top-right ${
         isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"
       }`}
     >

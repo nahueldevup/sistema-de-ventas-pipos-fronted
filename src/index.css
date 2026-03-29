@@ -417,4 +417,35 @@ html.dark {
     min-width: 44px;
     min-height: 44px;
   }
+
+  /* Hover de filas de tabla — usa color-mix con --primary */
+  .hover-fila {
+    &:hover {
+      background-color: color-mix(in srgb, var(--primary) 8%, transparent);
+    }
+  }
+
+  :is(.dark *).hover-fila {
+    &:hover {
+      background-color: color-mix(in srgb, var(--primary) 12%, transparent);
+    }
+  }
+
+  /* Sombra lateral para columnas sticky (tabla de productos) */
+  .shadow-sticky-col {
+    box-shadow: -10px 0 15px -3px rgba(0, 0, 0, 0.05);
+  }
+
+  :is(.dark *).shadow-sticky-col {
+    box-shadow: -10px 0 15px -3px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Sombra para paneles dropdown grandes */
+  .shadow-dropdown {
+    box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.1);
+  }
+
+  :is(.dark *).shadow-dropdown {
+    box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.5);
+  }
 }

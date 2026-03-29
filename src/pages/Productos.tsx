@@ -212,8 +212,6 @@ const BotonOpciones = ({ abierto, onOpen, onClose, onEdit }: { abierto: boolean;
     <div
       className="relative flex justify-center"
       ref={menuRef}
-      onMouseEnter={onOpen}
-      onMouseLeave={onClose}
     >
       <button
         onClick={() => abierto ? onClose() : onOpen()}
@@ -750,7 +748,7 @@ export default function Productos() {
                 <th className="py-4 px-2">GANANCIA</th>
                 <th className="py-4 px-2">CATEGORÍA</th>
                 <th className="py-4 pl-2 pr-8 min-w-[140px]">PROVEEDOR</th>
-                <th className="py-4 px-6 text-center sticky right-0 bg-slate-50 dark:bg-slate-800/50 shadow-[-10px_0_15px_-3px_rgba(0,0,0,0.05)] dark:shadow-[-10px_0_15px_-3px_rgba(0,0,0,0.3)] z-20 border-b-2 border-gray-200 dark:border-dark-border">OPCIONES</th>
+                <th className="py-4 px-6 text-center sticky right-0 bg-slate-50 dark:bg-slate-800/50 shadow-sticky-col z-20 border-b-2 border-gray-200 dark:border-dark-border">OPCIONES</th>
               </tr>
             </thead>
 
@@ -758,7 +756,7 @@ export default function Productos() {
               {productosFiltrados.map((producto, index) => (
                 <tr
                   key={producto.id}
-                  className={`${getRowBg(index)} hover:[background-color:rgba(14,138,114,0.08)] dark:hover:[background-color:rgba(14,138,114,0.12)] transition-colors duration-150 group cursor-pointer`}
+                  className={`${getRowBg(index)} hover-fila transition-colors duration-150 group cursor-pointer`}
                 >
                   <td className="py-3 pl-6 pr-2">
                     <input
@@ -861,15 +859,14 @@ export default function Productos() {
                     <span className="text-[15px] font-medium text-slate-700 dark:text-slate-200">{producto.proveedor}</span>
                   </td>
 
-                  <td className={`
+                  <td
+                    className={`
                     py-3 px-6 sticky right-0 transition-colors duration-150
-                    shadow-[-10px_0_15px_-3px_rgba(0,0,0,0.05)]
-                    dark:shadow-[-10px_0_15px_-3px_rgba(0,0,0,0.3)]
+                    shadow-sticky-col
                     ${menuAbiertoId === producto.id ? 'z-50' : 'z-10'}
-                    ${getRowBg(index)}
-                    group-hover:[background-color:rgba(14,138,114,0.08)]
-                    dark:group-hover:[background-color:rgba(14,138,114,0.12)]
-                  `}>
+                  `}
+                    style={{ backgroundColor: 'inherit' }}
+                  >
                     <BotonOpciones
                       abierto={menuAbiertoId === producto.id}
                       onOpen={() => setMenuAbiertoId(producto.id)}
