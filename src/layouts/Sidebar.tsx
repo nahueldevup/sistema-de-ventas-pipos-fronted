@@ -67,18 +67,18 @@ export default function Sidebar({
         onMouseEnter={onMouseEnter}
         onMouseLeave={handleMouseLeave}
         className={`
-          fixed md:relative inset-y-0 left-0 z-30 bg-white dark:bg-dark-card border-r border-gray-100 dark:border-dark-border flex flex-col justify-between shadow-[4px_0_24px_rgba(0,0,0,0.02)] transition-all duration-200 ease-in-out
+          fixed md:relative inset-y-0 left-0 z-30 bg-sidebar border-r border-border flex flex-col justify-between shadow-[4px_0_24px_rgba(0,0,0,0.02)] transition-all duration-200 ease-in-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
           ${isExpanded ? 'w-[240px]' : 'w-[80px]'}
         `}
       >
         <div className="flex flex-col overflow-hidden whitespace-nowrap h-full">
           {/* Logo Area */}
-          <div className={`h-[64px] flex items-center ${isExpanded ? 'px-4 gap-3' : 'justify-center'} border-b border-gray-50 dark:border-dark-border relative transition-all duration-200`}>
+          <div className={`h-[64px] flex items-center ${isExpanded ? 'px-4 gap-3' : 'justify-center'} border-b border-border relative transition-all duration-200`}>
             {/* Hamburger para Escritorio */}
             <button 
               onClick={handleToggle} 
-              className={`hidden md:flex p-2 text-slate-800 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-dark-elevated rounded-lg cursor-pointer transition-colors shrink-0`}
+              className={`hidden md:flex p-2 text-foreground hover:bg-muted/80 rounded-lg cursor-pointer transition-colors shrink-0`}
             >
               <Menu className="w-6 h-6" />
             </button>
@@ -136,7 +136,7 @@ export default function Sidebar({
         </div>
 
         {/* Zona inferior: Botón de Salir */}
-        <div className="p-3 border-t border-gray-50 dark:border-dark-border overflow-hidden whitespace-nowrap">
+        <div className="p-3 border-t border-border overflow-hidden whitespace-nowrap">
           <button 
             onClick={cerrarSesion}
             className={`w-full flex items-center ${isExpanded ? 'px-3' : 'justify-center'} py-3 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl font-medium transition-all cursor-pointer group`}

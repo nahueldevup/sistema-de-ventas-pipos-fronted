@@ -15,7 +15,7 @@ export default function InicioSesion() {
   };
 
   return (
-    <div className="flex h-screen w-full bg-white">
+    <div className="flex h-screen w-full bg-background">
       {/* Lado Izquierdo: Visual (Oculto en celulares, visible en pantallas grandes) */}
       <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-brand-900 via-brand-600 to-brand-800 relative overflow-hidden flex-col justify-center items-center text-white p-12">
         <div className="relative z-10 max-w-md text-center">
@@ -45,10 +45,10 @@ export default function InicioSesion() {
       </div>
 
       {/* Lado Derecho: Formulario */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white relative">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-background relative">
         <div className="w-full max-w-md">
           <div className="mb-10">
-            <h2 className="text-3xl font-bold text-slate-900 mb-2">Iniciar Sesión</h2>
+            <h2 className="text-3xl font-bold text-foreground mb-2">Iniciar Sesión</h2>
             <p className="text-slate-500">Ingresa tus credenciales para continuar</p>
           </div>
 

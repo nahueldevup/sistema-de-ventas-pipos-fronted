@@ -37,8 +37,12 @@
   --brand-900: hsl(var(--brand-hue) 8%);
 
   /* ── FONDOS ────────────────────────────────────────── */
-  --background: hsl(163 15% 97%);   /* fondo de página */
-  --foreground:  hsl(168 28% 10%);  /* texto principal */
+  --background: hsl(216, 24%, 96%);   /* fondo de página */
+  --foreground: hsl(168 28% 10%);  /* texto principal */
+  --sidebar:    hsl(0, 0%, 100%);     /* fondo del sidebar */
+  --header:     hsl(0, 0%, 100%);     /* fondo del header */
+  --table-header: hsl(210 20% 98%);  /* fondo del encabezado de tabla */
+  --table-zebra:  hsl(210 20% 96%);  /* fondo de fila alternada */
 
   /* ── TARJETAS ──────────────────────────────────────── */
   --card:            hsl(0 0% 100%);
@@ -68,7 +72,11 @@
 .dark {
   /* ── FONDOS DARK ───────────────────────────────────── */
   --background: hsl(0 0% 7%);    /* #121212 */
-  --foreground:  hsl(0 0% 93%);
+  --foreground: hsl(0 0% 93%);
+  --sidebar:    hsl(0 0% 11%);
+  --header:     hsl(0 0% 11%);
+  --table-header: hsl(0 0% 13%);
+  --table-zebra:  hsl(0 0% 9%);
 
   /* ── TARJETAS DARK ─────────────────────────────────── */
   --card:            hsl(0 0% 11%);  /* #1c1c1c */
@@ -117,6 +125,10 @@
   /* Mappings para componentes shadcn (no tocar) */
   --color-background:     var(--background);
   --color-foreground:     var(--foreground);
+  --color-sidebar:        var(--sidebar);
+  --color-header:         var(--header);
+  --color-table-header:   var(--table-header);
+  --color-table-zebra:    var(--table-zebra);
   --color-card:           var(--card);
   --color-card-foreground:var(--card-foreground);
   --color-muted:          var(--muted);

@@ -114,10 +114,10 @@ export default function BarraHerramientas({
   };
 
   return (
-    <div className="bg-white dark:bg-dark-card p-4 rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft transition-colors duration-300">
+    <div className="bg-card p-4 rounded-2xl border border-border shadow-soft transition-colors duration-300">
       <div className="flex flex-wrap items-center justify-between gap-4">
 
-        <div className="flex items-center flex-1 min-w-[240px] border border-gray-200 dark:border-dark-border rounded-xl bg-white dark:bg-dark-elevated focus-within:border-brand-500 focus-within:ring-1 focus-within:ring-brand-100 dark:focus-within:ring-brand-900 transition-all p-1.5 shadow-sm">
+        <div className="flex items-center flex-1 min-w-[240px] border border-border rounded-xl bg-background focus-within:border-brand-500 focus-within:ring-1 focus-within:ring-brand-100 dark:focus-within:ring-brand-900 transition-all p-1.5 shadow-sm">
           <div className="pl-2.5 text-slate-400 dark:text-slate-500 flex items-center pr-2">
             <Search className="w-5 h-5" />
           </div>
@@ -126,7 +126,7 @@ export default function BarraHerramientas({
             placeholder="Buscar por producto, código..."
             value={filtros.busqueda}
             onChange={(e) => setFiltros({ ...filtros, busqueda: e.target.value })}
-            className="flex-1 py-1.5 text-sm outline-none text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 bg-transparent min-w-0"
+            className="flex-1 py-1.5 text-sm outline-none text-foreground placeholder-slate-400 dark:placeholder-slate-500 bg-transparent min-w-0"
           />
 
           <div
@@ -177,7 +177,7 @@ export default function BarraHerramientas({
         {/* Botones de acción */}
         <div className="flex flex-wrap items-center justify-end gap-2 w-full lg:w-auto">
 
-          <div className="flex items-center h-[38px] border border-slate-200 dark:border-dark-border rounded-xl bg-white dark:bg-dark-card shadow-sm px-1">
+          <div className="flex items-center h-[38px] border border-border rounded-xl bg-card shadow-sm px-1">
             <div className="flex items-center h-full px-1.5 gap-1">
               <BadgePercent className="w-4 h-4 text-brand-600 dark:text-brand-400 ml-1" />
               <button
@@ -196,10 +196,10 @@ export default function BarraHerramientas({
                       setMargenGananciaGlobal(val === '' ? 0 : Math.min(999, parseInt(val, 10)));
                     }
                   }}
-                  className="w-[42px] h-full text-center pr-2 text-[14px] font-bold text-slate-800 dark:text-slate-100 bg-transparent outline-none focus:bg-slate-50 dark:focus:bg-slate-800 rounded"
+                  className="w-[42px] h-full text-center pr-2 text-[14px] font-bold text-foreground bg-transparent outline-none focus:bg-muted/50 rounded"
                   disabled={!gananciaAutoActiva}
                 />
-                <span className="absolute right-0.5 top-1/2 -translate-y-1/2 text-[12px] font-bold text-slate-800 dark:text-slate-100 pointer-events-none">%</span>
+                <span className="absolute right-0.5 top-1/2 -translate-y-1/2 text-[12px] font-bold text-foreground pointer-events-none">%</span>
               </div>
               <button
                 onClick={() => gananciaAutoActiva && setMargenGananciaGlobal(margenGananciaGlobal + 5)}

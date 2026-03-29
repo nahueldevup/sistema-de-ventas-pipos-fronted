@@ -42,6 +42,18 @@ export const BRAND = {
 } as const;
 
 // ─────────────────────────────────────────────────────────
+// COLORES MODO CLARO (light mode)
+// ─────────────────────────────────────────────────────────
+export const LIGHT = {
+  background: "hsl(216 24% 96%)",  // fondo de página
+  foreground: "hsl(168 28% 10%)",  // texto principal
+  sidebar:    "hsl(0 0% 100%)",   // fondo de sidebar (blanco)
+  header:     "hsl(0 0% 100%)",   // fondo de header (blanco)
+  tableHeader: "hsl(210 20% 98%)", // fondo de encabezado de tabla
+  tableZebra:  "hsl(210 20% 96%)", // fondo de fila alternada (zebra)
+} as const;
+
+// ─────────────────────────────────────────────────────────
 // COLORES MODO OSCURO (dark mode)
 // ─────────────────────────────────────────────────────────
 export const DARK = {
@@ -49,6 +61,10 @@ export const DARK = {
   card:     "hsl(0 0% 11%)",  // fondo de tarjetas
   elevated: "hsl(0 0% 15%)",  // elementos elevados (inputs, dropdowns)
   border:   "hsl(0 0% 22%)",  // líneas divisoras
+  sidebar:  "hsl(0 0% 11%)",  // fondo de sidebar
+  header:   "hsl(0 0% 11%)",  // fondo de header
+  tableHeader: "hsl(0 0% 13%)", // fondo encabezado tabla DARK
+  tableZebra:  "hsl(0 0% 9%)",  // fondo zebra tabla DARK
 } as const;
 
 // ─────────────────────────────────────────────────────────

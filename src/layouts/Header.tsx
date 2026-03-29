@@ -9,15 +9,15 @@ export default function Header({ onMenuClick }: HeaderProps) {
   const { isDark, toggleTheme } = useTheme();
 
   return (
-    <header className="h-[64px] bg-white/80 dark:bg-dark-card/80 backdrop-blur-md border-b border-gray-100 dark:border-dark-border flex items-center justify-between px-8 z-10 transition-colors duration-300">
+    <header className="h-[64px] bg-header/80 backdrop-blur-md border-b border-border flex items-center justify-between px-8 z-10 transition-colors duration-300">
       <div className="flex items-center gap-4">
         <button 
           onClick={onMenuClick}
-          className="md:hidden p-2 text-slate-800 dark:text-slate-100 cursor-pointer hover:bg-gray-100 dark:hover:bg-dark-elevated rounded-lg transition-colors"
+          className="md:hidden p-2 text-foreground cursor-pointer hover:bg-muted/80 rounded-lg transition-colors"
         >
           <Menu className="w-6 h-6" />
         </button>
-        <h2 className="hidden sm:block text-xl font-bold text-slate-800 dark:text-slate-100">Inicio - Bienvenido</h2>
+        <h2 className="hidden sm:block text-xl font-bold text-foreground">Inicio - Bienvenido</h2>
       </div>
       
       <div className="flex items-center gap-6">
@@ -61,7 +61,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
         </button>
         <div className="flex items-center gap-3 pl-4 sm:pl-6 border-l border-gray-200 dark:border-dark-border">
           <div className="text-right hidden sm:block">
-            <p className="text-sm font-bold text-slate-800 dark:text-slate-100">Hola, Nahuel</p>
+            <p className="text-sm font-bold text-foreground">Hola, Nahuel</p>
             <p className="text-xs text-slate-500 dark:text-slate-400">Administrador</p>
           </div>
           <div className="w-10 h-10 bg-brand-100 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 rounded-full flex items-center justify-center font-bold border-2 border-white dark:border-dark-card shadow-sm">

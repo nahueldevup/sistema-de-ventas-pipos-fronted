@@ -34,11 +34,11 @@ export default function TablaProductos({
   const [menuAbiertoId, setMenuAbiertoId] = useState<string | null>(null);
 
   return (
-    <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft overflow-hidden flex flex-col transition-colors duration-300">
+    <div className="bg-card rounded-2xl border border-border shadow-soft overflow-hidden flex flex-col transition-colors duration-300">
 
-      <div className="flex flex-wrap items-center justify-between gap-4 p-4 border-b border-gray-100 dark:border-dark-border bg-white dark:bg-dark-card">
+      <div className="flex flex-wrap items-center justify-between gap-4 p-4 border-b border-border bg-card">
         <div className="flex items-center gap-3">
-          <span className="text-sm font-bold text-slate-800 dark:text-slate-100">{productos.length} productos</span>
+          <span className="text-sm font-bold text-foreground">{productos.length} productos</span>
           {ordenamiento !== 'relevancia' && (
             <>
               <div className="w-px h-4 bg-gray-200 dark:bg-dark-border"></div>
@@ -98,7 +98,7 @@ export default function TablaProductos({
       {/* Tabla */}
       <div className="overflow-x-auto min-h-[400px]">
         <table className="w-full text-left text-sm whitespace-nowrap">
-          <thead className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase bg-slate-50 dark:bg-slate-800/50 border-b-2 border-gray-200 dark:border-dark-border tracking-wider">
+          <thead className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase bg-table-header border-b-2 border-border tracking-wider">
             <tr>
               <th className="py-4 pl-6 pr-2">
                 <input
@@ -116,7 +116,7 @@ export default function TablaProductos({
               <th className="py-4 px-2">GANANCIA</th>
               <th className="py-4 px-2">CATEGORÍA</th>
               <th className="py-4 pl-2 pr-8 min-w-[140px]">PROVEEDOR</th>
-              <th className="py-4 px-6 text-center sticky right-0 bg-slate-50 dark:bg-slate-800/50 shadow-sticky-col z-20 border-b-2 border-gray-200 dark:border-dark-border">OPCIONES</th>
+              <th className="py-4 px-6 text-center sticky right-0 bg-table-header shadow-sticky-col z-20 border-b-2 border-border">OPCIONES</th>
             </tr>
           </thead>
 
@@ -147,7 +147,7 @@ export default function TablaProductos({
       </div>
 
       {/* PIE DE PÁGINA: Paginación */}
-      <div className="flex flex-col sm:flex-row items-center justify-between p-4 border-t border-gray-100 dark:border-dark-border bg-gray-50/30 dark:bg-dark-surface/50 gap-4">
+      <div className="flex flex-col sm:flex-row items-center justify-between p-4 border-t border-border bg-table-header/30 gap-4">
         <div className="flex items-center gap-2">
           <button aria-label="Página anterior" className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 dark:border-dark-border text-slate-400 bg-gray-50 dark:bg-dark-card cursor-not-allowed">
             <ChevronLeft className="w-4 h-4" />

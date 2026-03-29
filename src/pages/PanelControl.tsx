@@ -34,7 +34,7 @@ export default function PanelControl() {
       </div>
 
       {/* Grid de Accesos Rápidos */}
-      <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4">Accesos Rápidos</h3>
+      <h3 className="text-lg font-bold text-foreground mb-4">Accesos Rápidos</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {accionesRapidas.map((accion, indice) => (
           <TarjetaAccesoRapido 

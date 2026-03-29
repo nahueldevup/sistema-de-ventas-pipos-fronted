@@ -15,6 +15,6 @@ export function formatearPesos(monto: number): string {
 // Ej: fila 0 → blanco, fila 1 → gris suave, fila 2 → blanco...
 export function getRowBg(index: number): string {
   return index % 2 === 0
-    ? "bg-white dark:bg-dark-card"
-    : "bg-slate-100 dark:bg-slate-800/50";
+    ? "bg-card"
+    : "bg-table-zebra";
 }
