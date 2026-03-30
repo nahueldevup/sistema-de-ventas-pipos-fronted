@@ -28,57 +28,57 @@
 export const BRAND_HUE = "170 77%"; // matiz + saturación (no cambies el %)
 
 export const BRAND = {
-  // Escala de claridad del color principal (de más claro a más oscuro)
-  50:  `hsl(${BRAND_HUE} 97%)`,  // fondo muy suave (hover, badges)
-  100: `hsl(${BRAND_HUE} 90%)`,  // fondo suave
-  200: `hsl(${BRAND_HUE} 80%)`,  // bordes suaves
-  300: `hsl(${BRAND_HUE} 65%)`,  // bordes normales
-  400: `hsl(${BRAND_HUE} 50%)`,  // elementos secundarios
-  500: `hsl(${BRAND_HUE} 38%)`,  // color base
-  600: `hsl(${BRAND_HUE} 29%)`,  // ← botones principales (el más usado)
-  700: `hsl(${BRAND_HUE} 22%)`,  // hover de botones
-  800: `hsl(${BRAND_HUE} 15%)`,  // texto sobre fondos claros
-  900: `hsl(${BRAND_HUE} 8%)`,   // texto muy oscuro
+    // Escala de claridad del color principal (de más claro a más oscuro)
+    50: `hsl(${BRAND_HUE} 97%)`,  // fondo muy suave (hover, badges)
+    100: `hsl(${BRAND_HUE} 90%)`,  // fondo suave
+    200: `hsl(${BRAND_HUE} 80%)`,  // bordes suaves
+    300: `hsl(${BRAND_HUE} 65%)`,  // bordes normales
+    400: `hsl(${BRAND_HUE} 50%)`,  // elementos secundarios
+    500: `hsl(${BRAND_HUE} 38%)`,  // color base
+    600: `hsl(${BRAND_HUE} 29%)`,  // ← botones principales (el más usado)
+    700: `hsl(${BRAND_HUE} 22%)`,  // hover de botones
+    800: `hsl(${BRAND_HUE} 15%)`,  // texto sobre fondos claros
+    900: `hsl(${BRAND_HUE} 8%)`,   // texto muy oscuro
 } as const;
 
 // ─────────────────────────────────────────────────────────
 // COLORES MODO CLARO (light mode)
 // ─────────────────────────────────────────────────────────
 export const LIGHT = {
-  background: "hsl(216 24% 96%)",  // fondo de página
-  foreground: "hsl(168 28% 10%)",  // texto principal
-  sidebar:    "hsl(0 0% 100%)",   // fondo de sidebar (blanco)
-  header:     "hsl(0 0% 100%)",   // fondo de header (blanco)
-  tableHeader: "hsl(210 20% 98%)", // fondo de encabezado de tabla
-  tableZebra:  "hsl(210 20% 96%)", // fondo de fila alternada (zebra)
+    background: "hsl(216 24% 96%)",  // fondo de página
+    foreground: "hsl(168 28% 10%)",  // texto principal
+    sidebar: "hsl(0 0% 100%)",   // fondo de sidebar (blanco)
+    header: "hsl(0 0% 100%)",   // fondo de header (blanco)
+    tableHeader: "hsl(210 20% 98%)", // fondo de encabezado de tabla
+    tableZebra: "hsl(210 20% 96%)", // fondo de fila alternada (zebra)
 } as const;
 
 // ─────────────────────────────────────────────────────────
 // COLORES MODO OSCURO (dark mode)
 // ─────────────────────────────────────────────────────────
 export const DARK = {
-  surface:  "hsl(0 0% 7%)",   // fondo de página
-  card:     "hsl(0 0% 11%)",  // fondo de tarjetas
-  elevated: "hsl(0 0% 15%)",  // elementos elevados (inputs, dropdowns)
-  border:   "hsl(0 0% 22%)",  // líneas divisoras
-  sidebar:  "hsl(0 0% 11%)",  // fondo de sidebar
-  header:   "hsl(0 0% 11%)",  // fondo de header
-  tableHeader: "hsl(0 0% 13%)", // fondo encabezado tabla DARK
-  tableZebra:  "hsl(0 0% 9%)",  // fondo zebra tabla DARK
+    surface: "hsl(0 0% 7%)",   // fondo de página
+    card: "hsl(0 0% 11%)",  // fondo de tarjetas
+    elevated: "hsl(0 0% 15%)",  // elementos elevados (inputs, dropdowns)
+    border: "hsl(0 0% 22%)",  // líneas divisoras
+    sidebar: "hsl(0 0% 11%)",  // fondo de sidebar
+    header: "hsl(0 0% 11%)",  // fondo de header
+    tableHeader: "hsl(0 0% 13%)", // fondo encabezado tabla DARK
+    tableZebra: "hsl(0 0% 9%)",  // fondo zebra tabla DARK
 } as const;
 
 // ─────────────────────────────────────────────────────────
 // COLORES DE ESTADO
 // ─────────────────────────────────────────────────────────
 export const STATUS = {
-  // Éxito (verde) — para stock normal, confirmaciones
-  success: "hsl(160 84% 39%)",
+    // Éxito (verde) — para stock normal, confirmaciones
+    success: "hsl(160 84% 39%)",
 
-  // Advertencia (ámbar) — para stock bajo
-  warning: "hsl(38 92% 45%)",
+    // Advertencia (ámbar) — para stock bajo
+    warning: "hsl(38 92% 45%)",
 
-  // Error (rojo) — para stock agotado, errores
-  error: "hsl(0 72% 51%)",
+    // Error (rojo) — para stock agotado, errores
+    error: "hsl(0 72% 51%)",
 } as const;
 
 // ─────────────────────────────────────────────────────────
@@ -91,17 +91,17 @@ export const STATUS = {
 //   'NombreCategoria': 'bg-color-400',
 
 export const CATEGORIA_COLORES: Record<string, string> = {
-  "Higiene Personal": "bg-sky-400",
-  "Bebidas":          "bg-blue-400",
-  "Limpieza":         "bg-amber-400",
-  "Lácteos":          "bg-orange-400",
-  "Alimentos":        "bg-emerald-400",
-  "Farmacia":         "bg-teal-400",
-  "Snacks":           "bg-purple-400",
-  "Cigarrillos":      "bg-rose-400",
-  "Ferretería":       "bg-stone-400",
-  // Por defecto (si la categoría no está en la lista):
-  _default:           "bg-slate-400",
+    "Higiene Personal": "bg-sky-400",
+    "Bebidas": "bg-blue-400",
+    "Limpieza": "bg-amber-400",
+    "Lácteos": "bg-orange-400",
+    "Alimentos": "bg-emerald-400",
+    "Farmacia": "bg-teal-400",
+    "Snacks": "bg-purple-400",
+    "Cigarrillos": "bg-rose-400",
+    "Ferretería": "bg-stone-400",
+    // Por defecto (si la categoría no está en la lista):
+    _default: "bg-slate-400",
 };
 
 // ─────────────────────────────────────────────────────────
@@ -111,5 +111,5 @@ export const CATEGORIA_COLORES: Record<string, string> = {
 // Uso: getCategoriaColor("Bebidas") → "bg-blue-400"
 
 export function getCategoriaColor(categoria: string): string {
-  return CATEGORIA_COLORES[categoria] ?? CATEGORIA_COLORES._default;
+    return CATEGORIA_COLORES[categoria] ?? CATEGORIA_COLORES._default;
 }

@@ -12,8 +12,8 @@ interface SidebarProps {
   onToggleMenu?: () => void;
 }
 
-export default function Sidebar({ 
-  isOpen, 
+export default function Sidebar({
+  isOpen,
   onClose,
   isDesktopPinned = false,
   isHovered = false,
@@ -56,14 +56,14 @@ export default function Sidebar({
     <>
       {/* Fondo oscuro (Overlay) para celulares */}
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-slate-900/50 z-20 md:hidden backdrop-blur-sm transition-opacity"
           onClick={onClose}
         />
       )}
 
       {/* Contenedor del Sidebar */}
-      <aside 
+      <aside
         onMouseEnter={onMouseEnter}
         onMouseLeave={handleMouseLeave}
         className={`
@@ -76,8 +76,8 @@ export default function Sidebar({
           {/* Logo Area */}
           <div className={`h-[64px] flex items-center ${isExpanded ? 'px-4 gap-3' : 'justify-center'} border-b border-border relative transition-all duration-200`}>
             {/* Hamburger para Escritorio */}
-            <button 
-              onClick={handleToggle} 
+            <button
+              onClick={handleToggle}
               className={`hidden md:flex p-2 text-foreground hover:bg-muted/80 rounded-lg cursor-pointer transition-colors shrink-0`}
             >
               <Menu className="w-6 h-6" />
@@ -89,9 +89,9 @@ export default function Sidebar({
               </div>
               <span className="md:block">Pipos</span>
             </div>
-            
-            <button 
-              onClick={onClose} 
+
+            <button
+              onClick={onClose}
               className={`md:hidden absolute right-4 p-2 text-slate-800 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-dark-elevated rounded-lg cursor-pointer transition-colors ${isExpanded ? '' : 'hidden'}`}
             >
               <X className="w-6 h-6" />
@@ -102,19 +102,18 @@ export default function Sidebar({
           <nav className="p-3 space-y-2 mt-4 flex-1">
             {menuItems.map((item) => {
               const isActive = location.pathname === item.path || (item.path !== "/" && location.pathname.startsWith(item.path));
-              
+
               return (
-                <button 
+                <button
                   key={item.id}
                   onClick={() => {
                     navigate(item.path);
                     if (window.innerWidth < 768) onClose();
-                  }} 
-                  className={`w-full flex items-center ${isExpanded ? 'px-3' : 'justify-center'} py-3 rounded-xl font-medium transition-all group cursor-pointer relative overflow-hidden ${
-                    isActive 
+                  }}
+                  className={`w-full flex items-center ${isExpanded ? 'px-3' : 'justify-center'} py-3 rounded-xl font-medium transition-all group cursor-pointer relative overflow-hidden ${isActive
                       ? 'text-brand-700 dark:text-brand-300 bg-brand-50/80 dark:bg-brand-900/30 shadow-sm'
                       : 'text-slate-500 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-dark-elevated hover:text-slate-900 dark:hover:text-slate-100'
-                  }`}
+                    }`}
                   title={!isExpanded ? item.label : undefined}
                 >
                   {/* Borde vertical activo */}
@@ -137,7 +136,7 @@ export default function Sidebar({
 
         {/* Zona inferior: Botón de Salir */}
         <div className="p-3 border-t border-border overflow-hidden whitespace-nowrap">
-          <button 
+          <button
             onClick={cerrarSesion}
             className={`w-full flex items-center ${isExpanded ? 'px-3' : 'justify-center'} py-3 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl font-medium transition-all cursor-pointer group`}
             title={!isExpanded ? "Salir" : undefined}
