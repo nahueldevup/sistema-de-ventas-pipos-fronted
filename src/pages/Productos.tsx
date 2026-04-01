@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import ModalRegistroProducto, { type ProductoDatos } from "@/features/productos/components/ModalRegistroProducto";
 import ModalImprimirEtiquetas from "@/features/productos/components/ModalImprimirEtiquetas";
 import ModalGestionCategorias from "@/features/productos/components/ModalGestionarCategorias";
@@ -12,10 +12,7 @@ import { PRODUCTOS_EJEMPLO } from "@/datos/productos.datos";
 export default function Productos() {
   const [productos, setProductos] = useState(PRODUCTOS_EJEMPLO);
   const [productoEditando, setProductoEditando] = useState<ProductoDatos | null>(null);
-  const [modalRegistroAbierto, setModalRegistroAbierto] = useState(false);
-  const [showPrintModal, setShowPrintModal] = useState(false);
-  const [modalCategoriasAbierto, setModalCategoriasAbierto] = useState(false);
-  const [modalActualizarAbierto, setModalActualizarAbierto] = useState(false);
+  const [modalActivo, setModalActivo] = useState<'registro' | 'etiquetas' | 'categorias' | 'actualizarPrecios' | null>(null);
   const [margenGananciaGlobal, setMargenGananciaGlobal] = useState(40);
   const [gananciaAutoActiva, setGananciaAutoActiva] = useState(true);
 
@@ -25,22 +22,24 @@ export default function Productos() {
   const { seleccionados, seleccionarTodos, toggleSeleccion } =
     useSeleccionProductos(productosFiltrados);
 
-  const categoriasConConteo = productos.reduce((acc, p) => {
-    const cat = acc.find(c => c.nombre === p.categoria);
-    if (cat) {
-      cat.cantidad++;
-    } else {
-      acc.push({ nombre: p.categoria, cantidad: 1 });
-    }
-    return acc;
-  }, [] as { nombre: string; cantidad: number }[]);
+  const categoriasConConteo = useMemo(() => {
+    return productos.reduce((acc, p) => {
+      const cat = acc.find(c => c.nombre === p.categoria);
+      if (cat) {
+        cat.cantidad++;
+      } else {
+        acc.push({ nombre: p.categoria, cantidad: 1 });
+      }
+      return acc;
+    }, [] as { nombre: string; cantidad: number }[]);
+  }, [productos]);
 
-  const categoriasUnicas = Array.from(new Set(productos.map(p => p.categoria)));
-  const proveedoresUnicos = Array.from(new Set(productos.map(p => p.proveedor)));
+  const categoriasUnicas = useMemo(() => Array.from(new Set(productos.map(p => p.categoria))), [productos]);
+  const proveedoresUnicos = useMemo(() => Array.from(new Set(productos.map(p => p.proveedor))), [productos]);
 
   const handleVerCategoria = (nombre: string) => {
     setFiltros({ ...filtros, categorias: [nombre], busqueda: '' });
-    setModalCategoriasAbierto(false);
+    setModalActivo(null);
   };
 
   const handleAgregarCategoria = (nombre: string) => {
@@ -87,7 +86,7 @@ export default function Productos() {
       existencia: p.existencia.toString(),
       stockMinimo: "5"
     });
-    setModalRegistroAbierto(true);
+    setModalActivo('registro');
   };
 
   return (
@@ -107,10 +106,10 @@ export default function Productos() {
         setMargenGananciaGlobal={setMargenGananciaGlobal}
         gananciaAutoActiva={gananciaAutoActiva}
         setGananciaAutoActiva={setGananciaAutoActiva}
-        onNuevoProducto={() => setModalRegistroAbierto(true)}
-        onAbrirCategorias={() => setModalCategoriasAbierto(true)}
-        onAbrirActualizarPrecios={() => setModalActualizarAbierto(true)}
-        onAbrirImprimirEtiquetas={() => setShowPrintModal(true)}
+        onNuevoProducto={() => setModalActivo('registro')}
+        onAbrirCategorias={() => setModalActivo('categorias')}
+        onAbrirActualizarPrecios={() => setModalActivo('actualizarPrecios')}
+        onAbrirImprimirEtiquetas={() => setModalActivo('etiquetas')}
       />
 
       {/* CONTENEDOR DE LA TABLA */}
@@ -128,21 +127,21 @@ export default function Productos() {
 
       {/* Modales */}
       <ModalRegistroProducto
-        isOpen={modalRegistroAbierto}
-        onClose={() => { setModalRegistroAbierto(false); setProductoEditando(null); }}
+        isOpen={modalActivo === 'registro'}
+        onClose={() => { setModalActivo(null); setProductoEditando(null); }}
         margenGananciaGlobal={margenGananciaGlobal}
         productoAEditar={productoEditando}
       />
 
       <ModalImprimirEtiquetas
-        isOpen={showPrintModal}
-        onClose={() => setShowPrintModal(false)}
+        isOpen={modalActivo === 'etiquetas'}
+        onClose={() => setModalActivo(null)}
         productos={productos.filter(p => seleccionados.includes(p.id))}
       />
 
       <ModalGestionCategorias
-        isOpen={modalCategoriasAbierto}
-        onClose={() => setModalCategoriasAbierto(false)}
+        isOpen={modalActivo === 'categorias'}
+        onClose={() => setModalActivo(null)}
         categorias={categoriasConConteo}
         onVerCategoria={handleVerCategoria}
         onAgregarCategoria={handleAgregarCategoria}
@@ -151,8 +150,8 @@ export default function Productos() {
       />
 
       <ModalActualizarPrecios
-        isOpen={modalActualizarAbierto}
-        onClose={() => setModalActualizarAbierto(false)}
+        isOpen={modalActivo === 'actualizarPrecios'}
+        onClose={() => setModalActivo(null)}
         productos={productos}
         categoriasDisponibles={categoriasUnicas}
         productosSeleccionadosIds={seleccionados}
