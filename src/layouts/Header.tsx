@@ -1,5 +1,5 @@
 import { Menu, Bell, Sun, Moon } from "lucide-react"
-import { useTheme } from "@/hooks/ThemeContext"
+import { useTheme } from "@/hooks/useTheme"
 
 interface HeaderProps {
     onMenuClick: () => void;

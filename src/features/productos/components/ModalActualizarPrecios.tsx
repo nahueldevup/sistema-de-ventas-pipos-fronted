@@ -237,7 +237,7 @@ export default function ModalActualizarPrecios({
                 {tipoOpciones.map((op) => (
                   <button
                     key={op.value}
-                    onClick={() => setTipo(op.value as any)}
+                    onClick={() => setTipo(op.value as "porcentaje" | "montoFijo" | "definirMargen")}
                     className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
                       tipo === op.value 
                         ? "bg-brand-600 text-white shadow-sm" 

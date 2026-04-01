@@ -1,14 +1,5 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
-
-interface ThemeContextType {
-  isDark: boolean;
-  toggleTheme: () => void;
-}
-
-const ThemeContext = createContext<ThemeContextType>({
-  isDark: false,
-  toggleTheme: () => {},
-});
+import { useState, useEffect, type ReactNode } from "react";
+import { ThemeContext } from "./theme-context";
 
 function getInitialTheme(): boolean {
   if (typeof window === "undefined") return false;
@@ -48,5 +39,3 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     </ThemeContext.Provider>
   );
 }
-
-export const useTheme = () => useContext(ThemeContext);
