@@ -249,7 +249,7 @@ export default function ModalActualizarPrecios({
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">Ajustar precios masivamente</h2>
           <button 
             onClick={onClose}
-            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full text-slate-400 transition-colors"
+            className="text-white bg-rose-400 hover:bg-rose-500 dark:bg-rose-600 dark:hover:bg-rose-700 p-1.5 rounded-full transition-colors shadow-sm"
           >
             <X className="w-5 h-5" />
           </button>
@@ -269,11 +269,11 @@ export default function ModalActualizarPrecios({
                 onClick={() => setAlcance("categorias")}
                 className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all gap-2 ${
                   alcance === "categorias" 
-                    ? "bg-brand-50 border-brand-500 text-brand-700" 
+                    ? "bg-brand-600 border-brand-600 text-white" 
                     : "border-slate-100 text-slate-500 hover:border-slate-200"
                 }`}
               >
-                <Tag size={20} className={alcance === "categorias" ? "text-brand-600" : "text-slate-400"} />
+                <Tag size={20} className={alcance === "categorias" ? "text-white" : "text-slate-400"} />
                 <span className="text-sm font-bold">Por categoría</span>
               </button>
 
@@ -282,11 +282,11 @@ export default function ModalActualizarPrecios({
                 disabled={!productosSeleccionadosIds.length}
                 className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all gap-2 ${
                   alcance === "seleccion" 
-                    ? "bg-brand-50 border-brand-500 text-brand-700" 
+                    ? "bg-brand-600 border-brand-600 text-white" 
                     : "border-slate-100 text-slate-500 hover:border-slate-200 disabled:opacity-40 disabled:grayscale"
                 }`}
               >
-                <Check size={20} className={alcance === "seleccion" ? "text-brand-600" : "text-slate-400"} />
+                <Check size={20} className={alcance === "seleccion" ? "text-white" : "text-slate-400"} />
                 <span className="text-sm font-bold">Seleccionados ({productosSeleccionadosIds.length})</span>
               </button>
             </div>
@@ -315,7 +315,7 @@ export default function ModalActualizarPrecios({
                     onClick={() => setTipo(op.value as any)}
                     className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
                       tipo === op.value 
-                        ? "bg-white dark:bg-dark-card text-brand-700 shadow-sm" 
+                        ? "bg-brand-600 text-white shadow-sm" 
                         : "text-slate-500 hover:text-slate-700"
                     }`}
                   >

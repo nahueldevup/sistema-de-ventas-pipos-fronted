@@ -110,22 +110,17 @@ export default function Sidebar({
                     navigate(item.path);
                     if (window.innerWidth < 768) onClose();
                   }}
-                  className={`w-full flex items-center ${isExpanded ? 'px-3' : 'justify-center'} py-3 rounded-xl font-medium transition-all group cursor-pointer relative overflow-hidden ${isActive
-                      ? 'text-brand-700 dark:text-brand-300 bg-brand-50/80 dark:bg-brand-900/30 shadow-sm'
-                      : 'text-slate-500 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-dark-elevated hover:text-slate-900 dark:hover:text-slate-100'
+                  className={`w-full flex items-center ${isExpanded ? 'px-4' : 'justify-center'} py-3.5 rounded-full font-bold transition-all group cursor-pointer relative overflow-hidden ${isActive
+                      ? 'text-white bg-brand-500 dark:bg-brand-500 shadow-md hover:bg-brand-700 dark:hover:bg-brand-800'
+                      : 'text-slate-800 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-dark-elevated hover:text-slate-900 dark:hover:text-white'
                     }`}
                   title={!isExpanded ? item.label : undefined}
                 >
-                  {/* Borde vertical activo */}
-                  {isActive && (
-                    <div className="absolute left-0 top-2 bottom-2 w-1.5 bg-brand-600 dark:bg-brand-500 rounded-r-full" />
-                  )}
-
-                  <div className={`shrink-0 flex items-center justify-center ${isActive ? '' : 'group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors'}`}>
-                    <item.icon className="w-5 h-5" />
+                  <div className={`shrink-0 flex items-center justify-center transition-colors ${isActive ? 'text-white' : 'text-brand-600 dark:text-brand-500 group-hover:text-brand-700 dark:group-hover:text-brand-400'}`}>
+                    <item.icon className="w-5 h-5 md:w-[22px] md:h-[22px]" strokeWidth={2.2} />
                   </div>
 
-                  <span className={`ml-3 transition-opacity duration-300 ${isExpanded ? 'opacity-100' : 'opacity-0 hidden'}`}>
+                  <span className={`ml-3.5 text-[15px] transition-opacity duration-300 ${isExpanded ? 'opacity-100' : 'opacity-0 hidden'}`}>
                     {item.label}
                   </span>
                 </button>

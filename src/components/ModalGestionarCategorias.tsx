@@ -143,7 +143,7 @@ export default function ModalGestionCategorias({
           </h2>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 p-2 rounded-full transition-all -mr-2"
+            className="text-white bg-rose-400 hover:bg-rose-500 dark:bg-rose-600 dark:hover:bg-rose-700 p-1.5 rounded-full transition-all shadow-sm -mr-2"
           >
             <X className="w-5 h-5" />
           </button>

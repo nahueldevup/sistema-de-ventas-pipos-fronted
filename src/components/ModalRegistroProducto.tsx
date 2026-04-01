@@ -147,7 +147,7 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
           <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">{tituloModal}</h2>
           <button
             onClick={onClose}
-            className="text-rose-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/30 p-2 rounded-full transition-colors"
+            className="text-white bg-rose-400 hover:bg-rose-500 dark:bg-rose-600 dark:hover:bg-rose-700 p-1.5 rounded-full transition-colors shadow-sm"
             title="Cerrar"
             aria-label="Cerrar"
           >
@@ -263,7 +263,7 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
           </div>
 
           {/* Sección de Precios - Compacta */}
-          <div className="mt-5 bg-gradient-to-br from-brand-50/60 to-blue-50/60 dark:from-dark-elevated dark:to-dark-card rounded-xl border border-brand-100 dark:border-dark-border p-4">
+          <div className="mt-5 bg-slate-50 dark:bg-dark-elevated rounded-xl border border-gray-200 dark:border-dark-border p-4">
             <h3 className="text-xs font-bold text-brand-700 dark:text-brand-400 uppercase tracking-widest mb-3 flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-brand-500"></div> 
               Costos y Ganancia

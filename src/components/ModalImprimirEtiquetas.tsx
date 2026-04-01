@@ -35,7 +35,7 @@ export default function ModalImprimirEtiquetas({ isOpen, onClose, productos }: M
       <div className="bg-white dark:bg-dark-card rounded-2xl shadow-xl w-full max-w-4xl flex flex-col overflow-hidden max-h-[90vh]">
         <div className="flex justify-between items-center p-5 border-b border-gray-100 dark:border-dark-border bg-gray-50/50 dark:bg-dark-elevated/50">
           <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">Vista previa de etiquetas</h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 p-2 rounded-lg transition-colors">
+          <button onClick={onClose} className="text-white bg-rose-400 hover:bg-rose-500 dark:bg-rose-600 dark:hover:bg-rose-700 p-1.5 rounded-full transition-colors shadow-sm">
             <X className="w-5 h-5" />
           </button>
         </div>

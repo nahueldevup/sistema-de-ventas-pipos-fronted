@@ -1,0 +1,16 @@
+---
+name: commits-en-espanol
+description: Regla para generar mensajes de commit siempre en español.
+---
+
+# Idioma de commits
+
+Al generar mensajes de commit (git commit messages), SIEMPRE escribilos en español argentino.
+
+Usá el formato Conventional Commits pero con la descripción en español:
+- feat: agrega nueva funcionalidad
+- fix: corrige error en...
+- refactor: reorganiza componentes de...
+- chore: actualiza dependencias
+- style: ajusta estilos en...
+etc
