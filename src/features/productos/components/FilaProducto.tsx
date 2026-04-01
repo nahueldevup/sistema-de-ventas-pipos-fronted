@@ -1,6 +1,6 @@
 import type { Producto } from '@/types/producto.types';
 import { getCategoriaColor, formatearPesos, getRowBg } from '@/lib/productoUtils';
-import MenuOpcionesProducto from '@/components/productos/MenuOpcionesProducto';
+import MenuOpcionesProducto from './MenuOpcionesProducto';
 import { ArrowUpRight, ImageOff } from 'lucide-react';
 
 interface FilaProductoProps {

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import BarraFiltros from '@/components/BarraFiltros';
+import BarraFiltros from './BarraFiltros';
 import type { FiltrosPOS, Ordenamiento } from '@/types/filtros.types';
 import {
   Search, Filter, Plus,

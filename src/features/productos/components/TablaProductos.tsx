@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import type { Producto } from '@/types/producto.types';
 import type { FiltrosPOS, Ordenamiento } from '@/types/filtros.types';
-import { MultiSelectDropdown } from '@/components/BarraFiltros';
-import FilaProducto from '@/components/productos/FilaProducto';
+import { MultiSelect } from '@/components/ui/multi-select';
+import FilaProducto from './FilaProducto';
 import {
   Upload, Download, ChevronLeft, ChevronRight,
   AlertCircle, XCircle, Tag
@@ -54,14 +54,15 @@ export default function TablaProductos({
         </div>
 
         <div className="flex flex-wrap items-center gap-2 flex-1 xl:flex-none justify-start xl:justify-center">
-          <MultiSelectDropdown
-            label="Categoría"
-            icon={Tag}
-            opciones={categoriasUnicas}
-            seleccionadas={filtros.categorias}
-            onChange={(cats) => setFiltros({ ...filtros, categorias: cats })}
-            variant="small"
-          />
+            <MultiSelect
+              label="Categoría"
+              icon={Tag}
+              opciones={categoriasUnicas}
+              seleccionadas={filtros.categorias}
+              onChange={(cats) => setFiltros({ ...filtros, categorias: cats })}
+              variant="pill"
+              size="small"
+            />
 
           <button
             title="Filtrar stock bajo"

@@ -4,11 +4,9 @@ import {
   Package, Tag
 } from "lucide-react";
 import { getCategoriaColor } from "@/theme"; // ← viene del archivo central
+import type { Categoria } from "@/types/categoria.types";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
-interface Categoria {
-  nombre: string;
-  cantidad: number;
-}
 
 interface ModalGestionCategoriasProps {
   isOpen: boolean;
@@ -38,8 +36,6 @@ export default function ModalGestionCategorias({
     nombre: string;
     nuevoNombre?: string;
   } | null>(null);
-
-  if (!isOpen) return null;
 
   const categoriasFiltradas = categorias.filter((cat) =>
     cat.nombre.toLowerCase().includes(busqueda.toLowerCase())
@@ -81,8 +77,13 @@ export default function ModalGestionCategorias({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 font-sans">
-      <div className="bg-white dark:bg-dark-card rounded-2xl shadow-2xl w-full max-w-xl flex flex-col overflow-hidden max-h-[85vh] animate-in fade-in zoom-in duration-200 border border-gray-100 dark:border-dark-border">
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent 
+        className="max-w-[calc(100%-2rem)] sm:max-w-xl p-0 gap-0 overflow-hidden bg-white dark:bg-dark-card border-none shadow-xl rounded-2xl" 
+        showCloseButton={false}
+      >
+        <DialogTitle className="sr-only">Gestionar Categorías</DialogTitle>
+        <div className="relative flex flex-col w-full max-h-[85vh]">
 
         {/* Overlay de Confirmación */}
         {confirmacion && (
@@ -300,7 +301,8 @@ export default function ModalGestionCategorias({
             CERRAR
           </button>
         </div>
-      </div>
-    </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

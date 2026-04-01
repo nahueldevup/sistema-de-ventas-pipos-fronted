@@ -1,13 +1,9 @@
-import { useState, useMemo, useEffect, useRef } from "react";
-import { X, AlertTriangle, Check, ChevronDown, Tag } from "lucide-react";
+import { useState, useMemo, useEffect } from "react";
+import { X, AlertTriangle, Check, Tag } from "lucide-react";
+import type { Producto } from "@/types/producto.types";
+import { MultiSelect } from "@/components/ui/multi-select";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
-interface Producto {
-  id: string;
-  nombre: string;
-  precioVenta: number;
-  precioCompra: number;
-  categoria: string;
-}
 
 interface ModalActualizarPreciosProps {
   isOpen: boolean;
@@ -56,85 +52,7 @@ const calcularNuevoPrecio = (
   return Math.max(0, nuevo);
 };
 
-// ─── Componente Interno: CategoryMultiSelect ──────────────────────────
 
-function CategoryMultiSelect({
-  opciones,
-  seleccionadas,
-  onChange,
-}: {
-  opciones: string[];
-  seleccionadas: string[];
-  onChange: (sel: string[]) => void;
-}) {
-  const [abierto, setAbierto] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setAbierto(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
-
-  const toggle = (opcion: string) => {
-    onChange(
-      seleccionadas.includes(opcion)
-        ? seleccionadas.filter((s) => s !== opcion)
-        : [...seleccionadas, opcion]
-    );
-  };
-
-  return (
-    <div className="relative mt-2" ref={ref}>
-      <button
-        onClick={() => setAbierto(!abierto)}
-        className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl border text-sm transition-all ${
-          seleccionadas.length > 0
-            ? "bg-brand-50 border-brand-300 text-brand-700"
-            : "bg-white border-slate-200 text-slate-600 hover:border-slate-300"
-        }`}
-      >
-        <div className="flex items-center gap-2">
-          <Tag className="w-4 h-4" />
-          {seleccionadas.length === 0 ? (
-            <span>Seleccionar categorías...</span>
-          ) : (
-            <span className="font-bold">
-              {seleccionadas.length} {seleccionadas.length === 1 ? "categoría" : "categorías"}
-            </span>
-          )}
-        </div>
-        <ChevronDown className={`w-4 h-4 transition-transform ${abierto ? "rotate-180" : ""}`} />
-      </button>
-
-      {abierto && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-xl shadow-xl z-[60] py-1 max-h-60 overflow-y-auto">
-          {opciones.map((opcion) => {
-            const sel = seleccionadas.includes(opcion);
-            return (
-              <button
-                key={opcion}
-                onClick={() => toggle(opcion)}
-                className={`w-full text-left px-4 py-2.5 text-sm flex items-center gap-3 transition-colors ${
-                  sel ? "bg-brand-50 text-brand-700 font-bold" : "text-slate-600 hover:bg-slate-50"
-                }`}
-              >
-                <div className={`w-4 h-4 rounded border flex items-center justify-center ${
-                  sel ? "bg-brand-600 border-brand-600 text-white" : "border-slate-300"
-                }`}>
-                  {sel && <Check className="w-3 h-3" />}
-                </div>
-                {opcion}
-              </button>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
-}
 
 // ─── Componente Principal ────────────────────────────────────────────────
 
@@ -204,11 +122,15 @@ export default function ModalActualizarPrecios({
     onClose();
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 font-sans">
-      <div className="bg-white dark:bg-dark-card rounded-2xl shadow-2xl w-full max-w-xl flex flex-col overflow-hidden max-h-[90vh] border border-gray-100 dark:border-dark-border relative animate-in fade-in zoom-in duration-200">
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent 
+        className="max-w-[calc(100%-2rem)] sm:max-w-xl p-0 gap-0 overflow-hidden bg-white dark:bg-dark-card border-none shadow-xl rounded-2xl" 
+        showCloseButton={false}
+      >
+        <DialogTitle className="sr-only">Actualizar Precios Masivamente</DialogTitle>
+        
+        <div className="relative flex flex-col w-full max-h-[90vh]">
         
         {/* Modal de Confirmación Interno */}
         {confirmacion && (
@@ -292,7 +214,10 @@ export default function ModalActualizarPrecios({
             </div>
 
             {alcance === "categorias" && (
-              <CategoryMultiSelect
+              <MultiSelect
+                placeholder="Seleccionar categorías..."
+                icon={Tag}
+                variant="field"
                 opciones={categoriasDisponibles}
                 seleccionadas={categoriasSeleccionadas}
                 onChange={setCategoriasSeleccionadas}
@@ -441,7 +366,8 @@ export default function ModalActualizarPrecios({
             Aplicar ajustes
           </button>
         </div>
-      </div>
-    </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

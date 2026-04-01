@@ -1,10 +1,10 @@
 import { useState } from "react";
-import ModalRegistroProducto, { type ProductoDatos } from "@/components/ModalRegistroProducto";
-import ModalImprimirEtiquetas from "@/components/ModalImprimirEtiquetas";
-import ModalGestionCategorias from "@/components/ModalGestionarCategorias";
-import ModalActualizarPrecios from "@/components/ModalActualizarPrecios";
-import BarraHerramientas from "@/components/productos/BarraHerramientas";
-import TablaProductos from "@/components/productos/TablaProductos";
+import ModalRegistroProducto, { type ProductoDatos } from "@/features/productos/components/ModalRegistroProducto";
+import ModalImprimirEtiquetas from "@/features/productos/components/ModalImprimirEtiquetas";
+import ModalGestionCategorias from "@/features/productos/components/ModalGestionarCategorias";
+import ModalActualizarPrecios from "@/features/productos/components/ModalActualizarPrecios";
+import BarraHerramientas from "@/features/productos/components/BarraHerramientas";
+import TablaProductos from "@/features/productos/components/TablaProductos";
 import useFiltrosProductos from "@/hooks/useFiltrosProductos";
 import useSeleccionProductos from "@/hooks/useSeleccionProductos";
 import { PRODUCTOS_EJEMPLO } from "@/datos/productos.datos";

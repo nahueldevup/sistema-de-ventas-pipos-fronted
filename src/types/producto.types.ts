@@ -15,3 +15,14 @@ export interface Producto {
   ultimaActividad: string;
   tipoActividad: string;
 }
+
+export interface ProductoDatos {
+  codigo: string;
+  descripcion: string;
+  categoria: string;
+  proveedor?: string;
+  precioCompra: string;
+  precioVenta: string;
+  existencia: string;
+  stockMinimo: string;
+}

@@ -1,17 +1,10 @@
 import { X, Image as ImageIcon, Barcode, Check, ChevronDown, Plus, Minus } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
 import { calcularPrecioVenta } from "@/lib/precioUtils"
+import type { ProductoDatos } from "@/types/producto.types"
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+export type { ProductoDatos } from "@/types/producto.types"
 
-export interface ProductoDatos {
-  codigo: string;
-  descripcion: string;
-  categoria: string;
-  proveedor?: string;
-  precioCompra: string;
-  precioVenta: string;
-  existencia: string;
-  stockMinimo: string;
-}
 
 interface CustomSelectProps {
   id: string;
@@ -139,10 +132,15 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
   const tituloModal = productoAEditar ? "Editar producto" : "Registrar producto"
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 font-sans">
-      <div className="bg-white dark:bg-dark-card rounded-2xl shadow-2xl w-full max-w-2xl flex flex-col overflow-hidden max-h-[95vh] animate-in fade-in zoom-in duration-200">
-
-        {/* Encabezado compacto */}
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent 
+        className="max-w-[calc(100%-2rem)] sm:max-w-2xl p-0 gap-0 overflow-hidden bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border shadow-2xl rounded-2xl" 
+        showCloseButton={false}
+      >
+        <DialogTitle className="sr-only">{productoAEditar ? "Editar Producto" : "Nuevo Producto"}</DialogTitle>
+        <div className="relative flex flex-col w-full max-h-[90vh]">
+        
+        {/* Header personalizado tipo Pipos */}
         <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 dark:border-dark-border bg-gradient-to-r from-brand-50 to-white dark:from-dark-elevated dark:to-dark-card">
           <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">{tituloModal}</h2>
           <button
@@ -402,7 +400,8 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
             GUARDAR
           </button>
         </div>
-      </div>
-    </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   )
 }

@@ -1,12 +1,8 @@
 import { X, Printer } from "lucide-react";
 import { useRef } from "react";
+import type { Producto } from "@/types/producto.types";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
-interface Producto {
-  id: string;
-  nombre: string;
-  codigo: string;
-  precioVenta: number;
-}
 
 interface ModalImprimirEtiquetasProps {
   isOpen: boolean;
@@ -28,12 +24,16 @@ export default function ModalImprimirEtiquetas({ isOpen, onClose, productos }: M
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 font-sans">
-      <div className="bg-white dark:bg-dark-card rounded-2xl shadow-xl w-full max-w-4xl flex flex-col overflow-hidden max-h-[90vh]">
-        <div className="flex justify-between items-center p-5 border-b border-gray-100 dark:border-dark-border bg-gray-50/50 dark:bg-dark-elevated/50">
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent 
+        className="max-w-[calc(100%-2rem)] sm:max-w-4xl p-0 gap-0 overflow-hidden bg-white dark:bg-dark-card border-none shadow-xl rounded-2xl" 
+        showCloseButton={false}
+      >
+        <DialogTitle className="sr-only">Vista previa de etiquetas</DialogTitle>
+        
+        <div className="flex flex-col w-full max-h-[90vh]">
+          <div className="flex justify-between items-center p-5 border-b border-gray-100 dark:border-dark-border bg-gray-50/50 dark:bg-dark-elevated/50">
           <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">Vista previa de etiquetas</h2>
           <button onClick={onClose} className="text-white bg-rose-400 hover:bg-rose-500 dark:bg-rose-600 dark:hover:bg-rose-700 p-1.5 rounded-full transition-colors shadow-sm">
             <X className="w-5 h-5" />
@@ -61,7 +61,8 @@ export default function ModalImprimirEtiquetas({ isOpen, onClose, productos }: M
             IMPRIMIR
           </button>
         </div>
-      </div>
-    </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
