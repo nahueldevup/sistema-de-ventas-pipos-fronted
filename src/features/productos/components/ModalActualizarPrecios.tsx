@@ -349,7 +349,7 @@ export default function ModalActualizarPrecios({
         <div className="flex justify-end gap-3 p-6 border-t border-gray-100 dark:border-dark-border bg-slate-50/50 dark:bg-dark-surface/50">
           <button 
             onClick={onClose} 
-            className="px-6 py-2.5 text-sm font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all"
+            className="px-6 py-2.5 text-sm font-bold text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-dark-elevated rounded-xl transition-all"
           >
             Cancelar
           </button>

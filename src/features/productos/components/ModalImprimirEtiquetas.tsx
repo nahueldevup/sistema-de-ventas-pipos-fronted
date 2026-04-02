@@ -225,7 +225,7 @@ export default function ModalImprimirEtiquetas({
             </div>
             <button
               onClick={handleClose}
-              className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-dark-elevated p-1.5 rounded-full transition-colors"
+              className="text-white bg-rose-400 hover:bg-rose-500 dark:bg-rose-600 dark:hover:bg-rose-700 p-1.5 rounded-full transition-colors shadow-sm"
             >
               <X className="w-5 h-5" />
             </button>
@@ -379,7 +379,7 @@ export default function ModalImprimirEtiquetas({
           <div className="p-5 pt-3 border-t border-gray-100 dark:border-dark-border bg-gray-50/50 dark:bg-dark-elevated/50 flex justify-end gap-3">
             <button
               onClick={handleClose}
-              className="px-5 py-2.5 text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-gray-200 dark:hover:bg-dark-elevated rounded-xl transition-colors cursor-pointer"
+              className="px-5 py-2.5 text-sm font-bold text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-dark-elevated rounded-xl transition-all cursor-pointer"
             >
               Cancelar
             </button>
