@@ -43,6 +43,8 @@ export default function ModalImprimirEtiquetas({
         next.delete(id);
       } else {
         next.add(id);
+        // Al seleccionar, limpio la búsqueda para facilitar el flujo
+        setBusqueda("");
       }
       return next;
     });
@@ -255,7 +257,7 @@ export default function ModalImprimirEtiquetas({
           </div>
 
           {/* ── Resultados de búsqueda ──────────────────── */}
-          <div className="px-5 pt-3 overflow-y-auto flex-1 min-h-0 max-h-[280px]">
+          <div className="px-5 pt-3 overflow-y-auto flex-1 min-h-0 max-h-[340px]">
             {!busqueda.trim() ? (
               <div className="flex flex-col items-center justify-center py-8 text-center">
                 <Search className="w-10 h-10 text-slate-300 dark:text-slate-600 mb-2" />
@@ -271,25 +273,25 @@ export default function ModalImprimirEtiquetas({
                 </p>
               </div>
             ) : (
-              <div className="space-y-2">
+              <div className="grid grid-cols-2 gap-3">
                 {resultados.map((producto) => {
                   const isSelected = seleccionados.has(producto.id);
                   return (
                     <button
                       key={producto.id}
                       onClick={() => toggleSeleccion(producto.id)}
-                      className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all text-left cursor-pointer group ${
+                      className={`relative text-left cursor-pointer rounded-xl border-2 transition-all group ${
                         isSelected
-                          ? "border-brand-500 bg-brand-50/50 dark:bg-brand-900/20 dark:border-brand-600"
-                          : "border-gray-100 dark:border-dark-border hover:border-gray-300 dark:hover:border-slate-600 bg-gray-50/50 dark:bg-dark-elevated/30 hover:bg-gray-50 dark:hover:bg-dark-elevated/60"
+                          ? "border-brand-500 ring-2 ring-brand-200 dark:ring-brand-800 dark:border-brand-600"
+                          : "border-gray-200 dark:border-dark-border hover:border-gray-400 dark:hover:border-slate-500"
                       }`}
                     >
-                      {/* Checkbox */}
+                      {/* Checkbox en esquina superior izquierda */}
                       <div
-                        className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all ${
+                        className={`absolute top-2 left-2 z-10 w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all ${
                           isSelected
-                            ? "bg-brand-600 border-brand-600 text-white"
-                            : "border-gray-300 dark:border-slate-600 group-hover:border-brand-400"
+                            ? "bg-brand-600 border-brand-600 text-white shadow-sm"
+                            : "bg-white/90 dark:bg-dark-card/90 border-gray-300 dark:border-slate-600 group-hover:border-brand-400"
                         }`}
                       >
                         {isSelected && (
@@ -305,25 +307,8 @@ export default function ModalImprimirEtiquetas({
                         )}
                       </div>
 
-                      {/* Info del producto */}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-slate-800 dark:text-slate-100 truncate">
-                          {producto.nombre}
-                        </p>
-                        <div className="flex items-center gap-3 mt-0.5">
-                          <span className="text-xs text-slate-400 dark:text-slate-500 font-mono">
-                            {producto.codigo.replace(/^#/, "")}
-                          </span>
-                          <span className="text-sm font-bold text-brand-700 dark:text-brand-400">
-                            ${producto.precioVenta.toLocaleString("es-AR", { minimumFractionDigits: 2 })}
-                          </span>
-                          {producto.unidadesPorBulto && producto.unidadesPorBulto > 1 && (
-                            <span className="text-[11px] text-slate-400 dark:text-slate-500">
-                              x{producto.unidadesPorBulto} und
-                            </span>
-                          )}
-                        </div>
-                      </div>
+                      {/* Etiqueta real */}
+                      <EtiquetaPreview producto={producto} />
                     </button>
                   );
                 })}
@@ -361,18 +346,28 @@ export default function ModalImprimirEtiquetas({
                 <span className="text-sm">Ningún producto seleccionado aún</span>
               </div>
             ) : (
-              <div className="flex flex-wrap gap-2 max-h-[120px] overflow-y-auto">
+              <div className="grid grid-cols-2 gap-3 max-h-[260px] overflow-y-auto p-2 -mx-2">
                 {productosSeleccionados.map((producto) => (
                   <div
                     key={producto.id}
                     className="relative group animate-in fade-in-0 zoom-in-95 duration-200"
                   >
-                    <EtiquetaPreview producto={producto} compact />
+                    {/* Click en la etiqueta = toggle (deseleccionar) */}
                     <button
                       onClick={() => quitarSeleccionado(producto.id)}
-                      className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-rose-500 hover:bg-rose-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-md cursor-pointer"
+                      className="text-left w-full cursor-pointer rounded-xl border-2 border-brand-500 dark:border-brand-600 ring-2 ring-brand-200 dark:ring-brand-800 transition-all hover:border-brand-400 dark:hover:border-brand-500"
                     >
-                      <X className="w-3 h-3" />
+                      <EtiquetaPreview producto={producto} />
+                    </button>
+                    {/* Badge X para quitar */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        quitarSeleccionado(producto.id);
+                      }}
+                      className="absolute -top-2 -right-2 w-6 h-6 bg-rose-500 hover:bg-rose-600 text-white rounded-full flex items-center justify-center shadow-lg transition-all cursor-pointer z-10 hover:scale-110"
+                    >
+                      <X className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 ))}
