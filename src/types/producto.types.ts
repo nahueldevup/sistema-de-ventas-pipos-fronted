@@ -9,6 +9,7 @@ export interface Producto {
   existencia: number;
   utilidad: number;
   porcentaje: number;
+  unidadesPorBulto?: number;
   ventasTotales: number;
   fechaCreacion: string;
   fechaModificacion: string;

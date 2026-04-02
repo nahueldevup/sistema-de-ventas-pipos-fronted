@@ -101,7 +101,6 @@ export default function Productos() {
         filtrosActivosCount={filtrosActivosCount}
         categoriasDisponibles={categoriasUnicas}
         proveedoresDisponibles={proveedoresUnicos}
-        seleccionadosCount={seleccionados.length}
         margenGananciaGlobal={margenGananciaGlobal}
         setMargenGananciaGlobal={setMargenGananciaGlobal}
         gananciaAutoActiva={gananciaAutoActiva}
@@ -136,7 +135,7 @@ export default function Productos() {
       <ModalImprimirEtiquetas
         isOpen={modalActivo === 'etiquetas'}
         onClose={() => setModalActivo(null)}
-        productos={productos.filter(p => seleccionados.includes(p.id))}
+        todosLosProductos={productos}
       />
 
       <ModalGestionCategorias

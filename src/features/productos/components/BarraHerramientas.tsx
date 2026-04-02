@@ -15,7 +15,6 @@ interface BarraHerramientasProps {
   filtrosActivosCount: number;
   categoriasDisponibles: string[];
   proveedoresDisponibles: string[];
-  seleccionadosCount: number;
   margenGananciaGlobal: number;
   setMargenGananciaGlobal: (v: number) => void;
   gananciaAutoActiva: boolean;
@@ -34,7 +33,6 @@ export default function BarraHerramientas({
   filtrosActivosCount,
   categoriasDisponibles,
   proveedoresDisponibles,
-  seleccionadosCount,
   margenGananciaGlobal,
   setMargenGananciaGlobal,
   gananciaAutoActiva,
@@ -250,15 +248,11 @@ export default function BarraHerramientas({
           </button>
 
           <button
-            disabled={seleccionadosCount === 0}
             onClick={onAbrirImprimirEtiquetas}
-            className={`px-3 h-[38px] rounded-xl text-sm font-bold flex items-center gap-2 transition-colors ${seleccionadosCount > 0
-                ? 'bg-brand-600 text-white hover:bg-brand-700 shadow-md cursor-pointer'
-                : 'bg-gray-100 dark:bg-dark-elevated text-gray-400 dark:text-slate-500 cursor-not-allowed border border-gray-200 dark:border-dark-border'
-              }`}
+            className="px-3 h-[38px] rounded-xl text-sm font-bold flex items-center gap-2 transition-all bg-brand-600 text-white hover:bg-brand-700 shadow-md cursor-pointer active:scale-95"
           >
             <Printer size={18} />
-            <span className="hidden sm:inline">Imprimir etiquetas</span> {seleccionadosCount > 0 && `(${seleccionadosCount})`}
+            <span className="hidden sm:inline">Imprimir etiquetas</span>
           </button>
 
           <button
