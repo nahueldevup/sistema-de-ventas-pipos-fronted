@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react"
 import { calcularPrecioVenta } from "@/lib/precioUtils"
 import type { ProductoDatos } from "@/types/producto.types"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
 export type { ProductoDatos } from "@/types/producto.types"
 
 
@@ -384,21 +385,22 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
 
         {/* Pie compacto */}
         <div className="px-6 py-4 border-t border-gray-100 dark:border-dark-border bg-gray-50/80 dark:bg-dark-elevated/80 flex justify-end gap-3">
-          <button
+          <Button
+            variant="outline"
             onClick={onClose}
             title="Cancelar y cerrar"
             aria-label="Cancelar"
-            className="px-5 py-2.5 text-sm font-bold text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-dark-elevated rounded-lg cursor-pointer transition-all"
+            className="px-5 py-2.5 text-sm font-bold text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-dark-elevated cursor-pointer"
           >
             CERRAR
-          </button>
-          <button
+          </Button>
+          <Button
             title="Guardar producto"
             aria-label="Guardar"
-            className="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-bold shadow-lg shadow-brand-500/30 transition-all hover:-translate-y-0.5 cursor-pointer"
+            className="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold cursor-pointer"
           >
             GUARDAR
-          </button>
+          </Button>
         </div>
         </div>
       </DialogContent>

@@ -3,6 +3,7 @@ import { X, Printer, Search, Package } from "lucide-react";
 import Fuse from "fuse.js";
 import type { Producto } from "@/types/producto.types";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import EtiquetaPreview from "./EtiquetaPreview";
 
 interface ModalImprimirEtiquetasProps {
@@ -377,24 +378,25 @@ export default function ModalImprimirEtiquetas({
 
           {/* ── Footer ─────────────────────────────────── */}
           <div className="p-5 pt-3 border-t border-gray-100 dark:border-dark-border bg-gray-50/50 dark:bg-dark-elevated/50 flex justify-end gap-3">
-            <button
+            <Button
+              variant="outline"
               onClick={handleClose}
-              className="px-5 py-2.5 text-sm font-bold text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-dark-elevated rounded-xl transition-all cursor-pointer"
+              className="px-5 py-2.5 text-sm font-bold text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-dark-elevated cursor-pointer"
             >
               Cancelar
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleImprimir}
               disabled={seleccionados.size === 0}
-              className={`px-6 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-all ${
+              className={`px-6 py-2.5 text-sm font-bold flex items-center gap-2 ${
                 seleccionados.size > 0
-                  ? "bg-brand-600 hover:bg-brand-700 text-white shadow-md cursor-pointer active:scale-95"
-                  : "bg-gray-200 dark:bg-dark-elevated text-gray-400 dark:text-slate-500 cursor-not-allowed border border-gray-200 dark:border-dark-border"
+                  ? "bg-brand-600 hover:bg-brand-700 text-white cursor-pointer active:scale-95"
+                  : "bg-gray-200 dark:bg-dark-elevated text-gray-400 dark:text-slate-500 cursor-not-allowed"
               }`}
             >
               <Printer className="w-4 h-4" />
               Imprimir{seleccionados.size > 0 ? ` (${seleccionados.size})` : ""}
-            </button>
+            </Button>
           </div>
         </div>
       </DialogContent>

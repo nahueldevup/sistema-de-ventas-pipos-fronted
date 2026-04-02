@@ -6,6 +6,7 @@ import {
 import { getCategoriaColor } from "@/theme"; // ← viene del archivo central
 import type { Categoria } from "@/types/categoria.types";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 
 interface ModalGestionCategoriasProps {
@@ -294,12 +295,13 @@ export default function ModalGestionCategorias({
           <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">
             {categorias.length} categorías en total
           </p>
-          <button
+          <Button
+            variant="outline"
             onClick={onClose}
-            className="px-5 py-2.5 text-sm font-bold text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-dark-elevated rounded-lg transition-all"
+            className="px-5 py-2.5 text-sm font-bold text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-dark-elevated"
           >
             CERRAR
-          </button>
+          </Button>
         </div>
         </div>
       </DialogContent>
