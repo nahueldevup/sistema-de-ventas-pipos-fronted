@@ -351,21 +351,21 @@ export default function ModalActualizarPrecios({
           <Button 
             variant="outline"
             onClick={onClose} 
-            className="px-6 py-2.5 text-sm font-bold text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-dark-elevated"
+            className="px-6 py-2.5 h-auto text-sm font-bold text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-dark-elevated"
           >
-            Cancelar
+            CANCELAR
           </Button>
 
           <Button
             onClick={handleAplicar}
             disabled={!puedeAplicar}
-            className={`px-8 py-2.5 font-black text-sm flex items-center gap-2 ${
+            className={`px-8 py-2.5 h-auto font-black text-sm flex items-center gap-2 ${
               puedeAplicar 
                 ? "bg-brand-600 text-white hover:bg-brand-700 hover:-translate-y-0.5" 
                 : "bg-slate-200 text-slate-400 cursor-not-allowed grayscale"
             }`}
           >
-            Aplicar ajustes
+            APLICAR AJUSTES
           </Button>
         </div>
         </div>

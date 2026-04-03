@@ -390,14 +390,14 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
             onClick={onClose}
             title="Cancelar y cerrar"
             aria-label="Cancelar"
-            className="px-5 py-2.5 text-sm font-bold text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-dark-elevated cursor-pointer"
+            className="px-5 py-2.5 h-auto text-sm font-bold text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-dark-elevated cursor-pointer"
           >
             CERRAR
           </Button>
           <Button
             title="Guardar producto"
             aria-label="Guardar"
-            className="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold cursor-pointer"
+            className="px-6 py-2.5 h-auto bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold cursor-pointer"
           >
             GUARDAR
           </Button>

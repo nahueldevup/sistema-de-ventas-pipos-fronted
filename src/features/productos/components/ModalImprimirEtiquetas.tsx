@@ -381,21 +381,21 @@ export default function ModalImprimirEtiquetas({
             <Button
               variant="outline"
               onClick={handleClose}
-              className="px-5 py-2.5 text-sm font-bold text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-dark-elevated cursor-pointer"
+              className="px-5 py-2.5 h-auto text-sm font-bold text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-dark-elevated cursor-pointer"
             >
-              Cancelar
+              CANCELAR
             </Button>
             <Button
               onClick={handleImprimir}
               disabled={seleccionados.size === 0}
-              className={`px-6 py-2.5 text-sm font-bold flex items-center gap-2 ${
+              className={`px-6 py-2.5 h-auto text-sm font-bold flex items-center gap-2 ${
                 seleccionados.size > 0
                   ? "bg-brand-600 hover:bg-brand-700 text-white cursor-pointer active:scale-95"
                   : "bg-gray-200 dark:bg-dark-elevated text-gray-400 dark:text-slate-500 cursor-not-allowed"
               }`}
             >
               <Printer className="w-4 h-4" />
-              Imprimir{seleccionados.size > 0 ? ` (${seleccionados.size})` : ""}
+              IMPRIMIR{seleccionados.size > 0 ? ` (${seleccionados.size})` : ""}
             </Button>
           </div>
         </div>
