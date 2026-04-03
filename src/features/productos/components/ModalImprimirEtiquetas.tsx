@@ -220,9 +220,7 @@ export default function ModalImprimirEtiquetas({
               <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
                 Imprimir etiquetas
               </h2>
-              <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-                Buscá y agregá los productos que querés etiquetar
-              </p>
+            
             </div>
             <button
               onClick={handleClose}
@@ -263,7 +261,7 @@ export default function ModalImprimirEtiquetas({
               <div className="flex flex-col items-center justify-center py-8 text-center">
                 <Search className="w-10 h-10 text-slate-300 dark:text-slate-600 mb-2" />
                 <p className="text-sm text-slate-400 dark:text-slate-500">
-                  Empezá a escribir para buscar productos
+                  Buscá y agregá los productos que querés etiquetar
                 </p>
               </div>
             ) : resultados.length === 0 ? (
@@ -274,7 +272,7 @@ export default function ModalImprimirEtiquetas({
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4 p-3 -mx-3 mt-1">
                 {resultados.map((producto) => {
                   const isSelected = seleccionados.has(producto.id);
                   return (
@@ -283,24 +281,24 @@ export default function ModalImprimirEtiquetas({
                       onClick={() => toggleSeleccion(producto.id)}
                       className={`relative text-left cursor-pointer rounded-xl border-2 transition-all group ${
                         isSelected
-                          ? "border-brand-500 ring-2 ring-brand-200 dark:ring-brand-800 dark:border-brand-600"
-                          : "border-gray-200 dark:border-dark-border hover:border-gray-400 dark:hover:border-slate-500"
+                          ? "border-brand-400/50 ring-4 ring-brand-50/50 dark:ring-brand-900/20 dark:border-brand-500/40 bg-brand-50/30 dark:bg-brand-900/10"
+                          : "border-gray-200 dark:border-dark-border hover:border-gray-300 dark:hover:border-slate-500"
                       }`}
                     >
-                      {/* Checkbox en esquina superior izquierda */}
+                      {/* Checkbox en esquina superior izquierda como badge */}
                       <div
-                        className={`absolute top-2 left-2 z-10 w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all ${
+                        className={`absolute -top-2.5 -left-2.5 z-10 w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all shadow-sm ${
                           isSelected
-                            ? "bg-brand-600 border-brand-600 text-white shadow-sm"
-                            : "bg-white/90 dark:bg-dark-card/90 border-gray-300 dark:border-slate-600 group-hover:border-brand-400"
+                            ? "bg-brand-400 border-brand-400 text-white"
+                            : "bg-white dark:bg-dark-card border-gray-300 dark:border-slate-600 group-hover:border-brand-300"
                         }`}
                       >
                         {isSelected && (
-                          <svg className="w-3 h-3" viewBox="0 0 12 12" fill="none">
+                          <svg className="w-3.5 h-3.5" viewBox="0 0 12 12" fill="none">
                             <path
                               d="M2 6L5 9L10 3"
                               stroke="currentColor"
-                              strokeWidth="2"
+                              strokeWidth="2.5"
                               strokeLinecap="round"
                               strokeLinejoin="round"
                             />
@@ -347,7 +345,7 @@ export default function ModalImprimirEtiquetas({
                 <span className="text-sm">Ningún producto seleccionado aún</span>
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-3 max-h-[260px] overflow-y-auto p-2 -mx-2">
+              <div className="grid grid-cols-2 gap-4 max-h-[260px] overflow-y-auto p-3 -mx-3 mt-1">
                 {productosSeleccionados.map((producto) => (
                   <div
                     key={producto.id}
@@ -356,7 +354,7 @@ export default function ModalImprimirEtiquetas({
                     {/* Click en la etiqueta = toggle (deseleccionar) */}
                     <button
                       onClick={() => quitarSeleccionado(producto.id)}
-                      className="text-left w-full cursor-pointer rounded-xl border-2 border-brand-500 dark:border-brand-600 ring-2 ring-brand-200 dark:ring-brand-800 transition-all hover:border-brand-400 dark:hover:border-brand-500"
+                      className="text-left w-full cursor-pointer rounded-xl border-2 border-brand-400/50 dark:border-brand-500/40 ring-4 ring-brand-50/50 dark:ring-brand-900/20 bg-brand-50/30 dark:bg-brand-900/10 transition-all hover:border-brand-400/70 dark:hover:border-brand-500"
                     >
                       <EtiquetaPreview producto={producto} />
                     </button>
@@ -366,7 +364,7 @@ export default function ModalImprimirEtiquetas({
                         e.stopPropagation();
                         quitarSeleccionado(producto.id);
                       }}
-                      className="absolute -top-2 -right-2 w-6 h-6 bg-rose-500 hover:bg-rose-600 text-white rounded-full flex items-center justify-center shadow-lg transition-all cursor-pointer z-10 hover:scale-110"
+                      className="absolute -top-2.5 -right-2.5 w-6 h-6 bg-rose-500/90 hover:bg-rose-600 text-white rounded-full flex items-center justify-center shadow-sm transition-all cursor-pointer z-10 hover:scale-110"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
