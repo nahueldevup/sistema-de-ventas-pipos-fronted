@@ -58,15 +58,15 @@ export default function Productos() {
     ));
   };
 
-  const handleAplicarActualizacionPrecios = (actualizados: { id: string; nuevoPrecioVenta: number }[]) => {
+  const handleActualizarPreciosMasivos = (productosIds: string[], calculo: number | ((prev: number) => number)) => {
     setProductos(prev => prev.map(p => {
-      const act = actualizados.find(a => a.id === p.id);
-      if (act) {
-        const utilidad = act.nuevoPrecioVenta - p.precioCompra;
+      if (productosIds.includes(p.id)) {
+        const nuevoPrecioVenta = typeof calculo === 'function' ? calculo(p.precioVenta) : calculo;
+        const utilidad = nuevoPrecioVenta - p.precioCompra;
         const porcentaje = p.precioCompra > 0 ? (utilidad / p.precioCompra) * 100 : 0;
         return {
           ...p,
-          precioVenta: act.nuevoPrecioVenta,
+          precioVenta: nuevoPrecioVenta,
           utilidad: Math.round(utilidad),
           porcentaje: Math.round(porcentaje)
         };
@@ -151,10 +151,8 @@ export default function Productos() {
       <ModalActualizarPrecios
         isOpen={modalActivo === 'actualizarPrecios'}
         onClose={() => setModalActivo(null)}
-        productos={productos}
-        categoriasDisponibles={categoriasUnicas}
-        productosSeleccionadosIds={seleccionados}
-        onAplicar={handleAplicarActualizacionPrecios}
+        todosLosProductos={productos}
+        onActualizarPrecios={handleActualizarPreciosMasivos}
       />
     </div>
   );
