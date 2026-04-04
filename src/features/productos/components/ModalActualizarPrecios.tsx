@@ -132,11 +132,12 @@ export default function ModalActualizarPrecios({
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent 
-        className="max-w-[calc(100%-2rem)] sm:max-w-5xl p-0 gap-0 overflow-hidden bg-white dark:bg-dark-card border-none shadow-2xl rounded-2xl flex flex-col max-h-[90vh]" 
+        className="max-w-[calc(100%-2rem)] sm:max-w-5xl p-0 gap-0 overflow-hidden bg-white dark:bg-dark-card border-none shadow-xl rounded-2xl" 
         showCloseButton={false}
       >
         <DialogTitle className="sr-only">Actualizar Precios Masivos</DialogTitle>
 
+        <div className="flex flex-col w-full h-[650px] max-h-[85vh]">
         {/* Overlay de Confirmación */}
         {mostrarConfirmacion && (
           <div className="absolute inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
@@ -182,20 +183,21 @@ export default function ModalActualizarPrecios({
                 </div>
               </div>
 
-              <div className="p-4 border-t border-gray-100 dark:border-dark-border bg-gray-50 dark:bg-dark-elevated/50 flex gap-3">
-                <button
+              <div className="p-4 border-t border-gray-100 dark:border-dark-border bg-gray-50/50 dark:bg-dark-elevated/50 flex justify-end gap-3 mt-auto">
+                <Button
+                  variant="outline"
                   onClick={() => setMostrarConfirmacion(false)}
-                  className="flex-1 px-4 py-2.5 border border-gray-200 dark:border-dark-border rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-dark-card transition-colors"
+                  className="px-5 py-2.5 h-auto text-sm font-bold text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-dark-elevated cursor-pointer"
                 >
-                  Revisar
-                </button>
-                <button
+                  REVISAR
+                </Button>
+                <Button
                   onClick={ejecutarActualizacion}
-                  className="flex-1 px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-bold shadow-md transition-all active:scale-95 flex items-center justify-center gap-2"
+                  className="px-6 py-2.5 h-auto bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-bold shadow-md cursor-pointer transition-all active:scale-95 flex items-center justify-center gap-2"
                 >
                   <Check className="w-4 h-4" />
-                  Confirmar Cambios
-                </button>
+                  CONFIRMAR CAMBIOS
+                </Button>
               </div>
             </div>
           </div>
@@ -412,39 +414,36 @@ export default function ModalActualizarPrecios({
                         />
                       </div>
                     </div>
-
-                    {/* Preview Resumen */}
-                    {valorAjuste && (
-                      <div className="pt-4 border-t border-gray-100 dark:border-dark-border">
-                        <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 mb-4">
-                          <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase mb-1">Impacto Total Estimado</p>
-                          <p className={`text-xl font-black ${totalDiferencia >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
-                            {totalDiferencia >= 0 ? '+' : ''}{formatearMoneda(totalDiferencia)}
-                          </p>
-                        </div>
-                        
-                        <Button
-                          onClick={handleConfirmarInicio}
-                          className="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all"
-                        >
-                          <Save className="w-4 h-4 mr-2" />
-                          Aplicar a {seleccionados.size} productos
-                        </Button>
-                      </div>
-                    )}
                   </div>
                 )}
               </div>
             </div>
           </div>
         </div>
-        
-        {/* Footer Simple (Solo móvil si fuera necesario, pero en desktop está integrado) */}
-        <div className="md:hidden p-4 border-t border-gray-100 dark:border-dark-border bg-gray-50 dark:bg-dark-elevated/50 text-center">
-           <p className="text-xs text-slate-400 dark:text-slate-500">
-             Gira el dispositivo para ver el panel de configuración.
-           </p>
+
+        {/* ── Footer Estándar ─────────────────────────────────── */}
+        <div className="p-5 pt-3 border-t border-gray-100 dark:border-dark-border bg-gray-50/50 dark:bg-dark-elevated/50 flex justify-end gap-3 mt-auto">
+          <Button
+            variant="outline"
+            onClick={onClose}
+            className="px-5 py-2.5 h-auto text-sm font-bold text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-dark-elevated cursor-pointer"
+          >
+            CANCELAR
+          </Button>
+          <Button
+            onClick={handleConfirmarInicio}
+            disabled={seleccionados.size === 0 || !valorAjuste}
+            className={`px-6 py-2.5 h-auto text-sm font-bold flex items-center gap-2 ${
+              seleccionados.size > 0 && valorAjuste
+                ? "bg-brand-600 hover:bg-brand-700 text-white cursor-pointer active:scale-95 shadow-md"
+                : "bg-gray-200 dark:bg-dark-elevated text-gray-400 dark:text-slate-500 cursor-not-allowed"
+            }`}
+          >
+            <Save className="w-4 h-4" />
+            APLICAR
+          </Button>
         </div>
+      </div>
       </DialogContent>
     </Dialog>
   );
