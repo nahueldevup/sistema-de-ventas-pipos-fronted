@@ -240,7 +240,7 @@ export default function ModalActualizarPrecios({
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-3">
+            <div className="overflow-y-auto p-3 max-h-[280px]">
               {!busqueda ? (
                 <div className="flex flex-col items-center justify-center h-48 text-slate-400 text-center px-4">
                   <Search className="w-8 h-8 mb-2 opacity-50" />
@@ -312,16 +312,7 @@ export default function ModalActualizarPrecios({
                   2. Configurar Ajuste
                 </h3>
 
-                {seleccionados.size === 0 ? (
-                  <div className="text-center py-12 border-2 border-dashed border-[#E5E7EB] dark:border-dark-border rounded-xl bg-white dark:bg-dark-card">
-                    <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto mb-3">
-                      <Search className="w-6 h-6" />
-                    </div>
-                    <p className="text-sm font-semibold text-[#1F2937] dark:text-slate-300">Selecciona productos primero</p>
-                    <p className="text-xs text-[#6B7280] dark:text-slate-500 mt-1">Elige al menos un producto de la lista izquierda</p>
-                  </div>
-                ) : (
-                  <div className="bg-white dark:bg-dark-card border border-[#E5E7EB] dark:border-dark-border rounded-xl p-5 space-y-5 animate-in fade-in slide-in-from-right-4 duration-300">
+                  <div className="bg-white dark:bg-dark-card border border-[#E5E7EB] dark:border-dark-border rounded-xl p-5 space-y-5">
                     
                     {/* Toggle Aumento/Descuento */}
                     <div>
@@ -400,7 +391,6 @@ export default function ModalActualizarPrecios({
                       </div>
                     </div>
                   </div>
-                )}
               </div>
             </div>
           </div>
