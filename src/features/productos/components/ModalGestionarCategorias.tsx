@@ -1,12 +1,11 @@
 import { useState } from "react";
 import {
-  X, Search, Plus, Check, Trash2, Edit2, AlertTriangle,
-  Package, Tag, Eye
+  X, Search, Plus, Check, Trash2, Edit2,
+  Tag, Eye
 } from "lucide-react";
 import { getCategoriaColor } from "@/theme";
 import type { Categoria } from "@/types/categoria.types";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { ModalGestion } from "@/components/ui/modal-wrappers";
 
 
 interface ModalGestionCategoriasProps {
@@ -78,14 +77,17 @@ export default function ModalGestionCategorias({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent
-        className="max-w-[calc(100%-2rem)] sm:max-w-2xl p-0 gap-0 overflow-hidden bg-white dark:bg-dark-card border-none shadow-xl rounded-2xl"
-        showCloseButton={false}
-      >
-        <DialogTitle className="sr-only">Gestionar Categorías</DialogTitle>
-        <div className="relative flex flex-col w-full max-h-[85vh]">
-
+    <ModalGestion
+      open={isOpen}
+      onOpenChange={(open) => !open && onClose()}
+      title="Gestionar Categorías"
+      onCerrar={onClose}
+      footerLeft={
+        <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">
+          {categorias.length} categorías en total
+        </p>
+      }
+    >
           {/* Overlay de Confirmación */}
           {confirmacion && (
             <div className="absolute inset-0 z-50 bg-slate-900/40 backdrop-blur-[2px] flex items-center justify-center p-4 animate-in fade-in duration-200">
@@ -159,24 +161,6 @@ export default function ModalGestionCategorias({
               </div>
             </div>
           )}
-
-          {/* Encabezado */}
-          <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 dark:border-dark-border bg-gradient-to-r from-brand-50 to-white dark:from-dark-elevated dark:to-dark-card">
-            <div>
-              <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">
-                Gestionar Categorías
-              </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">
-                Organizá tus productos por categorías
-              </p>
-            </div>
-            <button
-              onClick={onClose}
-              className="text-white bg-rose-400 hover:bg-rose-500 dark:bg-rose-600 dark:hover:bg-rose-700 p-1.5 rounded-full transition-colors shadow-sm"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
 
           {/* Controles */}
           <div className="p-5 flex flex-col md:flex-row gap-4 border-b border-gray-100 dark:border-dark-border bg-white dark:bg-dark-card z-10">
@@ -342,22 +326,6 @@ export default function ModalGestionCategorias({
               </div>
             )}
           </div>
-
-          {/* Pie */}
-          <div className="px-6 py-4 border-t border-gray-100 dark:border-dark-border bg-gray-50/50 dark:bg-dark-elevated/50 flex justify-between items-center">
-            <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">
-              {categorias.length} categorías en total
-            </p>
-            <Button
-              variant="outline"
-              onClick={onClose}
-              className="px-5 py-2.5 h-auto text-sm font-bold text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-dark-elevated cursor-pointer"
-            >
-              CERRAR
-            </Button>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+    </ModalGestion>
   );
 }

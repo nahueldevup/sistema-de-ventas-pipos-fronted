@@ -177,7 +177,6 @@ export default function BarraHerramientas({
 
           <div className="flex items-center h-[38px] border border-border rounded-xl bg-card shadow-sm px-1">
             <div className="flex items-center h-full px-1.5 gap-1">
-              <BadgePercent className="w-4 h-4 text-brand-600 dark:text-brand-400 ml-1" />
               <button
                 onClick={() => gananciaAutoActiva && setMargenGananciaGlobal(Math.max(0, margenGananciaGlobal - 5))}
                 className="w-6 h-full flex items-center justify-center text-slate-400 hover:text-brand-600 transition-colors cursor-pointer"

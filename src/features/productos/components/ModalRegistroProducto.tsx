@@ -1,9 +1,8 @@
-import { X, Image as ImageIcon, Barcode, Check, ChevronDown, Plus, Minus } from "lucide-react"
+import { Image as ImageIcon, Barcode, Check, ChevronDown, Plus, Minus } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
 import { calcularPrecioVenta } from "@/lib/precioUtils"
 import type { ProductoDatos } from "@/types/producto.types"
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
+import { ModalFormulario } from "@/components/ui/modal-wrappers"
 export type { ProductoDatos } from "@/types/producto.types"
 
 
@@ -130,30 +129,16 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
 
   if (!isOpen) return null;
 
-  const tituloModal = productoAEditar ? "Editar producto" : "Registrar producto"
+  const tituloModal = productoAEditar ? "Editar Producto" : "Registrar Producto"
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent 
-        className="max-w-[calc(100%-2rem)] sm:max-w-2xl p-0 gap-0 overflow-hidden bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border shadow-2xl rounded-2xl" 
-        showCloseButton={false}
-      >
-        <DialogTitle className="sr-only">{productoAEditar ? "Editar Producto" : "Nuevo Producto"}</DialogTitle>
-        <div className="relative flex flex-col w-full max-h-[90vh]">
-        
-        {/* Header personalizado tipo Pipos */}
-        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 dark:border-dark-border bg-gradient-to-r from-brand-50 to-white dark:from-dark-elevated dark:to-dark-card">
-          <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">{tituloModal}</h2>
-          <button
-            onClick={onClose}
-            className="text-white bg-rose-400 hover:bg-rose-500 dark:bg-rose-600 dark:hover:bg-rose-700 p-1.5 rounded-full transition-colors shadow-sm"
-            title="Cerrar"
-            aria-label="Cerrar"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
+    <ModalFormulario
+      open={isOpen}
+      onOpenChange={(open) => !open && onClose()}
+      title={tituloModal}
+      onCancelar={onClose}
+      onGuardar={() => {/* lógica de guardado */}}
+    >
         {/* Cuerpo optimizado */}
         <div className="px-6 py-5 overflow-y-auto flex-1">
           
@@ -382,28 +367,6 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
             </div>
           </div>
         </div>
-
-        {/* Pie compacto */}
-        <div className="px-6 py-4 border-t border-gray-100 dark:border-dark-border bg-gray-50/80 dark:bg-dark-elevated/80 flex justify-end gap-3">
-          <Button
-            variant="outline"
-            onClick={onClose}
-            title="Cancelar y cerrar"
-            aria-label="Cancelar"
-            className="px-5 py-2.5 h-auto text-sm font-bold text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-dark-elevated cursor-pointer"
-          >
-            CERRAR
-          </Button>
-          <Button
-            title="Guardar producto"
-            aria-label="Guardar"
-            className="px-6 py-2.5 h-auto bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold cursor-pointer"
-          >
-            GUARDAR
-          </Button>
-        </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+    </ModalFormulario>
   )
 }

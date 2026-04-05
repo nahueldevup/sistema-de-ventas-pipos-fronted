@@ -1,10 +1,10 @@
 import { useState, useMemo } from "react";
 import {
-  X, Search, Check, TrendingUp, AlertCircle,
-  Package, ArrowRight, Save, RotateCcw, DollarSign
+  Search, Check, TrendingUp, AlertCircle,
+  Package, ArrowRight, Save, RotateCcw
 } from "lucide-react";
 import type { Producto } from "@/types/producto.types";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { ModalAccion } from "@/components/ui/modal-wrappers";
 import { Button } from "@/components/ui/button";
 
 interface ModalActualizarPreciosProps {
@@ -130,14 +130,18 @@ export default function ModalActualizarPrecios({
     val.toLocaleString("es-AR", { style: "currency", currency: "ARS", minimumFractionDigits: 2 });
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent 
-        className="max-w-[calc(100%-2rem)] sm:max-w-5xl p-0 gap-0 overflow-hidden bg-white dark:bg-dark-card border-none shadow-xl rounded-2xl" 
-        showCloseButton={false}
-      >
-        <DialogTitle className="sr-only">Actualizar Precios Masivos</DialogTitle>
-
-        <div className="flex flex-col w-full h-[650px] max-h-[85vh]">
+    <ModalAccion
+      open={isOpen}
+      onOpenChange={(open) => !open && onClose()}
+      title="Actualización Masiva de Precios"
+      subtitle="Selecciona productos a la izquierda y configura el ajuste a la derecha"
+      titleIcon={<TrendingUp className="w-5 h-5 text-brand-600" />}
+      onCancelar={onClose}
+      onAccion={handleConfirmarInicio}
+      accionLabel="APLICAR"
+      accionIcon={<Save className="w-4 h-4" />}
+      accionDisabled={seleccionados.size === 0 || !valorAjuste}
+    >
         {/* Overlay de Confirmación */}
         {mostrarConfirmacion && (
           <div className="absolute inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
@@ -202,25 +206,6 @@ export default function ModalActualizarPrecios({
             </div>
           </div>
         )}
-
-        {/* Header Compacto */}
-        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 dark:border-dark-border bg-gradient-to-r from-indigo-50 to-white dark:from-dark-elevated dark:to-dark-card shrink-0">
-          <div>
-            <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-brand-600" />
-              Actualización Masiva de Precios
-            </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">
-              Selecciona productos a la izquierda y configura el ajuste a la derecha
-            </p>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
 
         {/* Layout de Dos Columnas */}
         <div className="flex flex-1 min-h-0 overflow-hidden">
@@ -420,31 +405,6 @@ export default function ModalActualizarPrecios({
             </div>
           </div>
         </div>
-
-        {/* ── Footer Estándar ─────────────────────────────────── */}
-        <div className="p-5 pt-3 border-t border-gray-100 dark:border-dark-border bg-gray-50/50 dark:bg-dark-elevated/50 flex justify-end gap-3 mt-auto">
-          <Button
-            variant="outline"
-            onClick={onClose}
-            className="px-5 py-2.5 h-auto text-sm font-bold text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-dark-elevated cursor-pointer"
-          >
-            CANCELAR
-          </Button>
-          <Button
-            onClick={handleConfirmarInicio}
-            disabled={seleccionados.size === 0 || !valorAjuste}
-            className={`px-6 py-2.5 h-auto text-sm font-bold flex items-center gap-2 ${
-              seleccionados.size > 0 && valorAjuste
-                ? "bg-brand-600 hover:bg-brand-700 text-white cursor-pointer active:scale-95 shadow-md"
-                : "bg-gray-200 dark:bg-dark-elevated text-gray-400 dark:text-slate-500 cursor-not-allowed"
-            }`}
-          >
-            <Save className="w-4 h-4" />
-            APLICAR
-          </Button>
-        </div>
-      </div>
-      </DialogContent>
-    </Dialog>
+    </ModalAccion>
   );
 }

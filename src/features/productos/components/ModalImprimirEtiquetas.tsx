@@ -2,8 +2,7 @@ import { useState, useMemo, useCallback } from "react";
 import { X, Printer, Search, Package } from "lucide-react";
 import Fuse from "fuse.js";
 import type { Producto } from "@/types/producto.types";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { ModalAccion } from "@/components/ui/modal-wrappers";
 import EtiquetaPreview from "./EtiquetaPreview";
 
 interface ModalImprimirEtiquetasProps {
@@ -79,8 +78,6 @@ export default function ModalImprimirEtiquetas({
             ? (producto.precioVenta / producto.unidadesPorBulto).toFixed(2)
             : null;
 
-        // En la ventana de impresión uso JsBarcode (CDN) para generar los barcodes,
-        // así evito depender de React en el contexto de la ventana nueva.
         return `
           <div style="
             background: white;
@@ -204,34 +201,17 @@ export default function ModalImprimirEtiquetas({
   }, [onClose]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent
-        className="max-w-[calc(100%-2rem)] sm:max-w-5xl p-0 gap-0 overflow-hidden bg-white dark:bg-dark-card border-none shadow-xl rounded-2xl"
-        showCloseButton={false}
-      >
-        <DialogTitle className="sr-only">Imprimir etiquetas</DialogTitle>
-
-        <div className="flex flex-col w-full max-h-[85vh]">
-          {/* ── Encabezado ─────────────────────────────── */}
-          <div className="flex justify-between items-start p-5 pb-4 border-b border-gray-100 dark:border-dark-border bg-gray-50/50 dark:bg-dark-elevated/30">
-            <div>
-              <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
-                Imprimir etiquetas
-              </h2>
-              {seleccionados.size > 0 && (
-                <p className="text-xs font-semibold text-brand-600 dark:text-brand-400 mt-0.5">
-                  {seleccionados.size} producto{seleccionados.size !== 1 ? 's' : ''} seleccionado{seleccionados.size !== 1 ? 's' : ''}
-                </p>
-              )}
-            </div>
-            <button
-              onClick={handleClose}
-              className="text-white bg-rose-400 hover:bg-rose-500 dark:bg-rose-600 dark:hover:bg-rose-700 p-1.5 rounded-full transition-colors shadow-sm"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
+    <ModalAccion
+      open={isOpen}
+      onOpenChange={(open) => !open && handleClose()}
+      title="Imprimir Etiquetas"
+      onCancelar={handleClose}
+      onAccion={handleImprimir}
+      accionLabel="IMPRIMIR"
+      accionIcon={<Printer className="w-4 h-4" />}
+      accionCount={seleccionados.size}
+      accionDisabled={seleccionados.size === 0}
+    >
           {/* ── Contenido principal con sidebar ──────────────────── */}
           <div className="flex flex-1 min-h-0 overflow-hidden">
             
@@ -264,7 +244,7 @@ export default function ModalImprimirEtiquetas({
               </div>
 
               {/* Resultados de búsqueda */}
-              <div className="flex-1 overflow-y-auto px-5 pb-4">
+              <div className="flex-1 overflow-y-auto px-5 pb-4 pt-3">
                 {!busqueda.trim() ? (
                   <div className="flex flex-col items-center justify-center py-12 text-center">
                     <Search className="w-12 h-12 text-slate-300 dark:text-slate-600 mb-3" />
@@ -293,22 +273,22 @@ export default function ModalImprimirEtiquetas({
                         <button
                           key={producto.id}
                           onClick={() => toggleSeleccion(producto.id)}
-                          className={`relative text-left cursor-pointer rounded-xl border-2 transition-all group ${
+                          className={`relative text-left cursor-pointer rounded-xl border transition-all group ${
                             isSelected
-                              ? "border-brand-400/50 ring-4 ring-brand-50/50 dark:ring-brand-900/20 dark:border-brand-500/40 bg-brand-50/30 dark:bg-brand-900/10"
-                              : "border-gray-200 dark:border-dark-border hover:border-gray-300 dark:hover:border-slate-500"
+                              ? "border-brand-500 bg-brand-50 dark:bg-brand-900/20 ring-1 ring-brand-500"
+                              : "border-gray-100 dark:border-dark-border hover:border-gray-300 dark:hover:border-slate-500"
                           }`}
                         >
                           {/* Checkbox en esquina superior izquierda como badge */}
                           <div
-                            className={`absolute -top-2.5 -left-2.5 z-10 w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all shadow-sm ${
+                            className={`absolute -top-2 -left-2 z-10 w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-all shadow-sm ${
                               isSelected
-                                ? "bg-brand-400 border-brand-400 text-white"
+                                ? "bg-brand-500 border-brand-500 text-white"
                                 : "bg-white dark:bg-dark-card border-gray-300 dark:border-slate-600 group-hover:border-brand-300"
                             }`}
                           >
                             {isSelected && (
-                              <svg className="w-3.5 h-3.5" viewBox="0 0 12 12" fill="none">
+                              <svg className="w-3 h-3" viewBox="0 0 12 12" fill="none">
                                 <path
                                   d="M2 6L5 9L10 3"
                                   stroke="currentColor"
@@ -366,7 +346,7 @@ export default function ModalImprimirEtiquetas({
                         {/* Click en la etiqueta = toggle (deseleccionar) */}
                         <button
                           onClick={() => quitarSeleccionado(producto.id)}
-                          className="text-left w-full cursor-pointer rounded-xl border-2 border-brand-400/50 dark:border-brand-500/40 ring-2 ring-brand-50/50 dark:ring-brand-900/20 bg-brand-50/30 dark:bg-brand-900/10 transition-all hover:border-brand-400/70 dark:hover:border-brand-500"
+                          className="text-left w-full cursor-pointer rounded-xl border border-brand-500 ring-1 ring-brand-500 bg-brand-50 dark:bg-brand-900/20 transition-all hover:bg-brand-50/80 dark:hover:bg-brand-900/30"
                         >
                           <EtiquetaPreview producto={producto} />
                         </button>
@@ -388,31 +368,6 @@ export default function ModalImprimirEtiquetas({
               </div>
             </div>
           </div>
-
-          {/* ── Footer ─────────────────────────────────── */}
-          <div className="p-5 pt-3 border-t border-gray-100 dark:border-dark-border bg-gray-50/50 dark:bg-dark-elevated/50 flex justify-end gap-3">
-            <Button
-              variant="outline"
-              onClick={handleClose}
-              className="px-5 py-2.5 h-auto text-sm font-bold text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-dark-elevated cursor-pointer"
-            >
-              CANCELAR
-            </Button>
-            <Button
-              onClick={handleImprimir}
-              disabled={seleccionados.size === 0}
-              className={`px-6 py-2.5 h-auto text-sm font-bold flex items-center gap-2 ${
-                seleccionados.size > 0
-                  ? "bg-brand-600 hover:bg-brand-700 text-white cursor-pointer active:scale-95"
-                  : "bg-gray-200 dark:bg-dark-elevated text-gray-400 dark:text-slate-500 cursor-not-allowed"
-              }`}
-            >
-              <Printer className="w-4 h-4" />
-              IMPRIMIR{seleccionados.size > 0 ? ` (${seleccionados.size})` : ""}
-            </Button>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+    </ModalAccion>
   );
 }

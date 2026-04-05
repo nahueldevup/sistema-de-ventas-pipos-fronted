@@ -67,15 +67,14 @@ function DialogContent({
         {children}
         {showCloseButton && (
           <DialogPrimitive.Close data-slot="dialog-close" asChild>
-            <Button
-              variant="ghost"
-              className="absolute top-2 right-2"
-              size="icon-sm"
+            <button
+              className="absolute top-2 right-2 text-white bg-rose-400 hover:bg-rose-500 dark:bg-rose-600 dark:hover:bg-rose-700 p-1.5 rounded-full transition-colors shadow-sm"
+              title="Cerrar"
+              aria-label="Cerrar"
             >
-              <XIcon
-              />
-              <span className="sr-only">Close</span>
-            </Button>
+              <XIcon className="w-5 h-5" />
+              <span className="sr-only">Cerrar</span>
+            </button>
           </DialogPrimitive.Close>
         )}
       </DialogPrimitive.Content>
@@ -87,7 +86,10 @@ function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="dialog-header"
-      className={cn("flex flex-col gap-2", className)}
+      className={cn(
+        "-mx-4 -mt-4 flex flex-col gap-2 rounded-t-xl border-b border-slate-200 dark:border-slate-700 bg-[#F9F9F9] dark:bg-slate-800/50 px-4 pt-4 pb-3",
+        className
+      )}
       {...props}
     />
   )
@@ -105,7 +107,7 @@ function DialogFooter({
     <div
       data-slot="dialog-footer"
       className={cn(
-        "-mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-muted/50 p-4 sm:flex-row sm:justify-end",
+        "-mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t border-slate-200 dark:border-slate-700 bg-[#F9F9F9] dark:bg-slate-800/50 p-4 sm:flex-row sm:justify-end",
         className
       )}
       {...props}
@@ -113,7 +115,7 @@ function DialogFooter({
       {children}
       {showCloseButton && (
         <DialogPrimitive.Close asChild>
-          <Button variant="outline">Close</Button>
+          <Button variant="outline">Cerrar</Button>
         </DialogPrimitive.Close>
       )}
     </div>
