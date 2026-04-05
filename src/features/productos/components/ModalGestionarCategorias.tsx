@@ -195,7 +195,7 @@ export default function ModalGestionCategorias({
                     value={nuevaCategoria}
                     onChange={(e) => setNuevaCategoria(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleAgregar()}
-                    className="w-full border border-gray-200 dark:border-dark-border rounded-lg pl-9 pr-3 py-2.5 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-dark-elevated shadow-sm"
+                    className="w-full border border-[#E5E7EB] dark:border-dark-border rounded-lg pl-9 pr-3 py-2.5 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all font-medium text-[#1F2937] dark:text-slate-200 bg-white dark:bg-dark-elevated"
                   />
                 </div>
                 <button
@@ -237,7 +237,7 @@ export default function ModalGestionCategorias({
                               if (e.key === "Enter") solicitarEdicion(cat.nombre);
                               if (e.key === "Escape") setEditandoNombre(null);
                             }}
-                            className="flex-1 bg-white dark:bg-dark-card border-2 border-brand-400 dark:border-brand-600 rounded-lg px-3 py-1.5 text-sm font-bold text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-brand-500/20 shadow-sm"
+                            className="flex-1 border border-[#E5E7EB] dark:border-dark-border rounded-lg px-3 py-1.5 text-sm font-bold text-[#1F2937] dark:text-slate-200 bg-white dark:bg-dark-elevated outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
                           />
                           <button
                             onClick={() => solicitarEdicion(cat.nombre)}

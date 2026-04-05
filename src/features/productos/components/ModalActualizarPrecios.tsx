@@ -395,7 +395,7 @@ export default function ModalActualizarPrecios({
                           value={valorAjuste}
                           onChange={(e) => setValorAjuste(e.target.value)}
                           placeholder="0.00"
-                          className="w-full pl-10 pr-4 py-3 text-lg font-semibold border-2 border-[#E5E7EB] dark:border-dark-border rounded-xl focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 outline-none transition-all bg-white dark:bg-dark-card text-[#1F2937] dark:text-slate-100"
+                          className="w-full pl-10 pr-4 py-3 text-lg font-semibold border border-[#E5E7EB] dark:border-dark-border rounded-lg outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all bg-white dark:bg-dark-elevated text-[#1F2937] dark:text-slate-200"
                         />
                       </div>
                     </div>

@@ -223,7 +223,7 @@ export default function ModalImprimirEtiquetas({
               
               {/* Buscador */}
               <div className="px-5 pt-4 pb-3">
-                <div className="flex items-center border-2 border-[#E5E7EB] dark:border-dark-border rounded-xl bg-[#F6F7F8] dark:bg-dark-elevated/50 focus-within:border-brand-500 focus-within:bg-white dark:focus-within:bg-dark-card transition-all">
+                <div className="flex items-center border border-[#E5E7EB] dark:border-dark-border rounded-lg bg-white dark:bg-dark-elevated focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-500/20 transition-all">
                   <div className="pl-3 text-slate-400 dark:text-slate-500 flex items-center">
                     <Search className="w-5 h-5" />
                   </div>
@@ -232,7 +232,7 @@ export default function ModalImprimirEtiquetas({
                     placeholder="Buscá por nombre o código de barras..."
                     value={busqueda}
                     onChange={(e) => setBusqueda(e.target.value)}
-                    className="flex-1 px-3 py-3 text-sm outline-none text-[#1F2937] dark:text-slate-100 placeholder-[#6B7280] dark:placeholder-slate-500 bg-transparent"
+                    className="flex-1 px-3 py-3 text-sm font-medium outline-none text-[#1F2937] dark:text-slate-200 placeholder-[#6B7280] dark:placeholder-slate-500 bg-transparent"
                     autoFocus
                   />
                   {busqueda && (
