@@ -54,7 +54,7 @@
   /* fondo del header */
   --table-header: hsl(210 20% 96%);
   /* fondo del encabezado de tabla */
-  --table-zebra: hsl(210 20% 98%);
+  --table-zebra: #F2F2F2;
   /* fondo de fila alternada */
 
   /* ── TARJETAS ──────────────────────────────────────── */
