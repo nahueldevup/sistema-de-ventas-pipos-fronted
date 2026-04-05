@@ -60,10 +60,13 @@ export default function ModalImprimirEtiquetas({
     setSeleccionados(new Set());
   }, []);
 
-  const productosSeleccionados = useMemo(
-    () => todosLosProductos.filter((p) => seleccionados.has(p.id)),
-    [todosLosProductos, seleccionados]
-  );
+  // Preservo el orden de inserción del Set (orden en que se seleccionaron)
+  const productosSeleccionados = useMemo(() => {
+    const mapa = new Map(todosLosProductos.map((p) => [p.id, p]));
+    return Array.from(seleccionados)
+      .map((id) => mapa.get(id))
+      .filter((p): p is Producto => p !== undefined);
+  }, [todosLosProductos, seleccionados]);
 
   // ── Impresión ───────────────────────────────────────────────
   const handleImprimir = useCallback(() => {
@@ -244,7 +247,7 @@ export default function ModalImprimirEtiquetas({
               </div>
 
               {/* Resultados de búsqueda */}
-              <div className="flex-1 overflow-y-auto px-5 pb-4 pt-3">
+              <div className="overflow-y-auto px-5 pb-4 pt-3 max-h-[330px]">
                 {!busqueda.trim() ? (
                   <div className="flex flex-col items-center justify-center py-12 text-center">
                     <Search className="w-12 h-12 text-slate-300 dark:text-slate-600 mb-3" />
@@ -328,7 +331,7 @@ export default function ModalImprimirEtiquetas({
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-3">
+              <div className="overflow-y-auto p-3 max-h-[350px]">
                 {seleccionados.size === 0 ? (
                   <div className="flex flex-col items-center justify-center py-8 text-center">
                     <Package className="w-8 h-8 text-slate-300 dark:text-slate-600 mb-2" />
@@ -338,7 +341,7 @@ export default function ModalImprimirEtiquetas({
                   </div>
                 ) : (
                   <div className="space-y-2">
-                    {productosSeleccionados.map((producto) => (
+                    {[...productosSeleccionados].reverse().map((producto) => (
                       <div
                         key={producto.id}
                         className="relative group animate-in fade-in-0 slide-in-from-right-4 duration-200"
