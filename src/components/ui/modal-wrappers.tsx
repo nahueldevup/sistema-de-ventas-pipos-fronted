@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 // Helpers internos compartidos por los tres wrappers
 // ─────────────────────────────────────────────────────────────────
 
-/** Header estandarizado con gradiente + botón × rojo */
+/** Header estandarizado SaaS */
 function ModalHeader({
   title,
   subtitle,
@@ -24,21 +24,21 @@ function ModalHeader({
   onClose: () => void
 }) {
   return (
-    <div className="flex justify-between items-center px-6 py-4 border-b border-slate-200 dark:border-dark-border bg-[#F9F9F9] dark:bg-dark-elevated shrink-0">
+    <div className="flex justify-between items-center px-6 py-4 border-b border-[#E5E7EB] dark:border-dark-border bg-[#F6F7F8] dark:bg-dark-elevated shrink-0">
       <div>
-        <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+        <h2 className="text-lg font-semibold text-[#1F2937] dark:text-slate-100 flex items-center gap-2">
           {titleIcon}
           {title}
         </h2>
         {subtitle && (
-          <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">
+          <p className="text-xs text-[#6B7280] dark:text-slate-400 font-medium mt-0.5">
             {subtitle}
           </p>
         )}
       </div>
       <button
         onClick={onClose}
-        className="text-white bg-rose-400 hover:bg-rose-500 dark:bg-rose-600 dark:hover:bg-rose-700 p-1.5 rounded-full transition-colors shadow-sm"
+        className="text-[#6B7280] hover:text-[#1F2937] dark:text-slate-400 dark:hover:text-slate-100 hover:bg-[#F3F4F6] dark:hover:bg-dark-elevated p-1.5 rounded-lg transition-colors"
         title="Cerrar"
         aria-label="Cerrar"
       >
@@ -50,15 +50,15 @@ function ModalHeader({
 
 /** Estilos base compartidos por el botón Cancelar / Cerrar del footer */
 const cancelButtonClass =
-  "px-5 py-2.5 h-auto text-sm font-bold text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-dark-elevated cursor-pointer"
+  "px-5 py-2.5 h-auto text-sm font-semibold text-[#1F2937] dark:text-slate-300 border-[#E5E7EB] dark:border-slate-600 hover:bg-[#F3F4F6] dark:hover:bg-dark-elevated cursor-pointer"
 
 /** Estilos base compartidos por el botón primario habilitado del footer */
 const primaryEnabledClass =
-  "px-6 py-2.5 h-auto bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold cursor-pointer active:scale-95 shadow-md flex items-center gap-2"
+  "px-6 py-2.5 h-auto bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold cursor-pointer active:scale-95 flex items-center gap-2"
 
 /** Estilos del botón primario deshabilitado */
 const primaryDisabledClass =
-  "px-6 py-2.5 h-auto bg-gray-200 dark:bg-dark-elevated text-gray-400 dark:text-slate-500 cursor-not-allowed text-sm font-bold flex items-center gap-2"
+  "px-6 py-2.5 h-auto bg-gray-200 dark:bg-dark-elevated text-gray-400 dark:text-slate-500 cursor-not-allowed text-sm font-semibold flex items-center gap-2"
 
 // ─────────────────────────────────────────────────────────────────
 // Tipo A — ModalFormulario (Cancelar + Guardar)
@@ -94,7 +94,7 @@ function ModalFormulario({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className={`max-w-[calc(100%-2rem)] sm:max-w-2xl p-0 gap-0 overflow-hidden bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border shadow-2xl rounded-2xl ${className ?? ""}`}
+        className={`max-w-[calc(100%-2rem)] sm:max-w-2xl p-0 gap-0 overflow-hidden bg-white dark:bg-dark-card border border-[#E5E7EB] dark:border-dark-border shadow-lg rounded-2xl ${className ?? ""}`}
         showCloseButton={false}
       >
         <DialogTitle className="sr-only">{title}</DialogTitle>
@@ -110,7 +110,7 @@ function ModalFormulario({
           {children}
 
           {/* Footer: Cancelar + Guardar */}
-          <div className="px-6 py-4 border-t border-slate-200 dark:border-dark-border bg-[#F9F9F9] dark:bg-dark-elevated/80 flex justify-end gap-3">
+          <div className="px-6 py-4 border-t border-[#E5E7EB] dark:border-dark-border bg-[#F6F7F8] dark:bg-dark-elevated/80 flex justify-end gap-3">
             <Button
               variant="outline"
               onClick={onCancelar}
@@ -179,7 +179,7 @@ function ModalAccion({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className={`max-w-[calc(100%-2rem)] sm:max-w-5xl p-0 gap-0 overflow-hidden bg-white dark:bg-dark-card border-none shadow-xl rounded-2xl ${className ?? ""}`}
+        className={`max-w-[calc(100%-2rem)] sm:max-w-5xl p-0 gap-0 overflow-hidden bg-white dark:bg-dark-card border border-[#E5E7EB] dark:border-dark-border shadow-lg rounded-2xl ${className ?? ""}`}
         showCloseButton={false}
       >
         <DialogTitle className="sr-only">{title}</DialogTitle>
@@ -195,7 +195,7 @@ function ModalAccion({
           {children}
 
           {/* Footer: Cancelar + Acción primaria */}
-          <div className="p-5 pt-3 border-t border-slate-200 dark:border-dark-border bg-[#F9F9F9] dark:bg-dark-elevated/50 flex justify-end gap-3 mt-auto">
+          <div className="px-6 py-4 border-t border-[#E5E7EB] dark:border-dark-border bg-[#F6F7F8] dark:bg-dark-elevated/50 flex justify-end gap-3 mt-auto">
             <Button
               variant="outline"
               onClick={onCancelar}
@@ -254,7 +254,7 @@ function ModalGestion({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className={`max-w-[calc(100%-2rem)] sm:max-w-2xl p-0 gap-0 overflow-hidden bg-white dark:bg-dark-card border-none shadow-xl rounded-2xl ${className ?? ""}`}
+        className={`max-w-[calc(100%-2rem)] sm:max-w-2xl p-0 gap-0 overflow-hidden bg-white dark:bg-dark-card border border-[#E5E7EB] dark:border-dark-border shadow-lg rounded-2xl ${className ?? ""}`}
         showCloseButton={false}
       >
         <DialogTitle className="sr-only">{title}</DialogTitle>
@@ -270,7 +270,7 @@ function ModalGestion({
           {children}
 
           {/* Footer: izquierda opcional + Cerrar (+ acción secundaria) */}
-          <div className="px-6 py-4 border-t border-slate-200 dark:border-dark-border bg-[#F9F9F9] dark:bg-dark-elevated/50 flex justify-between items-center">
+          <div className="px-6 py-4 border-t border-[#E5E7EB] dark:border-dark-border bg-[#F6F7F8] dark:bg-dark-elevated/50 flex justify-between items-center">
             {footerLeft ?? <div />}
             <div className="flex gap-3">
               {accionSecundaria && (

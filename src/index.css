@@ -39,9 +39,9 @@
   --brand-900: hsl(var(--brand-hue) 8%);
 
   /* ── FONDOS ────────────────────────────────────────── */
-  --background: hsl(210 16% 93%);
+  --background: #FAFBFC;
   /* fondo de página */
-  --foreground: hsl(222 47% 11%);
+  --foreground: #1F2937;
   /* texto principal */
   --sidebar: hsl(0, 0%, 100%);
   /* fondo del sidebar */
@@ -58,16 +58,21 @@
   /* fondo de fila alternada */
 
   /* ── TARJETAS ──────────────────────────────────────── */
-  --card: hsl(0 0% 100%);
-  --card-foreground: hsl(168 28% 10%);
+  --card: #FFFFFF;
+  --card-foreground: #1F2937;
+
+  /* ── SUPERFICIES SaaS ───────────────────────────────── */
+  --surface-primary: #FFFFFF;
+  --surface-secondary: #F6F7F8;
+  --surface-hover: #F3F4F6;
 
   /* ── TEXTOS SECUNDARIOS ────────────────────────────── */
-  --muted: hsl(163 20% 90%);
-  --muted-foreground: hsl(168 14% 25%);
+  --muted: #F3F4F6;
+  --muted-foreground: #6B7280;
 
   /* ── BORDES E INPUTS ───────────────────────────────── */
-  --border: hsl(214 32% 91%);
-  --input: hsl(214 32% 80%);
+  --border: #E5E7EB;
+  --input: #D1D5DB;
   --ring: var(--brand-600);
 
   /* ── ESTADOS (se usan en alertas y badges) ─────────── */
@@ -160,9 +165,14 @@
   --color-primary: var(--brand-600);
   --color-primary-foreground: hsl(0 0% 100%);
 
-  /* Sombras */
-  --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.15);
-  --shadow-float: 0 10px 40px -10px rgba(0, 0, 0, 0.3);
+  /* Superficies SaaS */
+  --color-surface-primary: var(--surface-primary);
+  --color-surface-secondary: var(--surface-secondary);
+  --color-surface-hover: var(--surface-hover);
+
+  /* Sombras (reducidas para look limpio) */
+  --shadow-soft: 0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
+  --shadow-float: 0 4px 20px -4px rgba(0, 0, 0, 0.12);
 
   /* Radios */
   --radius-sm: calc(var(--radius) - 4px);

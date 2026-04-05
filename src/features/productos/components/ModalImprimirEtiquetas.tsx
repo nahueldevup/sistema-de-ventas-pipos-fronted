@@ -216,11 +216,11 @@ export default function ModalImprimirEtiquetas({
           <div className="flex flex-1 min-h-0 overflow-hidden">
             
             {/* ── Panel izquierdo: Buscador + Resultados ─────────── */}
-            <div className="flex-1 flex flex-col min-w-0 border-r border-gray-100 dark:border-dark-border">
+            <div className="flex-1 flex flex-col min-w-0 border-r border-[#E5E7EB] dark:border-dark-border">
               
               {/* Buscador */}
               <div className="px-5 pt-4 pb-3">
-                <div className="flex items-center border-2 border-gray-200 dark:border-dark-border rounded-xl bg-gray-50 dark:bg-dark-elevated/50 focus-within:border-brand-500 focus-within:bg-white dark:focus-within:bg-dark-card transition-all">
+                <div className="flex items-center border-2 border-[#E5E7EB] dark:border-dark-border rounded-xl bg-[#F6F7F8] dark:bg-dark-elevated/50 focus-within:border-brand-500 focus-within:bg-white dark:focus-within:bg-dark-card transition-all">
                   <div className="pl-3 text-slate-400 dark:text-slate-500 flex items-center">
                     <Search className="w-5 h-5" />
                   </div>
@@ -229,7 +229,7 @@ export default function ModalImprimirEtiquetas({
                     placeholder="Buscá por nombre o código de barras..."
                     value={busqueda}
                     onChange={(e) => setBusqueda(e.target.value)}
-                    className="flex-1 px-3 py-3 text-sm outline-none text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 bg-transparent"
+                    className="flex-1 px-3 py-3 text-sm outline-none text-[#1F2937] dark:text-slate-100 placeholder-[#6B7280] dark:placeholder-slate-500 bg-transparent"
                     autoFocus
                   />
                   {busqueda && (
@@ -273,10 +273,10 @@ export default function ModalImprimirEtiquetas({
                         <button
                           key={producto.id}
                           onClick={() => toggleSeleccion(producto.id)}
-                          className={`relative text-left cursor-pointer rounded-xl border transition-all group ${
+                          className={`relative text-left cursor-pointer rounded-xl border transition-all group/item ${
                             isSelected
                               ? "border-brand-500 bg-brand-50 dark:bg-brand-900/20 ring-1 ring-brand-500"
-                              : "border-gray-100 dark:border-dark-border hover:border-gray-300 dark:hover:border-slate-500"
+                              : "border-[#E5E7EB] dark:border-dark-border hover:border-gray-300 dark:hover:border-slate-500"
                           }`}
                         >
                           {/* Checkbox en esquina superior izquierda como badge */}
@@ -311,10 +311,10 @@ export default function ModalImprimirEtiquetas({
             </div>
 
             {/* ── Panel derecho: Seleccionados (Sidebar) ─────────── */}
-            <div className="w-80 flex flex-col bg-gray-50/50 dark:bg-dark-elevated/30">
-              <div className="p-4 border-b border-gray-100 dark:border-dark-border">
+            <div className="w-80 flex flex-col bg-[#F6F7F8] dark:bg-dark-elevated/30">
+              <div className="p-4 border-b border-[#E5E7EB] dark:border-dark-border">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                  <h3 className="text-sm font-semibold text-[#1F2937] dark:text-slate-300">
                     Seleccionados
                   </h3>
                   {seleccionados.size > 1 && (

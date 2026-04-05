@@ -117,7 +117,7 @@ export default function BarraFiltros({
 
   return (
     <div
-      className={`absolute top-[calc(100%+12px)] right-0 w-[850px] max-w-[90vw] bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-2xl shadow-dropdown p-5 z-50 transition-all duration-200 origin-top-right ${
+      className={`absolute top-[calc(100%+12px)] right-0 w-[850px] max-w-[90vw] bg-white dark:bg-dark-card border border-[#E5E7EB] dark:border-dark-border rounded-2xl shadow-dropdown p-5 z-50 transition-all duration-200 origin-top-right ${
         isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"
       }`}
     >
@@ -137,7 +137,7 @@ export default function BarraFiltros({
                     inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all
                     ${activo
                       ? `${filtro.activeBgColor || "bg-brand-600"} text-white shadow-sm ring-2 ${filtro.activeRingColor || "ring-brand-200 dark:ring-brand-800"}`
-                      : `bg-white dark:bg-dark-elevated ${filtro.textColor || "text-slate-600 dark:text-slate-300"} border ${filtro.borderColor || "border-gray-200 dark:border-dark-border hover:bg-gray-50 dark:hover:bg-slate-600 hover:border-gray-300"}`
+                       : `bg-white dark:bg-dark-elevated ${filtro.textColor || "text-[#1F2937] dark:text-slate-300"} border ${filtro.borderColor || "border-[#E5E7EB] dark:border-dark-border hover:bg-[#F3F4F6] dark:hover:bg-slate-600 hover:border-gray-300"}`
                     }
                   `}
                 >
@@ -171,7 +171,7 @@ export default function BarraFiltros({
             />
 
             {/* Rango de precio */}
-            <div className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-elevated">
+            <div className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-dark-border bg-white dark:bg-dark-elevated">
               <CircleDollarSign className="w-4 h-4 text-slate-500 dark:text-slate-400 shrink-0" />
               <input
                 type="number"
@@ -191,7 +191,7 @@ export default function BarraFiltros({
             </div>
 
             {/* Fecha */}
-            <div className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-elevated">
+            <div className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-dark-border bg-white dark:bg-dark-elevated">
               <Calendar className="w-4 h-4 text-slate-500 dark:text-slate-400 shrink-0" />
               <select
                 value={filtros.fechaCampo}
@@ -219,16 +219,16 @@ export default function BarraFiltros({
           </div>
 
           {/* Fila 3: Botones de Acción */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100 dark:border-dark-border mt-2">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#E5E7EB] dark:border-dark-border mt-2">
             <button
               onClick={handleLimpiarTodo}
-              className="px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-white transition-colors cursor-pointer"
+              className="px-4 py-2 text-sm font-semibold text-[#6B7280] dark:text-slate-300 hover:text-[#1F2937] dark:hover:text-white transition-colors cursor-pointer"
             >
               Limpiar filtros
             </button>
             <button
               onClick={onClose}
-              className="px-6 py-2 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-xl shadow-sm transition-colors cursor-pointer"
+              className="px-6 py-2 text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-xl transition-colors cursor-pointer"
             >
               Aplicar filtros
             </button>

@@ -4,7 +4,7 @@ import type { FiltrosPOS, Ordenamiento } from '@/types/filtros.types';
 import {
   Search, Filter, Plus,
   Minus, ChevronDown, X,
-  Printer, LayoutGrid, BadgePercent, ListTodo
+  Printer, LayoutGrid, ListTodo
 } from 'lucide-react';
 
 interface BarraHerramientasProps {
@@ -235,20 +235,20 @@ export default function BarraHerramientas({
 
           <button
             onClick={onAbrirActualizarPrecios}
-            className="px-3 h-[38px] border border-slate-200 hover:border-slate-300 dark:border-dark-border rounded-xl text-slate-700 dark:text-slate-200 text-sm font-bold flex items-center gap-2 bg-slate-100 hover:bg-slate-200 dark:bg-dark-elevated dark:hover:bg-slate-700 cursor-pointer transition-all shadow-sm active:scale-95"
+            className="px-3 h-[38px] border border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border rounded-xl text-[#1F2937] dark:text-slate-200 text-sm font-semibold flex items-center gap-2 bg-white hover:bg-[#F3F4F6] dark:bg-dark-elevated dark:hover:bg-slate-700 cursor-pointer transition-all active:scale-95"
           >
             <ListTodo size={18} /> <span className="hidden sm:inline">Ajustar precios por inflación</span>
           </button>
           <button
             onClick={onAbrirCategorias}
-            className="px-3 h-[38px] border border-slate-200 hover:border-slate-300 dark:border-dark-border rounded-xl text-slate-700 dark:text-slate-200 text-sm font-bold flex items-center gap-2 bg-slate-100 hover:bg-slate-200 dark:bg-dark-elevated dark:hover:bg-slate-700 cursorAju-pointer transition-all shadow-sm active:scale-95"
+            className="px-3 h-[38px] border border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border rounded-xl text-[#1F2937] dark:text-slate-200 text-sm font-semibold flex items-center gap-2 bg-white hover:bg-[#F3F4F6] dark:bg-dark-elevated dark:hover:bg-slate-700 cursor-pointer transition-all active:scale-95"
           >
             <LayoutGrid size={18} strokeWidth={2} /> <span className="hidden sm:inline">Categorías</span>
           </button>
 
           <button
             onClick={onAbrirImprimirEtiquetas}
-            className="px-3 h-[38px] rounded-xl text-sm font-bold flex items-center gap-2 transition-all bg-brand-600 text-white hover:bg-brand-700 shadow-md cursor-pointer active:scale-95"
+            className="px-3 h-[38px] rounded-xl text-sm font-semibold flex items-center gap-2 transition-all bg-brand-600 text-white hover:bg-brand-700 cursor-pointer active:scale-95"
           >
             <Printer size={18} />
             <span className="hidden sm:inline">Imprimir etiquetas</span>
@@ -256,7 +256,7 @@ export default function BarraHerramientas({
 
           <button
             onClick={onNuevoProducto}
-            className="px-4 h-[38px] bg-brand-600 text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-brand-700 shadow-md cursor-pointer transition-transform hover:-translate-y-0.5 whitespace-nowrap"
+            className="px-4 h-[38px] bg-brand-600 text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-brand-700 cursor-pointer transition-transform hover:-translate-y-0.5 whitespace-nowrap"
           >
             <Plus size={18} /> Nuevo Producto
           </button>
@@ -264,7 +264,7 @@ export default function BarraHerramientas({
       </div>
 
       {chipsActivos.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2 pt-4 mt-4 border-t border-gray-100 dark:border-dark-border">
+        <div className="flex flex-wrap items-center gap-2 pt-4 mt-4 border-t border-[#E5E7EB] dark:border-dark-border">
           <span className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mr-2">Filtros Activos:</span>
           {chipsActivos.map((chip, i) => (
             <span

@@ -91,7 +91,7 @@ export default function ModalGestionCategorias({
           {/* Overlay de Confirmación */}
           {confirmacion && (
             <div className="absolute inset-0 z-50 bg-slate-900/40 backdrop-blur-[2px] flex items-center justify-center p-4 animate-in fade-in duration-200">
-              <div className="bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border shadow-2xl rounded-2xl p-6 w-full max-w-sm space-y-5">
+              <div className="bg-white dark:bg-dark-card border border-[#E5E7EB] dark:border-dark-border shadow-lg rounded-2xl p-6 w-full max-w-sm space-y-5">
                 <div className="flex items-center gap-3">
                   <div className={`w-12 h-12 rounded-full flex items-center justify-center ${confirmacion.tipo === "borrar"
                     ? "bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400"
@@ -104,27 +104,27 @@ export default function ModalGestionCategorias({
                     )}
                   </div>
                   <div>
-                    <h3 className="font-bold text-lg text-slate-800 dark:text-slate-100">
+                    <h3 className="font-semibold text-lg text-[#1F2937] dark:text-slate-100">
                       {confirmacion.tipo === "borrar" ? "¿Borrar categoría?" : "¿Cambiar nombre?"}
                     </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                    <p className="text-xs text-[#6B7280] dark:text-slate-400 font-medium">
                       Esta acción no se puede deshacer
                     </p>
                   </div>
                 </div>
 
-                <div className="bg-gray-50 dark:bg-dark-elevated/50 rounded-xl p-4 space-y-2">
+                <div className="bg-[#F6F7F8] dark:bg-dark-elevated/50 rounded-xl p-4 space-y-2">
                   {confirmacion.tipo === "editar" ? (
                     <>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">De:</span>
-                        <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">"{confirmacion.nombre}"</span>
+                        <span className="text-xs font-semibold text-[#6B7280] dark:text-slate-400 uppercase tracking-wide">De:</span>
+                        <span className="text-sm font-semibold text-[#1F2937] dark:text-slate-300">"{confirmacion.nombre}"</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-wide">A:</span>
-                        <span className="text-sm font-bold text-brand-700 dark:text-brand-300">"{confirmacion.nuevoNombre}"</span>
+                        <span className="text-sm font-semibold text-brand-700 dark:text-brand-300">"{confirmacion.nuevoNombre}"</span>
                       </div>
-                      <p className="pt-2 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                      <p className="pt-2 text-xs text-[#6B7280] dark:text-slate-400 leading-relaxed">
                         El cambio se aplicará a todos los productos de esta categoría.
                       </p>
                     </>
@@ -132,9 +132,9 @@ export default function ModalGestionCategorias({
                     <>
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Categoría:</span>
-                        <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">"{confirmacion.nombre}"</span>
+                        <span className="text-sm font-semibold text-[#1F2937] dark:text-slate-300">"{confirmacion.nombre}"</span>
                       </div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                      <p className="text-xs text-[#6B7280] dark:text-slate-400 leading-relaxed">
                         Los productos asociados quedarán como <span className="font-bold text-brand-600 dark:text-brand-400">Sin categoría</span>.
                       </p>
                     </>
@@ -144,13 +144,13 @@ export default function ModalGestionCategorias({
                 <div className="flex gap-3 pt-1">
                   <button
                     onClick={() => setConfirmacion(null)}
-                    className="flex-1 px-4 py-2.5 border border-gray-200 dark:border-dark-border rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-dark-elevated transition-colors"
+                    className="flex-1 px-4 py-2.5 border border-[#E5E7EB] dark:border-dark-border rounded-xl text-sm font-semibold text-[#1F2937] dark:text-slate-300 hover:bg-[#F3F4F6] dark:hover:bg-dark-elevated transition-colors"
                   >
                     Cancelar
                   </button>
                   <button
                     onClick={ejecutarConfirmacion}
-                    className={`flex-1 px-4 py-2.5 rounded-xl text-sm font-bold text-white transition-all shadow-md hover:-translate-y-0.5 active:translate-y-0 ${confirmacion.tipo === "borrar"
+                    className={`flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 ${confirmacion.tipo === "borrar"
                       ? "bg-rose-600 hover:bg-rose-700"
                       : "bg-brand-600 hover:bg-brand-700"
                       }`}
@@ -163,10 +163,10 @@ export default function ModalGestionCategorias({
           )}
 
           {/* Controles */}
-          <div className="p-5 flex flex-col md:flex-row gap-4 border-b border-gray-100 dark:border-dark-border bg-white dark:bg-dark-card z-10">
+          <div className="p-5 flex flex-col md:flex-row gap-4 border-b border-[#E5E7EB] dark:border-dark-border bg-white dark:bg-dark-card z-10">
             {/* Buscador */}
             <div className="flex-1">
-              <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wide">
+              <label className="block text-xs font-semibold text-[#6B7280] dark:text-slate-400 mb-1.5 uppercase tracking-wide">
                 Buscar categoría
               </label>
               <div className="relative">
@@ -176,7 +176,7 @@ export default function ModalGestionCategorias({
                   placeholder="Filtrar por nombre..."
                   value={busqueda}
                   onChange={(e) => setBusqueda(e.target.value)}
-                  className="w-full border border-gray-200 dark:border-dark-border rounded-lg pl-9 pr-3 py-2.5 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-dark-elevated shadow-sm"
+                  className="w-full border border-[#E5E7EB] dark:border-dark-border rounded-lg pl-9 pr-3 py-2.5 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all font-medium text-[#1F2937] dark:text-slate-200 bg-white dark:bg-dark-elevated"
                 />
               </div>
             </div>
@@ -200,7 +200,7 @@ export default function ModalGestionCategorias({
                 </div>
                 <button
                   onClick={handleAgregar}
-                  className="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-bold shadow-sm transition-all flex items-center gap-1.5 hover:-translate-y-0.5 active:translate-y-0"
+                  className="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-semibold transition-all flex items-center gap-1.5 hover:-translate-y-0.5 active:translate-y-0"
                 >
                   <Plus className="w-4 h-4" />
                   <span className="hidden sm:inline">Crear</span>
@@ -211,16 +211,16 @@ export default function ModalGestionCategorias({
 
           {/* Lista */}
           <div className="flex-1 overflow-y-auto p-5 space-y-3 min-h-[150px] max-h-[50vh]">
-            <h3 className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest pl-1 mb-1">
+            <h3 className="text-xs font-semibold text-[#6B7280] dark:text-slate-400 uppercase tracking-widest pl-1 mb-1">
               Listado ({categoriasFiltradas.length})
             </h3>
 
             {categoriasFiltradas.length > 0 ? (
-              <div className="flex flex-col bg-white dark:bg-dark-elevated rounded-xl border border-gray-200 dark:border-dark-border overflow-hidden divide-y divide-gray-200 dark:divide-dark-border shadow-sm">
+              <div className="flex flex-col bg-white dark:bg-dark-elevated rounded-xl border border-[#E5E7EB] dark:border-dark-border overflow-hidden divide-y divide-[#E5E7EB] dark:divide-dark-border">
                 {categoriasFiltradas.map((cat) => (
                   <div
                     key={cat.nombre}
-                    className="group flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors"
+                    className="group flex items-center justify-between p-4 hover:bg-[#F3F4F6] dark:hover:bg-slate-800/40 transition-colors"
                   >
                     <div className="flex items-center gap-3 flex-1 min-w-0">
                       {/* Puntito de color */}
@@ -255,7 +255,7 @@ export default function ModalGestionCategorias({
                       ) : (
                         <div className="flex items-center justify-between flex-1 min-w-0 pr-4">
                           <div className="flex items-center gap-2 flex-1 min-w-0">
-                            <p className="font-bold text-[15px] text-slate-800 dark:text-slate-100 truncate pb-0.5">
+                            <p className="font-semibold text-[15px] text-[#1F2937] dark:text-slate-100 truncate pb-0.5">
                               {cat.nombre}
                             </p>
                             <button
@@ -267,7 +267,7 @@ export default function ModalGestionCategorias({
                             </button>
                           </div>
 
-                          <div className="shrink-0 px-2.5 py-1 rounded-full text-[11px] font-bold ml-3 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
+                          <div className="shrink-0 px-2.5 py-1 rounded-full text-[11px] font-semibold ml-3 bg-[#F3F4F6] dark:bg-slate-700 text-[#6B7280] dark:text-slate-300">
                             {cat.cantidad} {cat.cantidad === 1 ? "producto" : "productos"}
                           </div>
                         </div>
@@ -275,10 +275,10 @@ export default function ModalGestionCategorias({
                     </div>
 
                     {/* Acciones */}
-                    <div className="flex items-center gap-2 pl-3 border-l border-gray-100 dark:border-dark-border ml-2 shrink-0">
+                    <div className="flex items-center gap-2 pl-3 border-l border-[#E5E7EB] dark:border-dark-border ml-2 shrink-0">
                       <button
                         onClick={() => onVerCategoria(cat.nombre)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-600 hover:bg-brand-700 rounded-lg text-xs font-bold text-white transition-all shadow-sm hover:-translate-y-0.5 active:translate-y-0"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-600 hover:bg-brand-700 rounded-lg text-xs font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0"
                       >
                         <Eye className="w-3.5 h-3.5" />
                         <span className="hidden sm:inline">Ver</span>
@@ -287,7 +287,7 @@ export default function ModalGestionCategorias({
                       {!confirmacion || confirmacion.nombre !== cat.nombre ? (
                         <button
                           onClick={() => solicitarBorrado(cat.nombre)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 hover:bg-rose-50 dark:bg-slate-800 dark:hover:bg-rose-900/20 text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 rounded-lg text-xs font-bold transition-all border border-transparent hover:border-rose-200 dark:hover:border-rose-800"
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#F3F4F6] hover:bg-rose-50 dark:bg-slate-800 dark:hover:bg-rose-900/20 text-[#6B7280] hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 rounded-lg text-xs font-semibold transition-all border border-transparent hover:border-rose-200 dark:hover:border-rose-800"
                           title="Eliminar categoría"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -295,7 +295,7 @@ export default function ModalGestionCategorias({
                         </button>
                       ) : (
                         <div className="flex items-center gap-1.5 px-2 py-1 bg-rose-50 dark:bg-rose-900/20 rounded-lg border border-rose-200 dark:border-rose-800">
-                          <span className="text-[11px] font-bold text-rose-700 dark:text-rose-300 px-1">
+                          <span className="text-[11px] font-semibold text-rose-700 dark:text-rose-300 px-1">
                             ¿Seguro?
                           </span>
                           <button
@@ -319,10 +319,10 @@ export default function ModalGestionCategorias({
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12 bg-white dark:bg-dark-elevated rounded-xl border border-dashed border-gray-200 dark:border-dark-border mt-2">
+              <div className="text-center py-12 bg-white dark:bg-dark-elevated rounded-xl border border-dashed border-[#E5E7EB] dark:border-dark-border mt-2">
                 <Search className="w-5 h-5 text-slate-400 mx-auto mb-3" />
-                <p className="text-sm text-slate-600 dark:text-slate-300 font-bold mb-1">No se encontraron categorías</p>
-                <p className="text-xs text-slate-400 dark:text-slate-500">Intenta buscar con otra palabra clave</p>
+                <p className="text-sm text-[#1F2937] dark:text-slate-300 font-semibold mb-1">No se encontraron categorías</p>
+                <p className="text-xs text-[#6B7280] dark:text-slate-500">Intenta buscar con otra palabra clave</p>
               </div>
             )}
           </div>

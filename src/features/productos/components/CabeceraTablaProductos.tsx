@@ -69,10 +69,10 @@ export default function CabeceraTablaProductos({
       </div>
 
       <div className="flex items-center gap-2">
-        <button className="px-3 py-1.5 border border-slate-200 hover:border-slate-300 dark:border-dark-border rounded-lg text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-dark-elevated dark:hover:bg-slate-700 cursor-pointer transition-all shadow-sm active:scale-95">
+        <button className="px-3 py-1.5 border border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border rounded-lg text-[#1F2937] dark:text-slate-200 text-xs font-semibold flex items-center gap-1.5 bg-white hover:bg-[#F3F4F6] dark:bg-dark-elevated dark:hover:bg-slate-700 cursor-pointer transition-all active:scale-95">
           <Upload size={16} /> Cargar
         </button>
-        <button className="px-3 py-1.5 border border-slate-200 hover:border-slate-300 dark:border-dark-border rounded-lg text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-dark-elevated dark:hover:bg-slate-700 cursor-pointer transition-all shadow-sm active:scale-95">
+        <button className="px-3 py-1.5 border border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border rounded-lg text-[#1F2937] dark:text-slate-200 text-xs font-semibold flex items-center gap-1.5 bg-white hover:bg-[#F3F4F6] dark:bg-dark-elevated dark:hover:bg-slate-700 cursor-pointer transition-all active:scale-95">
           <Download size={16} /> Descargar
         </button>
       </div>

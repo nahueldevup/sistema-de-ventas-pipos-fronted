@@ -52,7 +52,7 @@ export function MultiSelect({
           className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl border text-sm transition-all ${
             seleccionadas.length > 0
               ? "bg-brand-50 border-brand-300 text-brand-700"
-              : "bg-white border-slate-200 text-slate-600 hover:border-slate-300"
+              : "bg-white border-[#E5E7EB] text-[#6B7280] hover:border-gray-300"
           }`}
         >
           <div className="flex items-center gap-2">
@@ -72,7 +72,7 @@ export function MultiSelect({
         </button>
 
         {abierto && (
-          <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-xl shadow-xl z-[60] py-1 max-h-60 overflow-y-auto">
+          <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-dark-card border border-[#E5E7EB] dark:border-dark-border rounded-xl shadow-md z-[60] py-1 max-h-60 overflow-y-auto">
             {opciones.map((opcion) => {
               const sel = seleccionadas.includes(opcion);
               return (
@@ -81,8 +81,8 @@ export function MultiSelect({
                   onClick={() => toggle(opcion)}
                   className={`w-full text-left px-4 py-2.5 text-sm flex items-center gap-3 transition-colors ${
                     sel
-                      ? "bg-brand-50 text-brand-700 font-bold"
-                      : "text-slate-600 hover:bg-slate-50"
+                      ? "bg-brand-50 text-brand-700 font-semibold"
+                      : "text-[#6B7280] hover:bg-[#F3F4F6]"
                   }`}
                 >
                   <div
@@ -116,8 +116,8 @@ export function MultiSelect({
             seleccionadas.length > 0
               ? "bg-brand-50 dark:bg-brand-900/30 border-brand-300 dark:border-brand-700 text-brand-700 dark:text-brand-300"
               : isSmall
-                ? "bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 dark:bg-dark-elevated dark:border-dark-border dark:text-slate-300 dark:hover:bg-slate-700"
-                : "bg-white dark:bg-dark-elevated border-gray-200 dark:border-dark-border text-slate-600 dark:text-slate-300 hover:border-gray-300 dark:hover:border-slate-500 hover:bg-gray-50 dark:hover:bg-slate-600"
+                ? "bg-white border-[#E5E7EB] text-[#6B7280] hover:bg-[#F3F4F6] hover:border-gray-300 dark:bg-dark-elevated dark:border-dark-border dark:text-slate-300 dark:hover:bg-slate-700"
+                : "bg-white dark:bg-dark-elevated border-[#E5E7EB] dark:border-dark-border text-[#6B7280] dark:text-slate-300 hover:border-gray-300 dark:hover:border-slate-500 hover:bg-[#F3F4F6] dark:hover:bg-slate-600"
           }
         `}
       >
@@ -136,7 +136,7 @@ export function MultiSelect({
       </button>
 
       {abierto && (
-        <div className="absolute top-full left-0 mt-1 bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-xl shadow-lg z-50 min-w-[200px] py-1 max-h-60 overflow-y-auto">
+        <div className="absolute top-full left-0 mt-1 bg-white dark:bg-dark-card border border-[#E5E7EB] dark:border-dark-border rounded-xl shadow-md z-50 min-w-[200px] py-1 max-h-60 overflow-y-auto">
           {opciones.length === 0 && (
             <p className="px-3 py-2 text-sm text-slate-400 dark:text-slate-500">
               Sin opciones
@@ -151,7 +151,7 @@ export function MultiSelect({
                 className={`w-full text-left px-3 py-2 text-sm flex items-center gap-2 transition-colors ${
                   sel
                     ? "bg-brand-50 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 font-semibold"
-                    : "text-slate-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-dark-elevated"
+                    : "text-[#6B7280] dark:text-slate-300 hover:bg-[#F3F4F6] dark:hover:bg-dark-elevated"
                 }`}
               >
                 <span

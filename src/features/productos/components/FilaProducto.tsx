@@ -40,12 +40,12 @@ export default function FilaProducto({
 
       <td className="py-3 px-2">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 flex items-center justify-center font-bold text-lg cursor-zoom-in hover:scale-150 transition-transform origin-left z-10 border border-slate-200 dark:border-slate-700/60 shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-[#F6F7F8] dark:bg-slate-800/80 text-[#6B7280] dark:text-slate-300 flex items-center justify-center font-semibold text-lg cursor-zoom-in hover:scale-150 transition-transform origin-left z-10 border border-[#E5E7EB] dark:border-slate-700/60 shrink-0">
             <ImageOff className="w-5 h-5 opacity-50" />
           </div>
           <div className="flex flex-col">
-            <span className="text-[15px] font-bold text-slate-900 dark:text-slate-50">{producto.nombre}</span>
-            <span className="text-sm text-slate-600 dark:text-slate-300 font-bold tracking-wide">{producto.codigo}</span>
+            <span className="text-[15px] font-semibold text-[#1F2937] dark:text-slate-50">{producto.nombre}</span>
+            <span className="text-sm text-[#6B7280] dark:text-slate-300 font-semibold tracking-wide">{producto.codigo}</span>
           </div>
         </div>
       </td>
@@ -59,11 +59,11 @@ export default function FilaProducto({
               title="Clic para editar stock"
               aria-label={`Cantidad en stock de ${producto.nombre}`}
               defaultValue={producto.existencia}
-              className={`w-14 h-9 text-center font-bold outline-none text-sm rounded-lg border shadow-sm transition-all bg-white dark:bg-dark-card cursor-text hover:bg-gray-50 dark:hover:bg-slate-800 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${producto.existencia <= 0
+              className={`w-14 h-9 text-center font-semibold outline-none text-sm rounded-lg border transition-all bg-white dark:bg-dark-card cursor-text hover:bg-[#F3F4F6] dark:hover:bg-slate-800 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${producto.existencia <= 0
                   ? 'border-red-300 hover:border-red-400 dark:border-red-500/50 text-red-600 dark:text-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
                   : producto.existencia <= 5
                     ? 'border-amber-300 hover:border-amber-400 dark:border-amber-500/50 text-amber-600 dark:text-amber-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20'
-                    : 'border-gray-200 hover:border-gray-300 dark:border-dark-border dark:hover:border-slate-500 text-slate-900 dark:text-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20'
+                    : 'border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border dark:hover:border-slate-500 text-[#1F2937] dark:text-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20'
                 }`}
             />
             <div className={`absolute -right-2 -top-2 w-3.5 h-3.5 rounded-full border-2 border-white dark:border-dark-card shadow-sm z-10 ${producto.existencia <= 0
@@ -91,7 +91,7 @@ export default function FilaProducto({
           title="Clic para editar precio final"
           aria-label={`Precio de venta de ${producto.nombre}`}
           defaultValue={formatearPesos(producto.precioVenta)}
-          className="w-[105px] h-9 text-center px-1.5 font-bold outline-none text-[14px] rounded-lg border shadow-sm transition-all bg-white dark:bg-dark-card cursor-text hover:bg-gray-50 dark:hover:bg-slate-800 border-gray-200 hover:border-gray-300 dark:border-dark-border dark:hover:border-slate-500 text-slate-900 dark:text-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+          className="w-[105px] h-9 text-center px-1.5 font-semibold outline-none text-[14px] rounded-lg border transition-all bg-white dark:bg-dark-card cursor-text hover:bg-[#F3F4F6] dark:hover:bg-slate-800 border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border dark:hover:border-slate-500 text-[#1F2937] dark:text-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
         />
       </td>
 
@@ -102,7 +102,7 @@ export default function FilaProducto({
           title="Clic para editar costo"
           aria-label={`Precio de compra de ${producto.nombre}`}
           defaultValue={formatearPesos(producto.precioCompra)}
-          className="w-[105px] h-9 text-center px-1.5 font-bold outline-none text-[14px] rounded-lg border shadow-sm transition-all bg-white dark:bg-dark-card cursor-text hover:bg-gray-50 dark:hover:bg-slate-800 border-gray-200 hover:border-gray-300 dark:border-dark-border dark:hover:border-slate-500 text-slate-900 dark:text-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+          className="w-[105px] h-9 text-center px-1.5 font-semibold outline-none text-[14px] rounded-lg border transition-all bg-white dark:bg-dark-card cursor-text hover:bg-[#F3F4F6] dark:hover:bg-slate-800 border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border dark:hover:border-slate-500 text-[#1F2937] dark:text-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
         />
       </td>
 
@@ -112,7 +112,7 @@ export default function FilaProducto({
             <ArrowUpRight className="w-3.5 h-3.5" />
             +{formatearPesos(producto.utilidad)}
           </span>
-          <span className="text-[13px] font-medium text-slate-500 dark:text-slate-400">
+          <span className="text-[13px] font-medium text-[#6B7280] dark:text-slate-400">
             ({producto.porcentaje}%)
           </span>
         </div>
@@ -121,12 +121,12 @@ export default function FilaProducto({
       <td className="py-3 px-2">
         <div className="flex items-center gap-2">
           <div className={`w-2 h-2 rounded-full ${getCategoriaColor(producto.categoria)}`}></div>
-          <span className="text-[14px] text-slate-600 dark:text-slate-300 font-medium">{producto.categoria}</span>
+          <span className="text-[14px] text-[#6B7280] dark:text-slate-300 font-medium">{producto.categoria}</span>
         </div>
       </td>
 
       <td className="py-3 pl-2 pr-8">
-        <span className="text-[15px] font-medium text-slate-700 dark:text-slate-200">{producto.proveedor}</span>
+        <span className="text-[15px] font-medium text-[#1F2937] dark:text-slate-200">{producto.proveedor}</span>
       </td>
 
       <td

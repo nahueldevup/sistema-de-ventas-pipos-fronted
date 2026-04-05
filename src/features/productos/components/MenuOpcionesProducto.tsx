@@ -49,9 +49,9 @@ const MenuOpcionesProducto = ({ abierto, onOpen, onClose, onEdit }: { abierto: b
 
       {abierto && (
         <div className={`absolute right-0 ${ubicarArriba ? 'bottom-full pb-2' : 'top-full pt-2'} z-50 animate-in fade-in ${ubicarArriba ? 'slide-in-from-bottom-2' : 'slide-in-from-top-2'} duration-200`}>
-          <div className="w-48 bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-xl shadow-lg overflow-hidden py-1">
+          <div className="w-48 bg-white dark:bg-dark-card border border-[#E5E7EB] dark:border-dark-border rounded-xl shadow-md overflow-hidden py-1">
             <button
-              className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+              className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-[#1F2937] dark:text-slate-200 hover:bg-[#F3F4F6] dark:hover:bg-slate-800 transition-colors"
               onClick={() => { onClose(); onEdit(); }}
             >
               <div className="bg-blue-50 dark:bg-blue-900/30 p-1.5 rounded-md text-blue-600 dark:text-blue-400">
@@ -60,7 +60,7 @@ const MenuOpcionesProducto = ({ abierto, onOpen, onClose, onEdit }: { abierto: b
               Editar producto
             </button>
             <button
-              className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+              className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-[#1F2937] dark:text-slate-200 hover:bg-[#F3F4F6] dark:hover:bg-slate-800 transition-colors"
               onClick={() => { onClose(); }}
             >
               <div className="bg-green-50 dark:bg-green-900/30 p-1.5 rounded-md text-green-600 dark:text-green-400">
@@ -69,7 +69,7 @@ const MenuOpcionesProducto = ({ abierto, onOpen, onClose, onEdit }: { abierto: b
               Imprimir etiqueta
             </button>
 
-            <div className="h-px bg-gray-100 dark:bg-dark-border my-1 mx-3"></div>
+            <div className="h-px bg-[#E5E7EB] dark:bg-dark-border my-1 mx-3"></div>
 
             <button
               className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
