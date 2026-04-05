@@ -185,7 +185,7 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
                     onClick={generarCodigoBarras}
                     title="Generar código de barras aleatorio"
                     aria-label="Generar código de barras"
-                    className="px-3 py-2 border border-[#E5E7EB] dark:border-dark-border rounded-lg text-xs font-semibold text-[#1F2937] dark:text-slate-300 bg-white dark:bg-dark-elevated hover:bg-[#F3F4F6] dark:hover:bg-slate-600 hover:border-brand-300 flex items-center gap-1 transition-colors whitespace-nowrap"
+                    className="px-3 py-2 border border-[#E5E7EB] dark:border-dark-border rounded-lg text-xs font-semibold text-[#1F2937] dark:text-slate-300 bg-white dark:bg-dark-elevated hover:bg-[#F3F4F6] dark:hover:bg-slate-600 hover:border-gray-300 flex items-center gap-1 transition-colors whitespace-nowrap"
                   >
                     <Barcode className="w-4 h-4" />
                     Generar Código
@@ -318,14 +318,14 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
                   Precio final
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-500 dark:text-brand-400 text-sm font-bold" aria-hidden="true">$</span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280] dark:text-slate-400 text-sm font-semibold" aria-hidden="true">$</span>
                   <input
                     id="precioVenta"
                     type="number"
                     value={precioVenta}
                     onChange={(e) => setPrecioVenta(e.target.value)}
                     placeholder="0"
-                    className="w-full border border-brand-200 dark:border-brand-700 rounded-lg pl-7 pr-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all font-semibold text-brand-800 dark:text-brand-200 bg-brand-50/30 dark:bg-brand-900/20"
+                    className="w-full border border-[#E5E7EB] dark:border-dark-border rounded-lg pl-7 pr-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all font-semibold text-[#1F2937] dark:text-slate-100 bg-white dark:bg-dark-card"
                   />
                 </div>
               </div>

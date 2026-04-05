@@ -36,14 +36,16 @@ function ModalHeader({
           </p>
         )}
       </div>
-      <button
-        onClick={onClose}
-        className="text-[#6B7280] hover:text-[#1F2937] dark:text-slate-400 dark:hover:text-slate-100 hover:bg-[#F3F4F6] dark:hover:bg-dark-elevated p-1.5 rounded-lg transition-colors"
-        title="Cerrar"
-        aria-label="Cerrar"
-      >
-        <X className="w-5 h-5" />
-      </button>
+    <button
+  onClick={onClose}
+className="w-8 h-8 flex items-center justify-center rounded-full 
+bg-red-400 dark:bg-red-500 text-white 
+hover:bg-red-500 dark:hover:bg-red-600 transition-colors"
+  title="Cerrar"
+  aria-label="Cerrar"
+>
+  <X className="w-4 h-4" />
+</button>
     </div>
   )
 }
