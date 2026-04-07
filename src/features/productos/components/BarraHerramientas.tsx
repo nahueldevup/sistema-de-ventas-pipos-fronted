@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import BarraFiltros from './BarraFiltros';
 import type { FiltrosPOS, Ordenamiento } from '@/types/filtros.types';
 import {
@@ -44,59 +44,77 @@ export default function BarraHerramientas({
 }: BarraHerramientasProps) {
   const [filtrosAbierto, setFiltrosAbierto] = useState(false);
 
-  // ── Chips de filtros activos ──────────────────────────────
-  const chipsActivos: { label: React.ReactNode; onRemove: () => void }[] = [];
+  // Ref para el contenedor del dropdown de filtros (click outside)
+  const filtroContainerRef = useRef<HTMLDivElement>(null);
 
-  if (ordenamiento !== "relevancia") {
-    const labels: Record<string, string> = {
-      masVendidos: "Más vendidos",
-      menosVendidos: "Menos vendidos",
-      actividadReciente: "Actividad reciente",
+  useEffect(() => {
+    if (!filtrosAbierto) return;
+    const onClick = (e: MouseEvent) => {
+      if (filtroContainerRef.current && !filtroContainerRef.current.contains(e.target as Node)) {
+        setFiltrosAbierto(false);
+      }
     };
-    chipsActivos.push({
-      label: <span className="flex items-center gap-1 text-slate-700 dark:text-slate-300 font-medium">Orden: <strong className="font-bold">{labels[ordenamiento]}</strong></span>,
-      onRemove: () => setOrdenamiento("relevancia"),
-    });
-  }
-  if (filtros.estadoStock !== "todos") {
-    const labels: Record<string, string> = { enStock: "En stock", stockBajo: "Stock bajo", agotados: "Agotados" };
-    chipsActivos.push({
-      label: <span className="flex items-center gap-1 font-bold text-orange-700 dark:text-orange-300">{labels[filtros.estadoStock]}</span>,
-      onRemove: () => setFiltros({ ...filtros, estadoStock: "todos" }),
-    });
-  }
-  filtros.categorias.forEach((cat) => {
-    chipsActivos.push({
-      label: <span className="flex items-center gap-1 text-brand-700 dark:text-brand-300 font-medium">Categoría: <strong className="font-bold">{cat}</strong></span>,
-      onRemove: () => setFiltros({ ...filtros, categorias: filtros.categorias.filter((c) => c !== cat) }),
-    });
-  });
-  filtros.proveedores.forEach((prov) => {
-    chipsActivos.push({
-      label: <span className="flex items-center gap-1 text-brand-700 dark:text-brand-300 font-medium">Proveedor: <strong className="font-bold">{prov}</strong></span>,
-      onRemove: () => setFiltros({ ...filtros, proveedores: filtros.proveedores.filter((p) => p !== prov) }),
-    });
-  });
-  if (filtros.precioMin) {
-    chipsActivos.push({
-      label: <span className="flex items-center gap-1 text-slate-700 dark:text-slate-300 font-medium">Precio ≥ <strong>${filtros.precioMin}</strong></span>,
-      onRemove: () => setFiltros({ ...filtros, precioMin: "" }),
-    });
-  }
-  if (filtros.precioMax) {
-    chipsActivos.push({
-      label: <span className="flex items-center gap-1 text-slate-700 dark:text-slate-300 font-medium">Precio ≤ <strong>${filtros.precioMax}</strong></span>,
-      onRemove: () => setFiltros({ ...filtros, precioMax: "" }),
-    });
-  }
-  if (filtros.fechaDesde || filtros.fechaHasta) {
-    chipsActivos.push({
-      label: <span className="flex items-center gap-1 text-slate-700 dark:text-slate-300 font-medium">Fecha: <strong>{filtros.fechaDesde || "..."} → {filtros.fechaHasta || "..."}</strong></span>,
-      onRemove: () => setFiltros({ ...filtros, fechaDesde: "", fechaHasta: "" }),
-    });
-  }
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, [filtrosAbierto]);
 
-  const handleLimpiarFiltrosNav = () => {
+  // ── Chips de filtros activos (memoizados) ──────────────────
+  const chipsActivos = useMemo(() => {
+    const chips: { label: React.ReactNode; onRemove: () => void }[] = [];
+
+    if (ordenamiento !== "relevancia") {
+      const labels: Record<string, string> = {
+        masVendidos: "Más vendidos",
+        menosVendidos: "Menos vendidos",
+        actividadReciente: "Actividad reciente",
+      };
+      chips.push({
+        label: <span className="flex items-center gap-1 text-slate-700 dark:text-slate-300 font-medium">Orden: <strong className="font-bold">{labels[ordenamiento]}</strong></span>,
+        onRemove: () => setOrdenamiento("relevancia"),
+      });
+    }
+    if (filtros.estadoStock !== "todos") {
+      const labels: Record<string, string> = { enStock: "En stock", stockBajo: "Stock bajo", agotados: "Agotados" };
+      chips.push({
+        label: <span className="flex items-center gap-1 font-bold text-orange-700 dark:text-orange-300">{labels[filtros.estadoStock]}</span>,
+        onRemove: () => setFiltros({ ...filtros, estadoStock: "todos" }),
+      });
+    }
+    filtros.categorias.forEach((cat) => {
+      chips.push({
+        label: <span className="flex items-center gap-1 text-brand-700 dark:text-brand-300 font-medium">Categoría: <strong className="font-bold">{cat}</strong></span>,
+        onRemove: () => setFiltros({ ...filtros, categorias: filtros.categorias.filter((c) => c !== cat) }),
+      });
+    });
+    filtros.proveedores.forEach((prov) => {
+      chips.push({
+        label: <span className="flex items-center gap-1 text-brand-700 dark:text-brand-300 font-medium">Proveedor: <strong className="font-bold">{prov}</strong></span>,
+        onRemove: () => setFiltros({ ...filtros, proveedores: filtros.proveedores.filter((p) => p !== prov) }),
+      });
+    });
+    if (filtros.precioMin) {
+      chips.push({
+        label: <span className="flex items-center gap-1 text-slate-700 dark:text-slate-300 font-medium">Precio ≥ <strong>${filtros.precioMin}</strong></span>,
+        onRemove: () => setFiltros({ ...filtros, precioMin: "" }),
+      });
+    }
+    if (filtros.precioMax) {
+      chips.push({
+        label: <span className="flex items-center gap-1 text-slate-700 dark:text-slate-300 font-medium">Precio ≤ <strong>${filtros.precioMax}</strong></span>,
+        onRemove: () => setFiltros({ ...filtros, precioMax: "" }),
+      });
+    }
+    if (filtros.fechaDesde || filtros.fechaHasta) {
+      chips.push({
+        label: <span className="flex items-center gap-1 text-slate-700 dark:text-slate-300 font-medium">Fecha: <strong>{filtros.fechaDesde || "..."} → {filtros.fechaHasta || "..."}</strong></span>,
+        onRemove: () => setFiltros({ ...filtros, fechaDesde: "", fechaHasta: "" }),
+      });
+    }
+
+    return chips;
+  }, [ordenamiento, filtros, setOrdenamiento, setFiltros]);
+
+  const handleLimpiarFiltrosNav = useCallback(() => {
     setFiltros({
       ...filtros,
       categorias: [],
@@ -109,7 +127,7 @@ export default function BarraHerramientas({
       fechaHasta: "",
     });
     setOrdenamiento("relevancia");
-  };
+  }, [filtros, setFiltros, setOrdenamiento]);
 
   return (
     <div className="bg-card p-4 rounded-2xl border border-border shadow-soft transition-colors duration-300">
@@ -129,17 +147,7 @@ export default function BarraHerramientas({
 
           <div
             className="relative shrink-0 ml-2"
-            ref={(node) => {
-              if (node && typeof document !== "undefined") {
-                const onClick = (e: MouseEvent) => {
-                  if (filtrosAbierto && !node.contains(e.target as Node)) {
-                    setFiltrosAbierto(false);
-                  }
-                };
-                document.addEventListener("mousedown", onClick);
-                return () => document.removeEventListener("mousedown", onClick);
-              }
-            }}
+            ref={filtroContainerRef}
           >
             <button
               onClick={() => setFiltrosAbierto(!filtrosAbierto)}
