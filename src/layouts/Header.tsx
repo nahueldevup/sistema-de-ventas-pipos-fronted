@@ -32,7 +32,7 @@ export default memo(function Header({ onMenuClick }: HeaderProps) {
     }, [location.pathname])
 
     return (
-        <header className="h-[64px] bg-header border-b border-border/80 flex items-center justify-between px-4 sm:px-6 md:px-8 z-10 transition-colors duration-300">
+        <header className="h-[64px] bg-header border-b border-border/80 flex items-center justify-between px-4 sm:px-6 md:px-8 z-10">
             <div className="flex items-center gap-3 md:gap-4 min-w-0">
                 <button
                     onClick={onMenuClick}

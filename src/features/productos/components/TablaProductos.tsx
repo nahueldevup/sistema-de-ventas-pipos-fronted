@@ -31,7 +31,7 @@ export default function TablaProductos({
   const [menuAbiertoId, setMenuAbiertoId] = useState<string | null>(null);
 
   return (
-    <div className="bg-card rounded-2xl border border-border shadow-soft overflow-hidden flex flex-col transition-colors duration-300">
+    <div className="bg-card rounded-2xl border border-border shadow-soft overflow-hidden flex flex-col">
 
       <CabeceraTablaProductos
         productosLength={productos.length}

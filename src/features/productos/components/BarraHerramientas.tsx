@@ -130,7 +130,7 @@ export default function BarraHerramientas({
   }, [filtros, setFiltros, setOrdenamiento]);
 
   return (
-    <div className="bg-card p-4 rounded-2xl border border-border shadow-soft transition-colors duration-300">
+    <div className="bg-card p-4 rounded-2xl border border-border shadow-soft">
       <div className="flex flex-wrap items-center justify-between gap-4">
 
         <div className="flex items-center flex-1 min-w-[240px] border border-border rounded-xl bg-background focus-within:border-brand-500 focus-within:ring-1 focus-within:ring-brand-100 dark:focus-within:ring-brand-900 transition-all p-1.5 shadow-sm">

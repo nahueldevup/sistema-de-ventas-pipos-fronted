@@ -22,7 +22,7 @@ export default function PanelControlLayout({ children }: { children: React.React
   };
 
   return (
-    <div className="bg-background text-foreground antialiased h-screen overflow-hidden flex transition-colors duration-300">
+    <div className="bg-background text-foreground antialiased h-screen overflow-hidden flex">
       <Sidebar 
         isOpen={isSidebarOpen} 
         onClose={() => setIsSidebarOpen(false)} 

@@ -2,7 +2,7 @@ import { ChevronRight } from "lucide-react"
 
 export default function TablaVentasRecientes() {
   return (
-    <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft p-6 transition-colors duration-300">
+    <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft p-6">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">Ventas Recientes</h3>
         <button className="cursor-pointer text-sm text-brand-600 dark:text-brand-400 font-semibold hover:text-brand-700 dark:hover:text-brand-300">Ver todo</button>

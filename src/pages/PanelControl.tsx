@@ -15,7 +15,7 @@ export default function PanelControl() {
   return (
     <>
       {/* Tarjeta de Alerta */}
-      <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800/30 rounded-2xl p-6 mb-8 flex items-start gap-4 shadow-sm transition-colors duration-300">
+      <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800/30 rounded-2xl p-6 mb-8 flex items-start gap-4 shadow-sm">
         <div className="p-3 bg-white dark:bg-red-900/30 rounded-xl text-red-500 shadow-sm shrink-0">
           <AlertTriangle className="w-6 h-6" />
         </div>
