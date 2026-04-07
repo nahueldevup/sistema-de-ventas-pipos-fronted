@@ -1,4 +1,4 @@
-import { useState, useEffect, type ReactNode } from "react";
+import { useState, useEffect, useCallback, useMemo, type ReactNode } from "react";
 import { ThemeContext } from "./theme-context";
 
 function getInitialTheme(): boolean {
@@ -31,10 +31,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("pipos-theme", isDark ? "dark" : "light");
   }, [isDark]);
 
-  const toggleTheme = () => setIsDark((prev) => !prev);
+  const toggleTheme = useCallback(() => setIsDark((prev) => !prev), []);
+
+  const value = useMemo(() => ({ isDark, toggleTheme }), [isDark, toggleTheme]);
 
   return (
-    <ThemeContext.Provider value={{ isDark, toggleTheme }}>
+    <ThemeContext.Provider value={value}>
       {children}
     </ThemeContext.Provider>
   );
