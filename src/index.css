@@ -225,9 +225,10 @@
   }
 }
 
-/* Transición suave al cambiar de tema */
-html {
-  transition: color-scheme 0.3s ease;
+/* Hint para que el browser promueva html/body a capas propias de composición
+   durante el toggle de tema. Reduce el costo del repaint. */
+html, body {
+  will-change: background-color, color;
 }
 
 html.dark {
