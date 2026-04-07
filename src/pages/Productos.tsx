@@ -1,4 +1,4 @@
-import { useState, useMemo, lazy, Suspense } from "react";
+import { useState, useMemo, useCallback, lazy, Suspense } from "react";
 import type { ProductoDatos } from "@/types/producto.types";
 const ModalRegistroProducto = lazy(() =>
   import("@/features/productos/components/ModalRegistroProducto")
@@ -46,28 +46,28 @@ export default function Productos() {
   const categoriasUnicas = useMemo(() => Array.from(new Set(productos.map(p => p.categoria))), [productos]);
   const proveedoresUnicos = useMemo(() => Array.from(new Set(productos.map(p => p.proveedor))), [productos]);
 
-  const handleVerCategoria = (nombre: string) => {
+  const handleVerCategoria = useCallback((nombre: string) => {
     setFiltros({ ...filtros, categorias: [nombre], busqueda: '' });
     setModalActivo(null);
-  };
+  }, [filtros, setFiltros]);
 
-  const handleAgregarCategoria = (nombre: string) => {
+  const handleAgregarCategoria = useCallback((nombre: string) => {
     console.log("Nueva categoría:", nombre);
-  };
+  }, []);
 
-  const handleEditarCategoria = (nombreAnterior: string, nombreNuevo: string) => {
+  const handleEditarCategoria = useCallback((nombreAnterior: string, nombreNuevo: string) => {
     setProductos(prev => prev.map(p =>
       p.categoria === nombreAnterior ? { ...p, categoria: nombreNuevo } : p
     ));
-  };
+  }, []);
 
-  const handleBorrarCategoria = (nombre: string) => {
+  const handleBorrarCategoria = useCallback((nombre: string) => {
     setProductos(prev => prev.map(p =>
       p.categoria === nombre ? { ...p, categoria: 'General' } : p
     ));
-  };
+  }, []);
 
-  const handleActualizarPreciosMasivos = (productosIds: string[], calculo: number | ((prev: number) => number)) => {
+  const handleActualizarPreciosMasivos = useCallback((productosIds: string[], calculo: number | ((prev: number) => number)) => {
     setProductos(prev => prev.map(p => {
       if (productosIds.includes(p.id)) {
         const nuevoPrecioVenta = typeof calculo === 'function' ? calculo(p.precioVenta) : calculo;
@@ -82,9 +82,9 @@ export default function Productos() {
       }
       return p;
     }));
-  };
+  }, []);
 
-  const handleEditar = (p: typeof productos[0]) => {
+  const handleEditar = useCallback((p: typeof productos[0]) => {
     setProductoEditando({
       codigo: p.codigo,
       descripcion: p.nombre,
@@ -96,7 +96,8 @@ export default function Productos() {
       stockMinimo: "5"
     });
     setModalActivo('registro');
-  };
+  }, []);
+
 
   return (
     <div className="flex flex-col gap-[24px] font-sans">
