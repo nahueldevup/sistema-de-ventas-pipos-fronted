@@ -1,8 +1,17 @@
-import { useState, useMemo } from "react";
-import ModalRegistroProducto, { type ProductoDatos } from "@/features/productos/components/ModalRegistroProducto";
-import ModalImprimirEtiquetas from "@/features/productos/components/ModalImprimirEtiquetas";
-import ModalGestionCategorias from "@/features/productos/components/ModalGestionarCategorias";
-import ModalActualizarPrecios from "@/features/productos/components/ModalActualizarPrecios";
+import { useState, useMemo, lazy, Suspense } from "react";
+import type { ProductoDatos } from "@/types/producto.types";
+const ModalRegistroProducto = lazy(() =>
+  import("@/features/productos/components/ModalRegistroProducto")
+);
+const ModalImprimirEtiquetas = lazy(() =>
+  import("@/features/productos/components/ModalImprimirEtiquetas")
+);
+const ModalGestionCategorias = lazy(() =>
+  import("@/features/productos/components/ModalGestionarCategorias")
+);
+const ModalActualizarPrecios = lazy(() =>
+  import("@/features/productos/components/ModalActualizarPrecios")
+);
 import BarraHerramientas from "@/features/productos/components/BarraHerramientas";
 import TablaProductos from "@/features/productos/components/TablaProductos";
 import useFiltrosProductos from "@/hooks/useFiltrosProductos";
@@ -124,36 +133,44 @@ export default function Productos() {
         categoriasUnicas={categoriasUnicas}
       />
 
-      {/* Modales */}
-      <ModalRegistroProducto
-        isOpen={modalActivo === 'registro'}
-        onClose={() => { setModalActivo(null); setProductoEditando(null); }}
-        margenGananciaGlobal={margenGananciaGlobal}
-        productoAEditar={productoEditando}
-      />
+      {/* Modales (lazy-loaded) */}
+      <Suspense fallback={null}>
+        <ModalRegistroProducto
+          isOpen={modalActivo === 'registro'}
+          onClose={() => { setModalActivo(null); setProductoEditando(null); }}
+          margenGananciaGlobal={margenGananciaGlobal}
+          productoAEditar={productoEditando}
+        />
+      </Suspense>
 
-      <ModalImprimirEtiquetas
-        isOpen={modalActivo === 'etiquetas'}
-        onClose={() => setModalActivo(null)}
-        todosLosProductos={productos}
-      />
+      <Suspense fallback={null}>
+        <ModalImprimirEtiquetas
+          isOpen={modalActivo === 'etiquetas'}
+          onClose={() => setModalActivo(null)}
+          todosLosProductos={productos}
+        />
+      </Suspense>
 
-      <ModalGestionCategorias
-        isOpen={modalActivo === 'categorias'}
-        onClose={() => setModalActivo(null)}
-        categorias={categoriasConConteo}
-        onVerCategoria={handleVerCategoria}
-        onAgregarCategoria={handleAgregarCategoria}
-        onEditarCategoria={handleEditarCategoria}
-        onBorrarCategoria={handleBorrarCategoria}
-      />
+      <Suspense fallback={null}>
+        <ModalGestionCategorias
+          isOpen={modalActivo === 'categorias'}
+          onClose={() => setModalActivo(null)}
+          categorias={categoriasConConteo}
+          onVerCategoria={handleVerCategoria}
+          onAgregarCategoria={handleAgregarCategoria}
+          onEditarCategoria={handleEditarCategoria}
+          onBorrarCategoria={handleBorrarCategoria}
+        />
+      </Suspense>
 
-      <ModalActualizarPrecios
-        isOpen={modalActivo === 'actualizarPrecios'}
-        onClose={() => setModalActivo(null)}
-        todosLosProductos={productos}
-        onActualizarPrecios={handleActualizarPreciosMasivos}
-      />
+      <Suspense fallback={null}>
+        <ModalActualizarPrecios
+          isOpen={modalActivo === 'actualizarPrecios'}
+          onClose={() => setModalActivo(null)}
+          todosLosProductos={productos}
+          onActualizarPrecios={handleActualizarPreciosMasivos}
+        />
+      </Suspense>
     </div>
   );
 }
