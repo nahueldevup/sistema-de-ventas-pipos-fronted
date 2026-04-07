@@ -1,69 +1,110 @@
 import { Menu, Bell, Sun, Moon } from "lucide-react"
+import { useMemo } from "react"
+import { useLocation } from "react-router-dom"
 import { useTheme } from "@/hooks/useTheme"
 
 interface HeaderProps {
-    onMenuClick: () => void;
+    onMenuClick: () => void
+}
+
+const routeTitles: Record<string, string> = {
+    "/": "Inicio - Bienvenido",
+    "/vender": "Vender",
+    "/productos": "Productos",
+    "/clientes": "Clientes",
+    "/caja": "Caja",
 }
 
 export default function Header({ onMenuClick }: HeaderProps) {
-    const { isDark, toggleTheme } = useTheme();
+    const { isDark, toggleTheme } = useTheme()
+    const location = useLocation()
+
+    const pageTitle = useMemo(() => {
+        const pathname = location.pathname
+
+        if (routeTitles[pathname]) return routeTitles[pathname]
+
+        const matchedPrefix = Object.keys(routeTitles)
+            .filter((route) => route !== "/" && pathname.startsWith(route))
+            .sort((a, b) => b.length - a.length)[0]
+
+        return matchedPrefix ? routeTitles[matchedPrefix] : "Panel de control"
+    }, [location.pathname])
 
     return (
-        <header className="h-[64px] bg-header/80 backdrop-blur-md border-b border-border flex items-center justify-between px-8 z-10 transition-colors duration-300">
-            <div className="flex items-center gap-4">
+        <header className="h-[64px] bg-header border-b border-border/80 flex items-center justify-between px-4 sm:px-6 md:px-8 z-10 transition-colors duration-300">
+            <div className="flex items-center gap-3 md:gap-4 min-w-0">
                 <button
                     onClick={onMenuClick}
-                    className="md:hidden p-2 text-foreground cursor-pointer hover:bg-muted/80 rounded-lg transition-colors"
+                    className="md:hidden p-2 text-foreground cursor-pointer hover:bg-muted/80 rounded-xl transition-colors"
+                    aria-label="Abrir menú"
                 >
                     <Menu className="w-6 h-6" />
                 </button>
-                <h2 className="hidden sm:block text-xl font-bold text-foreground">Inicio - Bienvenido</h2>
+
+                <h2 className="truncate text-[20px] leading-none font-bold tracking-[-0.015em] text-slate-800 dark:text-slate-100">
+                    {pageTitle}
+                </h2>
             </div>
 
-            <div className="flex items-center gap-6">
-                {/*<div className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 bg-gray-100 dark:bg-dark-elevated px-3 py-1.5 rounded-full">
-          <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-          <span className="hidden sm:inline">Sistema Online</span>
-        </div>*/}
-
-                {/* Theme Toggle Switch */}
+            <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
+                {/* Theme Toggle más sobrio */}
                 <button
                     onClick={toggleTheme}
-                    className="relative flex items-center w-16 h-8.5 rounded-full cursor-pointer transition-all duration-300 focus:outline-none border-2 border-gray-200 dark:border-indigo-500/50"
-                    style={{
-                        background: isDark
-                            ? 'linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e293b 100%)'
-                            : 'linear-gradient(135deg, #e0d230ff 0%, #fde68a 50%, #fbbf24 100%)',
-                    }}
+                    className={`
+            relative flex h-9 w-[58px] items-center rounded-full border shadow-sm
+            transition-all duration-300 cursor-pointer
+            ${isDark
+                            ? "border-indigo-400/25 bg-slate-800"
+                            : "border-amber-200/80 bg-amber-50"}
+          `}
                     title={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
                     aria-label="Alternar tema"
                 >
-                    {/* Stars in dark track */}
-                    <div className={`absolute left-2 top-1 w-1 h-1 rounded-full bg-white transition-opacity duration-300 ${isDark ? 'opacity-60' : 'opacity-0'}`} />
-                    <div className={`absolute left-4 top-3 w-0.5 h-0.5 rounded-full bg-white transition-opacity duration-300 ${isDark ? 'opacity-40' : 'opacity-0'}`} />
-                    <div className={`absolute left-2.5 bottom-1.5 w-0.5 h-0.5 rounded-full bg-white transition-opacity duration-300 ${isDark ? 'opacity-50' : 'opacity-0'}`} />
-
-                    {/* Thumb with icon inside */}
-                    <div
-                        className={`absolute flex items-center justify-center w-7 h-7 rounded-full shadow-lg transition-all duration-300 ${isDark
-                                ? 'translate-x-[30px] bg-indigo-900 border-2 border-indigo-400/50'
-                                : 'translate-x-[2px] bg-white border-2 border-amber-300'
-                            }`}
+                    <span
+                        className={`
+              absolute left-[4px] flex h-7 w-7 items-center justify-center rounded-full
+              shadow-sm transition-all duration-300
+              ${isDark
+                                ? "translate-x-[21px] bg-slate-900 border border-indigo-300/30"
+                                : "translate-x-0 bg-white border border-amber-200"}
+            `}
                     >
-                        <Sun className={`absolute w-4 h-4 text-amber-500 transition-all duration-300 ${isDark ? 'opacity-0 rotate-90 scale-0' : 'opacity-100 rotate-0 scale-100'}`} strokeWidth={1.5} />
-                        <Moon className={`absolute w-4 h-4 text-blue-300 transition-all duration-300 ${isDark ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-0'}`} strokeWidth={1.5} />
-                    </div>
+                        <Sun
+                            className={`
+                absolute h-4 w-4 text-amber-500 transition-all duration-300
+                ${isDark ? "opacity-0 scale-75 rotate-45" : "opacity-100 scale-100 rotate-0"}
+              `}
+                            strokeWidth={1.9}
+                        />
+                        <Moon
+                            className={`
+                absolute h-4 w-4 text-sky-300 transition-all duration-300
+                ${isDark ? "opacity-100 scale-100 rotate-0" : "opacity-0 scale-75 -rotate-45"}
+              `}
+                            strokeWidth={1.9}
+                        />
+                    </span>
                 </button>
 
-                <button className="p-2 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer">
+                <button
+                    className="p-2 text-slate-400 dark:text-slate-500 hover:bg-slate-100 dark:hover:bg-dark-elevated hover:text-slate-600 dark:hover:text-slate-300 rounded-xl transition-colors cursor-pointer"
+                    aria-label="Notificaciones"
+                >
                     <Bell className="w-5 h-5" />
                 </button>
-                <div className="flex items-center gap-3 pl-4 sm:pl-6 border-l border-gray-200 dark:border-dark-border">
-                    <div className="text-right hidden sm:block">
-                        <p className="text-sm font-bold text-foreground">Hola, Nahuel</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">Administrador</p>
+
+                <div className="flex items-center gap-3 pl-3 sm:pl-5 border-l border-border/80">
+                    <div className="text-right hidden sm:block leading-tight">
+                        <p className="text-[14px] font-semibold text-slate-800 dark:text-slate-100">
+                            Hola, Nahuel
+                        </p>
+                        <p className="text-[12px] font-medium text-slate-500 dark:text-slate-400">
+                            Administrador
+                        </p>
                     </div>
-                    <div className="w-10 h-10 bg-brand-100 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 rounded-full flex items-center justify-center font-bold border-2 border-white dark:border-dark-card shadow-sm">
+
+                    <div className="w-10 h-10 bg-brand-100 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 rounded-full flex items-center justify-center text-[15px] font-bold border-2 border-white dark:border-dark-card shadow-sm">
                         N
                     </div>
                 </div>

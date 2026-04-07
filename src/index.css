@@ -43,14 +43,14 @@
   /* fondo de página */
   --foreground: #1F2937;
   /* texto principal */
-  --sidebar: hsl(0, 0%, 100%);
+  --sidebar: #FAFBFC;
   /* fondo del sidebar */
-  --sidebar-foreground: hsl(210 40% 96%);
+  --sidebar-foreground: hsl(166 40% 12%);
   /* color texto en sidebar */
-  --sidebar-accent: hsl(222 47% 16%);
+  --sidebar-accent: hsl(166 40% 94%);
   /* color hover en sidebar */
-  --sidebar-accent-foreground: hsl(210 40% 98%);
-  --header: hsl(0, 0%, 100%);
+  --sidebar-accent-foreground: hsl(166 45% 16%);
+  --header: #ffffff;
   /* fondo del header */
   --table-header: hsl(210 20% 96%);
   /* fondo del encabezado de tabla */
