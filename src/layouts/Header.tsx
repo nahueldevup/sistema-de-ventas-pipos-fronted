@@ -48,40 +48,26 @@ export default function Header({ onMenuClick }: HeaderProps) {
             </div>
 
             <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
-                {/* Theme Toggle más sobrio */}
+                {/* Theme Toggle puramente CSS (Rendimiento máximo) */}
                 <button
                     onClick={toggleTheme}
-                    className={`
-            relative flex h-9 w-[58px] items-center rounded-full border shadow-sm
-            transition-all duration-300 cursor-pointer
-            ${isDark
-                            ? "border-indigo-400/25 bg-slate-800"
-                            : "border-amber-200/80 bg-amber-50"}
-          `}
+                    className="relative flex h-9 w-[58px] items-center rounded-full border shadow-sm transition-colors duration-300 cursor-pointer border-amber-200/80 bg-amber-50 dark:border-indigo-400/25 dark:bg-slate-800"
                     title={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
                     aria-label="Alternar tema"
                 >
                     <span
-                        className={`
-              absolute left-[4px] flex h-7 w-7 items-center justify-center rounded-full
-              shadow-sm transition-all duration-300
-              ${isDark
-                                ? "translate-x-[21px] bg-slate-900 border border-indigo-300/30"
-                                : "translate-x-0 bg-white border border-amber-200"}
-            `}
+                        className="absolute left-[4px] flex h-7 w-7 items-center justify-center rounded-full shadow-sm transition-all duration-300 ease-out transform translate-x-0 bg-white border border-amber-200 dark:translate-x-[21px] dark:bg-slate-900 dark:border-indigo-300/30"
                     >
+                        {/* 
+                          Usando puramente las clases dark: le quitamos todo el peso a React
+                          durante el toggle en el main thread de la netbook. CSS se encarga.
+                        */}
                         <Sun
-                            className={`
-                absolute h-4 w-4 text-amber-500 transition-all duration-300
-                ${isDark ? "opacity-0 scale-75 rotate-45" : "opacity-100 scale-100 rotate-0"}
-              `}
+                            className="absolute h-4 w-4 text-amber-500 transition-opacity duration-200 opacity-100 dark:opacity-0"
                             strokeWidth={1.9}
                         />
                         <Moon
-                            className={`
-                absolute h-4 w-4 text-sky-300 transition-all duration-300
-                ${isDark ? "opacity-100 scale-100 rotate-0" : "opacity-0 scale-75 -rotate-45"}
-              `}
+                            className="absolute h-4 w-4 text-sky-300 transition-opacity duration-200 opacity-0 dark:opacity-100"
                             strokeWidth={1.9}
                         />
                     </span>
