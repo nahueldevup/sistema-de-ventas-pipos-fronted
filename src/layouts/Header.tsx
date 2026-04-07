@@ -1,5 +1,5 @@
 import { Menu, Bell, Sun, Moon } from "lucide-react"
-import { useMemo } from "react"
+import { memo, useMemo } from "react"
 import { useLocation } from "react-router-dom"
 import { useTheme } from "@/hooks/useTheme"
 
@@ -15,7 +15,7 @@ const routeTitles: Record<string, string> = {
     "/caja": "Caja",
 }
 
-export default function Header({ onMenuClick }: HeaderProps) {
+export default memo(function Header({ onMenuClick }: HeaderProps) {
     const { isDark, toggleTheme } = useTheme()
     const location = useLocation()
 
@@ -97,4 +97,4 @@ export default function Header({ onMenuClick }: HeaderProps) {
             </div>
         </header>
     )
-}
+})

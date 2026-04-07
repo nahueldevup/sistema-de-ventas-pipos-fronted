@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, memo } from "react"
 import { Menu, ShoppingBag, ShoppingCart, Package, Users, Wallet, LogOut, X, House } from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
 
@@ -12,7 +12,7 @@ interface SidebarProps {
   onToggleMenu?: () => void;
 }
 
-export default function Sidebar({
+export default memo(function Sidebar({
   isOpen,
   onClose,
   isDesktopPinned = false,
@@ -147,4 +147,4 @@ export default function Sidebar({
       </aside>
     </>
   )
-}
+})
