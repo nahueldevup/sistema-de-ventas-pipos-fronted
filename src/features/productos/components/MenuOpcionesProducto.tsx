@@ -69,7 +69,7 @@ const MenuOpcionesProducto = ({
 
   return (
     <div className="relative flex justify-center" ref={menuRef}>
-      <div className="flex h-8 items-center overflow-hidden rounded-lg border border-slate-300 bg-white shadow-sm divide-x divide-slate-300 dark:border-dark-border dark:bg-dark-elevated dark:divide-dark-border">
+      <div className="flex h-8 items-center overflow-hidden rounded-lg border border-slate-200 bg-white/80 shadow-sm divide-x divide-slate-200 dark:border-dark-border dark:bg-dark-elevated dark:divide-dark-border">
         <button
           type="button"
           onClick={(e) => {
@@ -79,9 +79,9 @@ const MenuOpcionesProducto = ({
           }}
           title="Editar producto"
           aria-label="Editar producto"
-          className="flex h-8 w-8 items-center justify-center text-sky-700 hover:bg-sky-50 hover:text-sky-800 focus:outline-none focus:ring-2 focus:ring-sky-500/30 transition-colors dark:text-sky-400 dark:hover:bg-sky-900/20 dark:hover:text-sky-300"
+          className="flex h-8 w-8 items-center justify-center text-sky-600 hover:bg-slate-100 hover:text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500/25 transition-colors dark:text-sky-400 dark:hover:bg-slate-800 dark:hover:text-sky-300"
         >
-          <Edit2 className="h-4 w-4" strokeWidth={2.1} />
+          <Edit2 className="h-4 w-4" strokeWidth={1.8} />
         </button>
 
         <button
@@ -93,9 +93,9 @@ const MenuOpcionesProducto = ({
           }}
           title="Imprimir etiqueta"
           aria-label="Imprimir etiqueta"
-          className="flex h-8 w-8 items-center justify-center text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 transition-colors dark:text-emerald-400 dark:hover:bg-emerald-900/20 dark:hover:text-emerald-300"
+          className="flex h-8 w-8 items-center justify-center text-emerald-600 hover:bg-slate-100 hover:text-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/25 transition-colors dark:text-emerald-400 dark:hover:bg-slate-800 dark:hover:text-emerald-300"
         >
-          <Printer className="h-4 w-4" strokeWidth={2.1} />
+          <Printer className="h-4 w-4" strokeWidth={1.8} />
         </button>
 
         <button
@@ -108,13 +108,13 @@ const MenuOpcionesProducto = ({
           aria-label="Más opciones"
           aria-haspopup="menu"
           aria-expanded={abierto}
-          className={`flex h-8 w-8 items-center justify-center focus:outline-none focus:ring-2 focus:ring-slate-400/30 transition-colors ${
+          className={`flex h-8 w-8 items-center justify-center focus:outline-none focus:ring-2 focus:ring-slate-400/25 transition-colors ${
             abierto
               ? "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200"
-              : "text-slate-600 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+              : "text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
           }`}
         >
-          <MoreVertical className="h-4 w-4" strokeWidth={2.1} />
+          <MoreVertical className="h-4 w-4" strokeWidth={1.8} />
         </button>
       </div>
 

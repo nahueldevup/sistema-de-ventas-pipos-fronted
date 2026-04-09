@@ -227,7 +227,8 @@
 
 /* Hint para que el browser promueva html/body a capas propias de composición
    durante el toggle de tema. Reduce el costo del repaint. */
-html, body {
+html,
+body {
   will-change: background-color, color;
 }
 
@@ -250,22 +251,51 @@ html.dark {
     }
   }
 
-  /* Hover de filas de tabla */
+  /* Hover de filas de tabla — neutro, sutil, profesional */
+  /* Definimos variables de fondos sólidos (normal y hover) para asegurar que la columna sticky
+     sea visualmente 100% idéntica a la fila y tape perfectamente el contenido de atrás. */
+  .hover-fila {
+    --bg-fila: var(--card);
+    --bg-fila-hover: #f1f5f9;
+    /* hover más suave pero visible (slate-100) */
+  }
+
+  .hover-fila:nth-child(even) {
+    --bg-fila: var(--table-zebra);
+    --bg-fila-hover: #e2e8f0;
+    /* hover para fila zebra (slate-200) */
+  }
+
+  :is(.dark *) .hover-fila {
+    --bg-fila-hover: color-mix(in srgb, var(--card) 92%, white);
+  }
+
+  :is(.dark *) .hover-fila:nth-child(even) {
+    --bg-fila-hover: color-mix(in srgb, var(--table-zebra) 92%, white);
+  }
+
+  /* El fondo normal no lo ponemos explícito en el `tr` para no romper bordes globales si los hubiere, 
+     lo hereda del index o utility CSS normal (getRowBg). Sin embargo, el hover se lo forzamos. */
   .hover-fila:hover {
-    background-color: color-mix(in srgb, var(--brand-600) 8%, transparent);
+    background-color: var(--bg-fila-hover) !important;
   }
 
-  :is(.dark *) .hover-fila:hover {
-    background-color: color-mix(in srgb, var(--brand-600) 12%, transparent);
+  /* Celda sticky de opciones — fondo sincronizado al 100% con la fila */
+  .sticky-opciones {
+    background-color: var(--bg-fila);
   }
 
-  /* Sombra de columna sticky en la tabla */
+  .hover-fila:hover .sticky-opciones {
+    background-color: var(--bg-fila-hover);
+  }
+
+  /* Sombra de columna sticky en la tabla — sutil e integrada */
   .shadow-sticky-col {
-    box-shadow: -10px 0 15px -3px rgba(0, 0, 0, 0.05);
+    box-shadow: -6px 0 12px -4px rgba(0, 0, 0, 0.04);
   }
 
   :is(.dark *) .shadow-sticky-col {
-    box-shadow: -10px 0 15px -3px rgba(0, 0, 0, 0.3);
+    box-shadow: -6px 0 12px -4px rgba(0, 0, 0, 0.2);
   }
 
   /* Sombra para paneles dropdown */
