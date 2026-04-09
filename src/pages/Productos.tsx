@@ -15,7 +15,6 @@ const ModalActualizarPrecios = lazy(() =>
 import BarraHerramientas from "@/features/productos/components/BarraHerramientas";
 import TablaProductos from "@/features/productos/components/TablaProductos";
 import useFiltrosProductos from "@/hooks/useFiltrosProductos";
-import useSeleccionProductos from "@/hooks/useSeleccionProductos";
 import { PRODUCTOS_EJEMPLO } from "@/datos/productos.datos";
 
 export default function Productos() {
@@ -27,9 +26,6 @@ export default function Productos() {
 
   const { filtros, setFiltros, ordenamiento, setOrdenamiento, productosFiltrados, filtrosActivosCount } =
     useFiltrosProductos(productos);
-
-  const { seleccionados, seleccionarTodos, toggleSeleccion } =
-    useSeleccionProductos(productosFiltrados);
 
   const categoriasConConteo = useMemo(() => {
     return productos.reduce((acc, p) => {
@@ -124,9 +120,6 @@ export default function Productos() {
       {/* CONTENEDOR DE LA TABLA */}
       <TablaProductos
         productos={productosFiltrados}
-        seleccionados={seleccionados}
-        onSeleccionarTodos={seleccionarTodos}
-        onToggleSeleccion={toggleSeleccion}
         onEditar={handleEditar}
         ordenamiento={ordenamiento}
         filtros={filtros}

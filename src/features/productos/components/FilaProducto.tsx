@@ -6,8 +6,6 @@ import { ArrowUpRight, ImageOff } from 'lucide-react';
 interface FilaProductoProps {
   producto: Producto;
   index: number;
-  estaSeleccionado: boolean;
-  onToggleSeleccion: (id: string, checked: boolean) => void;
   menuAbiertoId: string | null;
   onAbrirMenu: (id: string) => void;
   onCerrarMenu: () => void;
@@ -17,8 +15,6 @@ interface FilaProductoProps {
 export default function FilaProducto({
   producto,
   index,
-  estaSeleccionado,
-  onToggleSeleccion,
   menuAbiertoId,
   onAbrirMenu,
   onCerrarMenu,
@@ -29,16 +25,6 @@ export default function FilaProducto({
       className={`${getRowBg(index)} hover-fila transition-colors duration-150 group cursor-pointer`}
     >
       <td className="py-3 pl-6 pr-2">
-        <input
-          type="checkbox"
-          aria-label={`Seleccionar producto ${producto.nombre}`}
-          className="rounded border-gray-300 dark:border-slate-600 w-4 h-4 cursor-pointer accent-brand-600"
-          checked={estaSeleccionado}
-          onChange={(e) => onToggleSeleccion(producto.id, e.target.checked)}
-        />
-      </td>
-
-      <td className="py-3 px-2">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-[#F6F7F8] dark:bg-slate-800/80 text-[#6B7280] dark:text-slate-300 flex items-center justify-center font-semibold text-lg cursor-zoom-in hover:scale-150 transition-transform origin-left z-10 border border-[#E5E7EB] dark:border-slate-700/60 shrink-0">
             <ImageOff className="w-5 h-5 opacity-50" />

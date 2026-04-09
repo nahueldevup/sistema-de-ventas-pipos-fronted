@@ -7,9 +7,6 @@ import FilaProducto from './FilaProducto';
 
 interface TablaProductosProps {
   productos: Producto[];
-  seleccionados: string[];
-  onSeleccionarTodos: (checked: boolean) => void;
-  onToggleSeleccion: (id: string, checked: boolean) => void;
   onEditar: (producto: Producto) => void;
   ordenamiento: Ordenamiento;
   filtros: FiltrosPOS;
@@ -19,9 +16,6 @@ interface TablaProductosProps {
 
 export default function TablaProductos({
   productos,
-  seleccionados,
-  onSeleccionarTodos,
-  onToggleSeleccion,
   onEditar,
   ordenamiento,
   filtros,
@@ -46,16 +40,7 @@ export default function TablaProductos({
         <table className="w-full text-left text-sm whitespace-nowrap">
           <thead className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase bg-table-header border-b-2 border-border tracking-wider">
             <tr>
-              <th className="py-4 pl-6 pr-2">
-                <input
-                  type="checkbox"
-                  aria-label="Seleccionar todos los productos"
-                  className="rounded border-gray-300 dark:border-slate-600 w-4 h-4 cursor-pointer accent-brand-600"
-                  checked={seleccionados.length === productos.length && productos.length > 0}
-                  onChange={(e) => onSeleccionarTodos(e.target.checked)}
-                />
-              </th>
-              <th className="py-4 px-2 min-w-[280px]">PRODUCTO</th>
+              <th className="py-4 pl-6 pr-2 min-w-[280px]">PRODUCTO</th>
               <th className="py-4 px-2 text-center">STOCK ACTUAL</th>
               <th className="py-4 px-2 text-center">PRECIO FINAL</th>
               <th className="py-4 px-2 text-center">COSTO</th>
@@ -72,8 +57,6 @@ export default function TablaProductos({
                 key={producto.id}
                 producto={producto}
                 index={index}
-                estaSeleccionado={seleccionados.includes(producto.id)}
-                onToggleSeleccion={onToggleSeleccion}
                 menuAbiertoId={menuAbiertoId}
                 onAbrirMenu={(id) => setMenuAbiertoId(id)}
                 onCerrarMenu={() => setMenuAbiertoId(null)}
@@ -83,7 +66,7 @@ export default function TablaProductos({
 
             {productos.length === 0 && (
               <tr>
-                <td colSpan={10} className="text-center py-10 text-base text-slate-600 dark:text-slate-300">
+                <td colSpan={8} className="text-center py-10 text-base text-slate-600 dark:text-slate-300">
                   No se encontraron productos con los filtros aplicados.
                 </td>
               </tr>
