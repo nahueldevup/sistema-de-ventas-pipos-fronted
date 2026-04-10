@@ -23,6 +23,7 @@ export default function FilaProducto({
   return (
     <tr
       className={`${getRowBg(index)} hover-fila transition-colors duration-150 group cursor-pointer`}
+      onClick={() => onEditar(producto)}
     >
       <td className="py-3 pl-6 pr-2">
         <div className="flex items-center gap-3">
@@ -45,6 +46,8 @@ export default function FilaProducto({
               title="Clic para editar stock"
               aria-label={`Cantidad en stock de ${producto.nombre}`}
               defaultValue={producto.existencia}
+              onClick={(e) => e.stopPropagation()}
+              onChange={(e) => e.stopPropagation()}
               className={`w-14 h-9 text-center font-semibold outline-none text-sm rounded-lg border transition-all bg-white dark:bg-dark-card cursor-text hover:bg-[#F3F4F6] dark:hover:bg-slate-800 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${producto.existencia <= 0
                   ? 'border-red-300 hover:border-red-400 dark:border-red-500/50 text-red-600 dark:text-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
                   : producto.existencia <= 5
@@ -77,6 +80,8 @@ export default function FilaProducto({
           title="Clic para editar precio final"
           aria-label={`Precio de venta de ${producto.nombre}`}
           defaultValue={formatearPesos(producto.precioVenta)}
+          onClick={(e) => e.stopPropagation()}
+          onChange={(e) => e.stopPropagation()}
           className="w-[105px] h-9 text-center px-1.5 font-semibold outline-none text-[14px] rounded-lg border transition-all bg-white dark:bg-dark-card cursor-text hover:bg-[#F3F4F6] dark:hover:bg-slate-800 border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border dark:hover:border-slate-500 text-[#1F2937] dark:text-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
         />
       </td>
@@ -88,6 +93,8 @@ export default function FilaProducto({
           title="Clic para editar costo"
           aria-label={`Precio de compra de ${producto.nombre}`}
           defaultValue={formatearPesos(producto.precioCompra)}
+          onClick={(e) => e.stopPropagation()}
+          onChange={(e) => e.stopPropagation()}
           className="w-[105px] h-9 text-center px-1.5 font-semibold outline-none text-[14px] rounded-lg border transition-all bg-white dark:bg-dark-card cursor-text hover:bg-[#F3F4F6] dark:hover:bg-slate-800 border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border dark:hover:border-slate-500 text-[#1F2937] dark:text-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
         />
       </td>
@@ -122,6 +129,7 @@ export default function FilaProducto({
         ${menuAbiertoId === producto.id ? 'z-50' : 'z-10'}
       `}
         style={{ backgroundColor: 'inherit' }}
+        onClick={(e) => e.stopPropagation()}
       >
         <MenuOpcionesProducto
           abierto={menuAbiertoId === producto.id}

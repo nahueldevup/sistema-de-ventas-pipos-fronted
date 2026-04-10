@@ -79,7 +79,7 @@ const MenuOpcionesProducto = ({
           }}
           title="Editar producto"
           aria-label="Editar producto"
-          className="flex h-8 w-8 items-center justify-center text-sky-600 hover:bg-slate-100 hover:text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500/25 transition-colors dark:text-sky-400 dark:hover:bg-slate-800 dark:hover:text-sky-300"
+          className="flex h-8 w-8 items-center justify-center cursor-pointer text-sky-600 hover:bg-slate-100 hover:text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500/25 transition-colors dark:text-sky-400 dark:hover:bg-slate-800 dark:hover:text-sky-300"
         >
           <Edit2 className="h-4 w-4" strokeWidth={1.8} />
         </button>
@@ -93,7 +93,7 @@ const MenuOpcionesProducto = ({
           }}
           title="Imprimir etiqueta"
           aria-label="Imprimir etiqueta"
-          className="flex h-8 w-8 items-center justify-center text-emerald-600 hover:bg-slate-100 hover:text-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/25 transition-colors dark:text-emerald-400 dark:hover:bg-slate-800 dark:hover:text-emerald-300"
+          className="flex h-8 w-8 items-center justify-center cursor-pointer text-emerald-600 hover:bg-slate-100 hover:text-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/25 transition-colors dark:text-emerald-400 dark:hover:bg-slate-800 dark:hover:text-emerald-300"
         >
           <Printer className="h-4 w-4" strokeWidth={1.8} />
         </button>
@@ -108,7 +108,7 @@ const MenuOpcionesProducto = ({
           aria-label="Más opciones"
           aria-haspopup="menu"
           aria-expanded={abierto}
-          className={`flex h-8 w-8 items-center justify-center focus:outline-none focus:ring-2 focus:ring-slate-400/25 transition-colors ${
+          className={`flex h-8 w-8 items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-400/25 transition-colors ${
             abierto
               ? "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200"
               : "text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
@@ -134,7 +134,7 @@ const MenuOpcionesProducto = ({
                 onClose();
                 onEdit();
               }}
-              className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors focus:outline-none dark:text-slate-200 dark:hover:bg-slate-800"
+              className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm font-medium cursor-pointer text-slate-700 hover:bg-slate-100 transition-colors focus:outline-none dark:text-slate-200 dark:hover:bg-slate-800"
             >
               <Edit2 className="h-4 w-4 shrink-0 text-sky-700 dark:text-sky-400" />
               <span>Editar producto</span>
@@ -147,7 +147,7 @@ const MenuOpcionesProducto = ({
                 if (onImprimir) onImprimir();
                 onClose();
               }}
-              className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors focus:outline-none dark:text-slate-200 dark:hover:bg-slate-800"
+              className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm font-medium cursor-pointer text-slate-700 hover:bg-slate-100 transition-colors focus:outline-none dark:text-slate-200 dark:hover:bg-slate-800"
             >
               <Printer className="h-4 w-4 shrink-0 text-emerald-700 dark:text-emerald-400" />
               <span>Imprimir etiqueta</span>
@@ -160,7 +160,7 @@ const MenuOpcionesProducto = ({
                 console.log("Historial de precios");
                 onClose();
               }}
-              className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors focus:outline-none dark:text-slate-200 dark:hover:bg-slate-800"
+              className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm font-medium cursor-pointer text-slate-700 hover:bg-slate-100 transition-colors focus:outline-none dark:text-slate-200 dark:hover:bg-slate-800"
             >
               <History className="h-4 w-4 shrink-0 text-violet-700 dark:text-violet-400" />
               <span>Historial de precios</span>
@@ -182,7 +182,7 @@ const MenuOpcionesProducto = ({
                   // lógica de borrado
                 }
               }}
-              className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm font-medium text-red-700 hover:bg-red-50 transition-colors focus:outline-none dark:text-red-400 dark:hover:bg-red-900/20"
+              className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm font-medium cursor-pointer text-red-700 hover:bg-red-50 transition-colors focus:outline-none dark:text-red-400 dark:hover:bg-red-900/20"
             >
               <Trash2 className="h-4 w-4 shrink-0" />
               <span>Borrar producto</span>
