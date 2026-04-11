@@ -75,9 +75,9 @@ export default function CabeceraTablaProductos({
               filtroStockBajo: !filtrosRapidos.filtroStockBajo,
             })
           }
-          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border shadow-sm cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-amber-500/20 ${
+          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 border shadow-sm cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-amber-500/20 ${
             filtrosRapidos.filtroStockBajo
-              ? 'bg-white border-slate-300 text-amber-700 hover:bg-slate-50 dark:bg-dark-elevated dark:border-slate-600 dark:text-amber-300 dark:hover:bg-slate-800'
+              ? 'bg-white border-slate-300 text-amber-700 hover:bg-slate-50 dark:bg-dark-elevated dark:border-slate-600 dark:text-amber-300 dark:hover:bg-slate-800 shadow-sm'
               : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 dark:bg-dark-elevated dark:border-dark-border dark:text-slate-200 dark:hover:bg-slate-800'
           }`}
         >
@@ -101,9 +101,9 @@ export default function CabeceraTablaProductos({
               filtroAgotados: !filtrosRapidos.filtroAgotados,
             })
           }
-          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border shadow-sm cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-red-500/20 ${
+          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 border shadow-sm cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-red-500/20 ${
             filtrosRapidos.filtroAgotados
-              ? 'bg-white border-slate-300 text-red-700 hover:bg-slate-50 dark:bg-dark-elevated dark:border-slate-600 dark:text-red-300 dark:hover:bg-slate-800'
+              ? 'bg-white border-slate-300 text-red-700 hover:bg-slate-50 dark:bg-dark-elevated dark:border-slate-600 dark:text-red-300 dark:hover:bg-slate-800 shadow-sm'
               : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 dark:bg-dark-elevated dark:border-dark-border dark:text-slate-200 dark:hover:bg-slate-800'
           }`}
         >
@@ -123,7 +123,7 @@ export default function CabeceraTablaProductos({
             type="button"
             title="Limpiar filtros de tabla"
             onClick={handleLimpiarFiltros}
-            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-300 hover:text-slate-800 dark:bg-dark-elevated dark:border-dark-border dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100 shadow-sm cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20"
+            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-300 hover:text-slate-800 dark:bg-dark-elevated dark:border-dark-border dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100 shadow-sm cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20"
           >
             <X size={12} />
             Limpiar
@@ -134,14 +134,14 @@ export default function CabeceraTablaProductos({
       <div className="flex items-center gap-2">
         <button
           type="button"
-          className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95 dark:bg-dark-elevated dark:border-dark-border dark:text-slate-200 dark:hover:bg-slate-800 outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20"
+          className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95 dark:bg-dark-elevated dark:border-dark-border dark:text-slate-200 dark:hover:bg-slate-800 outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20"
         >
           <Upload size={16} /> Cargar
         </button>
 
         <button
           type="button"
-          className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95 dark:bg-dark-elevated dark:border-dark-border dark:text-slate-200 dark:hover:bg-slate-800 outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20"
+          className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95 dark:bg-dark-elevated dark:border-dark-border dark:text-slate-200 dark:hover:bg-slate-800 outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20"
         >
           <Download size={16} /> Descargar
         </button>
