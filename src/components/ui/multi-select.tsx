@@ -76,20 +76,18 @@ export function MultiSelect({
         className={`
           inline-flex items-center transition-all border
           ${isSmall ? "gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm" : "gap-2 px-3 py-2 rounded-xl text-sm font-medium"}
-          ${
-            pillActive
-              ? "bg-white dark:bg-dark-elevated border-slate-300 dark:border-slate-600 text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800"
-              : "bg-white dark:bg-dark-elevated border-slate-200 dark:border-dark-border text-slate-700 dark:text-slate-200 hover:bg-slate-50 hover:border-slate-300 dark:hover:bg-slate-800"
+          ${pillActive
+            ? "bg-white dark:bg-dark-elevated border-slate-300 dark:border-slate-600 text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800"
+            : "bg-white dark:bg-dark-elevated border-slate-200 dark:border-dark-border text-slate-700 dark:text-slate-200 hover:bg-slate-50 hover:border-slate-300 dark:hover:bg-slate-800"
           }
         `}
       >
         {Icon && (
           <Icon
-            className={`${isSmall ? "w-3.5 h-3.5" : "w-4 h-4"} ${
-              pillActive
+            className={`${isSmall ? "w-3.5 h-3.5" : "w-4 h-4"} ${pillActive
                 ? "text-brand-600 dark:text-brand-300"
                 : "text-slate-500 dark:text-slate-400"
-            }`}
+              }`}
           />
         )}
 
@@ -107,18 +105,16 @@ export function MultiSelect({
             <>
               <button
                 onClick={() => onChange([])}
-                className={`${optionBase} px-3 py-2.5 ${
-                  seleccionadas.length === 0
+                className={`${optionBase} px-3 py-2.5 ${seleccionadas.length === 0
                     ? "bg-slate-100 dark:bg-slate-700/70 text-slate-900 dark:text-white font-semibold"
                     : "text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/80"
-                }`}
+                  }`}
               >
                 <span
-                  className={`${checkboxBase} ${
-                    seleccionadas.length === 0
+                  className={`${checkboxBase} ${seleccionadas.length === 0
                       ? "bg-brand-600 border-brand-600 text-white"
                       : "border-slate-300 dark:border-slate-600"
-                  }`}
+                    }`}
                 >
                   {seleccionadas.length === 0 && <Check className="w-3 h-3" />}
                 </span>
@@ -137,18 +133,16 @@ export function MultiSelect({
               <button
                 key={opcion}
                 onClick={() => toggle(opcion)}
-                className={`${optionBase} px-3 py-2.5 ${
-                  sel
+                className={`${optionBase} px-3 py-2.5 ${sel
                     ? "bg-slate-100 dark:bg-slate-700/70 text-slate-900 dark:text-white font-semibold"
                     : "text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/80"
-                }`}
+                  }`}
               >
                 <span
-                  className={`${checkboxBase} ${
-                    sel
+                  className={`${checkboxBase} ${sel
                       ? "bg-brand-600 border-brand-600 text-white"
                       : "border-slate-300 dark:border-slate-600"
-                  }`}
+                    }`}
                 >
                   {sel && <Check className="w-3 h-3" />}
                 </span>
