@@ -1,35 +1,53 @@
-import { Upload, Download, AlertCircle, XCircle, Tag } from 'lucide-react';
+import { Upload, Download, AlertCircle, XCircle, Filter, X } from 'lucide-react';
 import { MultiSelect } from '@/components/ui/multi-select';
-import type { FiltrosPOS, Ordenamiento } from '@/types/filtros.types';
+import type { FiltrosRapidosTabla, Ordenamiento } from '@/types/filtros.types';
 
 interface CabeceraTablaProductosProps {
   productosLength: number;
   ordenamiento: Ordenamiento;
-  filtros: FiltrosPOS;
-  setFiltros: (filtros: FiltrosPOS) => void;
+  filtrosRapidos: FiltrosRapidosTabla;
+  setFiltrosRapidos: (filtros: FiltrosRapidosTabla) => void;
   categoriasUnicas: string[];
 }
 
 export default function CabeceraTablaProductos({
   productosLength,
   ordenamiento,
-  filtros,
-  setFiltros,
+  filtrosRapidos,
+  setFiltrosRapidos,
   categoriasUnicas,
 }: CabeceraTablaProductosProps) {
+  const hayFiltrosActivos =
+    filtrosRapidos.categorias.length > 0 ||
+    filtrosRapidos.filtroStockBajo ||
+    filtrosRapidos.filtroAgotados;
+
+  const handleLimpiarFiltros = () => {
+    setFiltrosRapidos({
+      ...filtrosRapidos,
+      categorias: [],
+      filtroStockBajo: false,
+      filtroAgotados: false,
+    });
+  };
+
   return (
     <div className="flex flex-wrap items-center justify-between gap-4 p-4 border-b border-border bg-card">
       <div className="flex items-center gap-3">
         <span className="text-sm font-bold text-foreground">{productosLength} productos</span>
+
         {ordenamiento !== 'relevancia' && (
           <>
-            <div className="w-px h-4 bg-gray-200 dark:bg-dark-border"></div>
+            <div className="w-px h-4 bg-slate-200 dark:bg-dark-border" />
             <span className="text-xs text-slate-500 dark:text-slate-400">
-              Ordenado por: <strong className="text-brand-600 dark:text-brand-400">{
-                ordenamiento === 'masVendidos' ? 'Más vendidos' :
-                  ordenamiento === 'menosVendidos' ? 'Menos vendidos' :
-                    'Actividad reciente'
-              }</strong>
+              Ordenado por:{' '}
+              <strong className="text-brand-600 dark:text-brand-400">
+                {ordenamiento === 'masVendidos'
+                  ? 'Más vendidos'
+                  : ordenamiento === 'menosVendidos'
+                    ? 'Menos vendidos'
+                    : 'Actividad reciente'}
+              </strong>
             </span>
           </>
         )}
@@ -38,41 +56,93 @@ export default function CabeceraTablaProductos({
       <div className="flex flex-wrap items-center gap-2 flex-1 xl:flex-none justify-start xl:justify-center">
         <MultiSelect
           label="Categoría"
-          icon={Tag}
+          labelAll="Todas las categorías"
+          labelPlural="categorías"
+          icon={Filter}
           opciones={categoriasUnicas}
-          seleccionadas={filtros.categorias}
-          onChange={(cats) => setFiltros({ ...filtros, categorias: cats })}
+          seleccionadas={filtrosRapidos.categorias}
+          onChange={(cats) => setFiltrosRapidos({ ...filtrosRapidos, categorias: cats })}
           variant="pill"
           size="small"
         />
 
         <button
+          type="button"
           title="Filtrar stock bajo"
-          onClick={() => setFiltros({ ...filtros, estadoStock: filtros.estadoStock === 'stockBajo' ? 'todos' : 'stockBajo' })}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border shadow-sm cursor-pointer ${filtros.estadoStock === 'stockBajo'
-            ? 'bg-amber-100 border-amber-300 text-amber-800 dark:bg-amber-900/40 dark:border-amber-700 dark:text-amber-300'
-            : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 dark:bg-dark-elevated dark:border-dark-border dark:text-slate-300 dark:hover:bg-slate-800'
-            }`}
+          onClick={() =>
+            setFiltrosRapidos({
+              ...filtrosRapidos,
+              filtroStockBajo: !filtrosRapidos.filtroStockBajo,
+            })
+          }
+          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border shadow-sm cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-amber-500/20 ${
+            filtrosRapidos.filtroStockBajo
+              ? 'bg-white border-slate-300 text-amber-700 hover:bg-slate-50 dark:bg-dark-elevated dark:border-slate-600 dark:text-amber-300 dark:hover:bg-slate-800'
+              : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 dark:bg-dark-elevated dark:border-dark-border dark:text-slate-200 dark:hover:bg-slate-800'
+          }`}
         >
-          <AlertCircle size={14} className={filtros.estadoStock === 'stockBajo' ? '' : 'text-slate-400 dark:text-slate-500'} /> Stock Bajo
+          <AlertCircle
+            size={14}
+            className={
+              filtrosRapidos.filtroStockBajo
+                ? 'text-amber-600 dark:text-amber-300'
+                : 'text-slate-500 dark:text-slate-400'
+            }
+          />
+          Stock Bajo
         </button>
+
         <button
+          type="button"
           title="Filtrar agotados"
-          onClick={() => setFiltros({ ...filtros, estadoStock: filtros.estadoStock === 'agotados' ? 'todos' : 'agotados' })}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border shadow-sm cursor-pointer ${filtros.estadoStock === 'agotados'
-            ? 'bg-red-100 border-red-300 text-red-800 dark:bg-red-900/40 dark:border-red-700 dark:text-red-300'
-            : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 dark:bg-dark-elevated dark:border-dark-border dark:text-slate-300 dark:hover:bg-slate-800'
-            }`}
+          onClick={() =>
+            setFiltrosRapidos({
+              ...filtrosRapidos,
+              filtroAgotados: !filtrosRapidos.filtroAgotados,
+            })
+          }
+          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border shadow-sm cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-red-500/20 ${
+            filtrosRapidos.filtroAgotados
+              ? 'bg-white border-slate-300 text-red-700 hover:bg-slate-50 dark:bg-dark-elevated dark:border-slate-600 dark:text-red-300 dark:hover:bg-slate-800'
+              : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 dark:bg-dark-elevated dark:border-dark-border dark:text-slate-200 dark:hover:bg-slate-800'
+          }`}
         >
-          <XCircle size={14} className={filtros.estadoStock === 'agotados' ? '' : 'text-slate-400 dark:text-slate-500'} /> Agotados
+          <XCircle
+            size={14}
+            className={
+              filtrosRapidos.filtroAgotados
+                ? 'text-red-600 dark:text-red-300'
+                : 'text-slate-500 dark:text-slate-400'
+            }
+          />
+          Agotados
         </button>
+
+        {hayFiltrosActivos && (
+          <button
+            type="button"
+            title="Limpiar filtros de tabla"
+            onClick={handleLimpiarFiltros}
+            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-300 hover:text-slate-800 dark:bg-dark-elevated dark:border-dark-border dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100 shadow-sm cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20"
+          >
+            <X size={12} />
+            Limpiar
+          </button>
+        )}
       </div>
 
       <div className="flex items-center gap-2">
-        <button className="px-3 py-1.5 border border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border rounded-lg text-[#1F2937] dark:text-slate-200 text-xs font-semibold flex items-center gap-1.5 bg-white hover:bg-[#F3F4F6] dark:bg-dark-elevated dark:hover:bg-slate-700 cursor-pointer transition-all active:scale-95">
+        <button
+          type="button"
+          className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95 dark:bg-dark-elevated dark:border-dark-border dark:text-slate-200 dark:hover:bg-slate-800 outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20"
+        >
           <Upload size={16} /> Cargar
         </button>
-        <button className="px-3 py-1.5 border border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border rounded-lg text-[#1F2937] dark:text-slate-200 text-xs font-semibold flex items-center gap-1.5 bg-white hover:bg-[#F3F4F6] dark:bg-dark-elevated dark:hover:bg-slate-700 cursor-pointer transition-all active:scale-95">
+
+        <button
+          type="button"
+          className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95 dark:bg-dark-elevated dark:border-dark-border dark:text-slate-200 dark:hover:bg-slate-800 outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20"
+        >
           <Download size={16} /> Descargar
         </button>
       </div>

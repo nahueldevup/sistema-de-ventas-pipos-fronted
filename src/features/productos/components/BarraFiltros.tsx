@@ -11,15 +11,15 @@ import {
   Calendar,
 } from "lucide-react";
 import { MultiSelect } from "@/components/ui/multi-select";
-import type { FiltrosPOS, Ordenamiento } from "@/types/filtros.types";
-export type { FiltrosPOS, Ordenamiento } from "@/types/filtros.types";
+import type { FiltrosAvanzados, Ordenamiento } from "@/types/filtros.types";
+export type { FiltrosAvanzados, Ordenamiento } from "@/types/filtros.types";
 
 
 interface BarraFiltrosProps {
   isOpen: boolean;
   onClose: () => void;
-  filtros: FiltrosPOS;
-  setFiltros: (filtros: FiltrosPOS) => void;
+  filtros: FiltrosAvanzados;
+  setFiltros: (filtros: FiltrosAvanzados) => void;
   ordenamiento: Ordenamiento;
   setOrdenamiento: (o: Ordenamiento) => void;
   categoriasDisponibles: string[];
@@ -154,6 +154,8 @@ export default function BarraFiltros({
 
             <MultiSelect
               label="Categoría"
+              labelAll="Todas las categorías"
+              labelPlural="categorías"
               icon={Tag}
               opciones={categoriasDisponibles}
               seleccionadas={filtros.categorias}
@@ -195,7 +197,7 @@ export default function BarraFiltros({
               <Calendar className="w-4 h-4 text-slate-500 dark:text-slate-400 shrink-0" />
               <select
                 value={filtros.fechaCampo}
-                onChange={(e) => setFiltros({ ...filtros, fechaCampo: e.target.value as FiltrosPOS["fechaCampo"] })}
+                onChange={(e) => setFiltros({ ...filtros, fechaCampo: e.target.value as FiltrosAvanzados["fechaCampo"] })}
                 className="text-sm outline-none text-slate-600 dark:text-slate-300 bg-transparent cursor-pointer"
               >
                 <option value="actividad">Actividad</option>

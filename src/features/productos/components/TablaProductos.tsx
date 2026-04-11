@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Producto } from '@/types/producto.types';
-import type { FiltrosPOS, Ordenamiento } from '@/types/filtros.types';
+import type { FiltrosRapidosTabla, Ordenamiento } from '@/types/filtros.types';
 import CabeceraTablaProductos from './CabeceraTablaProductos';
 import PaginacionTabla from './PaginacionTabla';
 import FilaProducto from './FilaProducto';
@@ -9,8 +9,8 @@ interface TablaProductosProps {
   productos: Producto[];
   onEditar: (producto: Producto) => void;
   ordenamiento: Ordenamiento;
-  filtros: FiltrosPOS;
-  setFiltros: (filtros: FiltrosPOS) => void;
+  filtrosRapidos: FiltrosRapidosTabla;
+  setFiltrosRapidos: (filtros: FiltrosRapidosTabla) => void;
   categoriasUnicas: string[];
 }
 
@@ -18,8 +18,8 @@ export default function TablaProductos({
   productos,
   onEditar,
   ordenamiento,
-  filtros,
-  setFiltros,
+  filtrosRapidos,
+  setFiltrosRapidos,
   categoriasUnicas,
 }: TablaProductosProps) {
   const [menuAbiertoId, setMenuAbiertoId] = useState<string | null>(null);
@@ -30,8 +30,8 @@ export default function TablaProductos({
       <CabeceraTablaProductos
         productosLength={productos.length}
         ordenamiento={ordenamiento}
-        filtros={filtros}
-        setFiltros={setFiltros}
+        filtrosRapidos={filtrosRapidos}
+        setFiltrosRapidos={setFiltrosRapidos}
         categoriasUnicas={categoriasUnicas}
       />
 

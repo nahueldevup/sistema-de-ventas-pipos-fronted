@@ -10,6 +10,8 @@ interface MultiSelectProps {
   icon?: React.ElementType;
   variant?: "pill" | "field";
   size?: "default" | "small";
+  labelAll?: string;
+  labelPlural?: string;
 }
 
 export function MultiSelect({
@@ -21,6 +23,8 @@ export function MultiSelect({
   icon: Icon,
   variant = "pill",
   size = "default",
+  labelAll,
+  labelPlural,
 }: MultiSelectProps) {
   const isSmall = size === "small";
   const [abierto, setAbierto] = useState(false);
@@ -28,142 +32,128 @@ export function MultiSelect({
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node))
+      if (ref.current && !ref.current.contains(e.target as Node)) {
         setAbierto(false);
+      }
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
   const toggle = (opcion: string) => {
-    onChange(
-      seleccionadas.includes(opcion)
-        ? seleccionadas.filter((s) => s !== opcion)
-        : [...seleccionadas, opcion]
-    );
+    const next = seleccionadas.includes(opcion)
+      ? seleccionadas.filter((s) => s !== opcion)
+      : [...seleccionadas, opcion];
+
+    onChange(next.length === 0 ? [] : next);
   };
 
-  // ─── Variante "field" (estilo input, usado en modales) ──────────────
-  if (variant === "field") {
-    return (
-      <div className="relative mt-2" ref={ref}>
-        <button
-          onClick={() => setAbierto(!abierto)}
-          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl border text-sm transition-all ${
-            seleccionadas.length > 0
-              ? "bg-brand-50 border-brand-300 text-brand-700"
-              : "bg-white border-[#E5E7EB] text-[#6B7280] hover:border-gray-300"
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            {Icon && <Icon className="w-4 h-4" />}
-            {seleccionadas.length === 0 ? (
-              <span>{placeholder}</span>
-            ) : (
-              <span className="font-bold">
-                {seleccionadas.length}{" "}
-                {seleccionadas.length === 1 ? "seleccionada" : "seleccionadas"}
-              </span>
-            )}
-          </div>
-          <ChevronDown
-            className={`w-4 h-4 transition-transform ${abierto ? "rotate-180" : ""}`}
-          />
-        </button>
+  const getDisplayText = () => {
+    if (!labelAll) return label || placeholder;
+    if (seleccionadas.length === 0) return labelAll;
+    if (seleccionadas.length === 1) return seleccionadas[0];
+    if (seleccionadas.length === 2) return seleccionadas.join(", ");
+    return `${seleccionadas.length} ${labelPlural || "seleccionadas"}`;
+  };
 
-        {abierto && (
-          <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-dark-card border border-[#E5E7EB] dark:border-dark-border rounded-xl shadow-md z-[60] py-1 max-h-60 overflow-y-auto">
-            {opciones.map((opcion) => {
-              const sel = seleccionadas.includes(opcion);
-              return (
-                <button
-                  key={opcion}
-                  onClick={() => toggle(opcion)}
-                  className={`w-full text-left px-4 py-2.5 text-sm flex items-center gap-3 transition-colors ${
-                    sel
-                      ? "bg-brand-50 text-brand-700 font-semibold"
-                      : "text-[#6B7280] hover:bg-[#F3F4F6]"
-                  }`}
-                >
-                  <div
-                    className={`w-4 h-4 rounded border flex items-center justify-center ${
-                      sel
-                        ? "bg-brand-600 border-brand-600 text-white"
-                        : "border-slate-300"
-                    }`}
-                  >
-                    {sel && <Check className="w-3 h-3" />}
-                  </div>
-                  {opcion}
-                </button>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    );
-  }
+  const dropdownBase =
+    "absolute top-full left-0 mt-1 bg-white dark:bg-dark-card border border-slate-200 dark:border-dark-border rounded-xl shadow-lg z-50 min-w-[220px] py-1 max-h-64 overflow-y-auto";
 
-  // ─── Variante "pill" (default, usado en barras de filtro) ───────────
+  const optionBase =
+    "w-full text-left text-sm flex items-center gap-2.5 transition-colors cursor-pointer";
+
+  const checkboxBase =
+    "w-4 h-4 shrink-0 rounded-md border flex items-center justify-center";
+
+  // ─── BOTÓN PILL ─────────────────────────────────────────────────────────
+  const pillActive = seleccionadas.length > 0;
+
   return (
     <div className="relative" ref={ref}>
       <button
+        type="button"
         onClick={() => setAbierto(!abierto)}
         className={`
           inline-flex items-center transition-all border
-          ${isSmall ? "gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm" : "gap-1.5 px-3 py-2 rounded-xl text-sm font-medium"}
+          ${isSmall ? "gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm" : "gap-2 px-3 py-2 rounded-xl text-sm font-medium"}
           ${
-            seleccionadas.length > 0
-              ? "bg-brand-50 dark:bg-brand-900/30 border-brand-300 dark:border-brand-700 text-brand-700 dark:text-brand-300"
-              : isSmall
-                ? "bg-white border-[#E5E7EB] text-[#6B7280] hover:bg-[#F3F4F6] hover:border-gray-300 dark:bg-dark-elevated dark:border-dark-border dark:text-slate-300 dark:hover:bg-slate-700"
-                : "bg-white dark:bg-dark-elevated border-[#E5E7EB] dark:border-dark-border text-[#6B7280] dark:text-slate-300 hover:border-gray-300 dark:hover:border-slate-500 hover:bg-[#F3F4F6] dark:hover:bg-slate-600"
+            pillActive
+              ? "bg-white dark:bg-dark-elevated border-slate-300 dark:border-slate-600 text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800"
+              : "bg-white dark:bg-dark-elevated border-slate-200 dark:border-dark-border text-slate-700 dark:text-slate-200 hover:bg-slate-50 hover:border-slate-300 dark:hover:bg-slate-800"
           }
         `}
       >
-        {Icon && <Icon className={isSmall ? "w-3.5 h-3.5" : "w-4 h-4"} />}
-        {label}
-        {seleccionadas.length > 0 && (
-          <span
-            className={`bg-brand-600 text-white flex items-center justify-center ml-0.5 rounded-full ${isSmall ? "text-[10px] font-bold w-4 h-4" : "text-xs w-5 h-5"}`}
-          >
-            {seleccionadas.length}
-          </span>
+        {Icon && (
+          <Icon
+            className={`${isSmall ? "w-3.5 h-3.5" : "w-4 h-4"} ${
+              pillActive
+                ? "text-brand-600 dark:text-brand-300"
+                : "text-slate-500 dark:text-slate-400"
+            }`}
+          />
         )}
-        <ChevronDown
-          className={`w-3.5 h-3.5 transition-transform ${abierto ? "rotate-180" : ""}`}
-        />
+
+        <span className="truncate max-w-[200px]">
+          {labelAll ? getDisplayText() : label}
+        </span>
+
+        <ChevronDown className="w-3.5 h-3.5 ml-1" />
       </button>
 
       {abierto && (
-        <div className="absolute top-full left-0 mt-1 bg-white dark:bg-dark-card border border-[#E5E7EB] dark:border-dark-border rounded-xl shadow-md z-50 min-w-[200px] py-1 max-h-60 overflow-y-auto">
-          {opciones.length === 0 && (
-            <p className="px-3 py-2 text-sm text-slate-400 dark:text-slate-500">
-              Sin opciones
-            </p>
+        <div className={dropdownBase}>
+          {/* TODAS LAS CATEGORÍAS */}
+          {labelAll && (
+            <>
+              <button
+                onClick={() => onChange([])}
+                className={`${optionBase} px-3 py-2.5 ${
+                  seleccionadas.length === 0
+                    ? "bg-slate-100 dark:bg-slate-700/70 text-slate-900 dark:text-white font-semibold"
+                    : "text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/80"
+                }`}
+              >
+                <span
+                  className={`${checkboxBase} ${
+                    seleccionadas.length === 0
+                      ? "bg-brand-600 border-brand-600 text-white"
+                      : "border-slate-300 dark:border-slate-600"
+                  }`}
+                >
+                  {seleccionadas.length === 0 && <Check className="w-3 h-3" />}
+                </span>
+                {labelAll}
+              </button>
+
+              <div className="h-px my-1 bg-slate-200 dark:bg-slate-700" />
+            </>
           )}
+
+          {/* OPCIONES */}
           {opciones.map((opcion) => {
             const sel = seleccionadas.includes(opcion);
+
             return (
               <button
                 key={opcion}
                 onClick={() => toggle(opcion)}
-                className={`w-full text-left px-3 py-2 text-sm flex items-center gap-2 transition-colors ${
+                className={`${optionBase} px-3 py-2.5 ${
                   sel
-                    ? "bg-brand-50 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 font-semibold"
-                    : "text-[#6B7280] dark:text-slate-300 hover:bg-[#F3F4F6] dark:hover:bg-dark-elevated"
+                    ? "bg-slate-100 dark:bg-slate-700/70 text-slate-900 dark:text-white font-semibold"
+                    : "text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/80"
                 }`}
               >
                 <span
-                  className={`w-4 h-4 flex items-center justify-center rounded border ${
+                  className={`${checkboxBase} ${
                     sel
                       ? "bg-brand-600 border-brand-600 text-white"
-                      : "border-gray-300 dark:border-slate-600"
+                      : "border-slate-300 dark:border-slate-600"
                   }`}
                 >
                   {sel && <Check className="w-3 h-3" />}
                 </span>
-                {opcion}
+
+                <span className="truncate">{opcion}</span>
               </button>
             );
           })}

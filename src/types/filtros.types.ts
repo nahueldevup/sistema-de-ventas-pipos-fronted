@@ -1,4 +1,4 @@
-export interface FiltrosPOS {
+export interface FiltrosAvanzados {
   busqueda: string;
   categorias: string[];
   proveedores: string[];
@@ -8,6 +8,12 @@ export interface FiltrosPOS {
   fechaCampo: 'actividad' | 'creacion' | 'modificacion';
   fechaDesde: string;
   fechaHasta: string;
+}
+
+export interface FiltrosRapidosTabla {
+  categorias: string[];
+  filtroStockBajo: boolean;
+  filtroAgotados: boolean;
 }
 
 export type Ordenamiento = 'relevancia' | 'masVendidos' | 'menosVendidos' | 'actividadReciente';

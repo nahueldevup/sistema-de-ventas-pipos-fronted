@@ -24,8 +24,16 @@ export default function Productos() {
   const [margenGananciaGlobal, setMargenGananciaGlobal] = useState(40);
   const [gananciaAutoActiva, setGananciaAutoActiva] = useState(true);
 
-  const { filtros, setFiltros, ordenamiento, setOrdenamiento, productosFiltrados, filtrosActivosCount } =
-    useFiltrosProductos(productos);
+  const {
+    filtrosAvanzados,
+    setFiltrosAvanzados,
+    filtrosRapidos,
+    setFiltrosRapidos,
+    ordenamiento,
+    setOrdenamiento,
+    productosFiltrados,
+    filtrosActivosCount
+  } = useFiltrosProductos(productos);
 
   const categoriasConConteo = useMemo(() => {
     return productos.reduce((acc, p) => {
@@ -43,9 +51,9 @@ export default function Productos() {
   const proveedoresUnicos = useMemo(() => Array.from(new Set(productos.map(p => p.proveedor))), [productos]);
 
   const handleVerCategoria = useCallback((nombre: string) => {
-    setFiltros({ ...filtros, categorias: [nombre], busqueda: '' });
+    setFiltrosAvanzados(prev => ({ ...prev, categorias: [nombre], busqueda: '' }));
     setModalActivo(null);
-  }, [filtros, setFiltros]);
+  }, [setFiltrosAvanzados]);
 
   const handleAgregarCategoria = useCallback((nombre: string) => {
     console.log("Nueva categoría:", nombre);
@@ -100,8 +108,8 @@ export default function Productos() {
 
       {/* BARRA DE HERRAMIENTAS PRINCIPAL */}
       <BarraHerramientas
-        filtros={filtros}
-        setFiltros={setFiltros}
+        filtros={filtrosAvanzados}
+        setFiltros={setFiltrosAvanzados}
         ordenamiento={ordenamiento}
         setOrdenamiento={setOrdenamiento}
         filtrosActivosCount={filtrosActivosCount}
@@ -122,8 +130,8 @@ export default function Productos() {
         productos={productosFiltrados}
         onEditar={handleEditar}
         ordenamiento={ordenamiento}
-        filtros={filtros}
-        setFiltros={setFiltros}
+        filtrosRapidos={filtrosRapidos}
+        setFiltrosRapidos={setFiltrosRapidos}
         categoriasUnicas={categoriasUnicas}
       />
 
