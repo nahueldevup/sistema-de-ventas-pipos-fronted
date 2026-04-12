@@ -1,4 +1,4 @@
-import { Upload, Download, AlertCircle, XCircle, Filter, X } from 'lucide-react';
+import { Upload, Download, AlertCircle,Filter, BrushCleaning, PackageX } from 'lucide-react';
 import { MultiSelect } from '@/components/ui/multi-select';
 import type { FiltrosRapidosTabla, Ordenamiento } from '@/types/filtros.types';
 
@@ -54,17 +54,20 @@ export default function CabeceraTablaProductos({
       </div>
 
       <div className="flex flex-wrap items-center gap-2 flex-1 xl:flex-none justify-start xl:justify-center">
-        <MultiSelect
-          label="Categoría"
-          labelAll="Todas las categorías"
-          labelPlural="categorías"
-          icon={Filter}
-          opciones={categoriasUnicas}
-          seleccionadas={filtrosRapidos.categorias}
-          onChange={(cats) => setFiltrosRapidos({ ...filtrosRapidos, categorias: cats })}
-          variant="pill"
-          size="small"
-        />
+        <div className="w-[193px] [&_button]:w-full">
+          <MultiSelect
+            label="Categoría"
+            labelAll="Todas las categorías"
+            labelPlural="categorías"
+            icon={Filter}
+            iconSize={16}
+            opciones={categoriasUnicas}
+            seleccionadas={filtrosRapidos.categorias}
+            onChange={(cats) => setFiltrosRapidos({ ...filtrosRapidos, categorias: cats })}
+            variant="pill"
+            size="small"
+          />
+        </div>
 
         <button
           type="button"
@@ -77,18 +80,11 @@ export default function CabeceraTablaProductos({
           }
           className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 border shadow-sm cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-amber-500/20 ${
             filtrosRapidos.filtroStockBajo
-              ? 'bg-white border-slate-300 text-amber-700 hover:bg-slate-50 dark:bg-dark-elevated dark:border-slate-600 dark:text-amber-300 dark:hover:bg-slate-800 shadow-sm'
+              ? 'bg-amber-50 border-amber-400 text-amber-700 dark:bg-amber-900/20 dark:border-amber-500 dark:text-amber-300'
               : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 dark:bg-dark-elevated dark:border-dark-border dark:text-slate-200 dark:hover:bg-slate-800'
           }`}
         >
-          <AlertCircle
-            size={14}
-            className={
-              filtrosRapidos.filtroStockBajo
-                ? 'text-amber-600 dark:text-amber-300'
-                : 'text-slate-500 dark:text-slate-400'
-            }
-          />
+          <AlertCircle size={16} />
           Stock Bajo
         </button>
 
@@ -103,32 +99,25 @@ export default function CabeceraTablaProductos({
           }
           className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 border shadow-sm cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-red-500/20 ${
             filtrosRapidos.filtroAgotados
-              ? 'bg-white border-slate-300 text-red-700 hover:bg-slate-50 dark:bg-dark-elevated dark:border-slate-600 dark:text-red-300 dark:hover:bg-slate-800 shadow-sm'
+              ? 'bg-red-50 border-red-400 text-red-600 dark:bg-red-900/20 dark:border-red-500 dark:text-red-300'
               : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 dark:bg-dark-elevated dark:border-dark-border dark:text-slate-200 dark:hover:bg-slate-800'
           }`}
         >
-          <XCircle
-            size={14}
-            className={
-              filtrosRapidos.filtroAgotados
-                ? 'text-red-600 dark:text-red-300'
-                : 'text-slate-500 dark:text-slate-400'
-            }
-          />
+          <PackageX size={16} />
           Agotados
         </button>
 
-        {hayFiltrosActivos && (
-          <button
-            type="button"
-            title="Limpiar filtros de tabla"
-            onClick={handleLimpiarFiltros}
-            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-300 hover:text-slate-800 dark:bg-dark-elevated dark:border-dark-border dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100 shadow-sm cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20"
-          >
-            <X size={12} />
-            Limpiar
-          </button>
-        )}
+        <button
+          type="button"
+          title="Limpiar filtros de tabla"
+          onClick={handleLimpiarFiltros}
+          className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-300 hover:text-slate-800 dark:bg-dark-elevated dark:border-dark-border dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100 shadow-sm cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20 ${
+            hayFiltrosActivos ? 'visible' : 'invisible'
+          }`}
+        >
+          <BrushCleaning size={16}/>
+          Limpiar Filtros
+        </button>
       </div>
 
       <div className="flex items-center gap-2">

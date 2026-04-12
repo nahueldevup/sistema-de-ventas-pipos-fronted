@@ -2,10 +2,13 @@ export interface FiltrosAvanzados {
   busqueda: string;
   categorias: string[];
   proveedores: string[];
-  estadoStock: 'todos' | 'enStock' | 'stockBajo' | 'agotados';
+  filtroConStock: boolean;
+  filtroStockBajo: boolean;
+  filtroAgotados: boolean;
+  filtroSinImagen: boolean;
   precioMin: string;
   precioMax: string;
-  fechaCampo: 'actividad' | 'creacion' | 'modificacion';
+  fechaCampo: "actividad" | "creacion" | "modificacion";
   fechaDesde: string;
   fechaHasta: string;
 }

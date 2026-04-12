@@ -4,7 +4,7 @@ import { ChevronDown, Check } from "lucide-react";
 // ─── Props de SingleSelect ───────────────────────────────────────────────────
 export interface SingleSelectProps {
   opciones: string[];
-  seleccionada: string; // valor actual; "all" = sin filtro
+  seleccionada: string;
   onChange: (val: string) => void;
   label?: string;
   labelAll?: string;
@@ -23,6 +23,7 @@ interface MultiSelectProps {
   size?: "default" | "small";
   labelAll?: string;
   labelPlural?: string;
+  iconSize?: number;
 }
 
 export function MultiSelect({
@@ -36,6 +37,7 @@ export function MultiSelect({
   size = "default",
   labelAll,
   labelPlural,
+  iconSize,
 }: MultiSelectProps) {
   const isSmall = size === "small";
   const [abierto, setAbierto] = useState(false);
@@ -82,7 +84,7 @@ export function MultiSelect({
   };
 
   const dropdownBase =
-    `absolute top-full left-0 mt-1 bg-white dark:bg-dark-card border border-slate-200 dark:border-dark-border rounded-xl shadow-lg z-50 min-w-[220px] py-1 max-h-64 overflow-y-auto
+    `absolute top-full left-0 mt-1 bg-white dark:bg-dark-card border border-slate-200 dark:border-dark-border rounded-xl shadow-xl z-[60] min-w-full py-1 max-h-64 overflow-y-auto
      transition-all duration-150 ease-out origin-top`;
 
   const dropdownState = abierto
@@ -90,15 +92,14 @@ export function MultiSelect({
     : "opacity-0 scale-95 -translate-y-1 pointer-events-none";
 
   const optionBase =
-    `w-full text-left text-sm flex items-center gap-2.5 transition-all duration-150 cursor-pointer
-     focus:outline-none`;
+    "w-full text-left text-sm flex items-center gap-2.5 transition-all duration-150 cursor-pointer focus:outline-none";
 
   const checkboxBase =
-    `w-4 h-4 shrink-0 rounded-md border flex items-center justify-center transition-all duration-150`;
+    "w-4 h-4 shrink-0 rounded-md border flex items-center justify-center transition-all duration-150";
 
   const checkIconClass = "w-3 h-3 transition-all duration-150 scale-100";
 
-  // ─── Variante "field" (modales / formularios) ─────────────────────────────
+  // ─── Variante "field" ──────────────────────────────────────────────────────
   if (variant === "field") {
     return (
       <div className="relative mt-2" ref={ref}>
@@ -108,19 +109,21 @@ export function MultiSelect({
           onClick={() => setAbierto((v) => !v)}
           aria-haspopup="listbox"
           aria-expanded={abierto}
-          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl border text-sm transition-all duration-150 outline-none focus-visible:ring-2 focus-visible:ring-brand-500/25 focus-visible:border-brand-500 ${
+          className={`w-full inline-flex items-center cursor-pointer transition-all duration-150 rounded-xl border text-sm outline-none focus-visible:ring-2 focus-visible:ring-brand-500/25 focus-visible:border-brand-500 ${
             seleccionadas.length > 0
               ? "bg-white dark:bg-dark-elevated border-brand-300 dark:border-brand-700 text-brand-700 dark:text-brand-300 shadow-sm"
               : "bg-white dark:bg-dark-elevated border-slate-200 dark:border-dark-border text-slate-600 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600"
           } ${abierto ? "shadow-md" : ""}`}
         >
-          <div className="flex items-center gap-2 min-w-0">
+          <span className="flex items-center gap-2 min-w-0 flex-1 px-3 py-2.5">
             {Icon && (
-              <Icon className={`w-4 h-4 shrink-0 transition-colors duration-150 ${
-                seleccionadas.length > 0
-                  ? "text-brand-600 dark:text-brand-300"
-                  : "text-slate-500 dark:text-slate-400"
-              }`} />
+              <Icon
+                className={`w-4 h-4 shrink-0 transition-colors duration-150 ${
+                  seleccionadas.length > 0
+                    ? "text-brand-600 dark:text-brand-300"
+                    : "text-slate-500 dark:text-slate-400"
+                }`}
+              />
             )}
 
             {labelAll ? (
@@ -133,10 +136,10 @@ export function MultiSelect({
                 {seleccionadas.length === 1 ? "seleccionada" : "seleccionadas"}
               </span>
             )}
-          </div>
+          </span>
 
           <ChevronDown
-            className={`w-4 h-4 shrink-0 transition-transform duration-200 ${
+            className={`mr-3 w-4 h-4 shrink-0 transition-transform duration-200 ${
               abierto ? "rotate-180" : ""
             }`}
           />
@@ -157,7 +160,7 @@ export function MultiSelect({
                 <span
                   className={`${checkboxBase} ${
                     seleccionadas.length === 0
-                      ? "bg-brand-600 border-brand-600 text-white shadow-sm scale-100"
+                      ? "bg-brand-600 border-brand-600 text-white shadow-sm"
                       : "border-slate-300 dark:border-slate-600 bg-white dark:bg-transparent hover:border-slate-400 dark:hover:border-slate-500"
                   }`}
                 >
@@ -193,15 +196,13 @@ export function MultiSelect({
                 <span
                   className={`${checkboxBase} ${
                     sel
-                      ? "bg-brand-600 border-brand-600 text-white shadow-sm scale-100"
+                      ? "bg-brand-600 border-brand-600 text-white shadow-sm"
                       : "border-slate-300 dark:border-slate-600 bg-white dark:bg-transparent hover:border-slate-400 dark:hover:border-slate-500"
                   }`}
                 >
                   {sel && <Check className={checkIconClass} />}
                 </span>
-                <span className="truncate transition-transform duration-150 group-hover:translate-x-[1px]">
-                  {opcion}
-                </span>
+                <span className="truncate">{opcion}</span>
               </button>
             );
           })}
@@ -210,7 +211,7 @@ export function MultiSelect({
     );
   }
 
-  // ─── Variante "pill" (header / filtros rápidos) ───────────────────────────
+  // ─── Variante "pill" ───────────────────────────────────────────────────────
   const pillActive = seleccionadas.length > 0;
 
   return (
@@ -222,8 +223,8 @@ export function MultiSelect({
         aria-haspopup="listbox"
         aria-expanded={abierto}
         className={`
-          inline-flex items-center transition-all duration-150 border outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20
-          ${isSmall ? "gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm" : "gap-2 px-3 py-2 rounded-xl text-sm font-medium"}
+          w-full inline-flex items-center cursor-pointer transition-all duration-150 border outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20
+          ${isSmall ? "rounded-lg text-xs font-semibold shadow-sm" : "rounded-xl text-sm font-medium"}
           ${
             pillActive
               ? "bg-white dark:bg-dark-elevated border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-sm"
@@ -232,22 +233,25 @@ export function MultiSelect({
           ${abierto ? "shadow-md -translate-y-[1px]" : ""}
         `}
       >
-        {Icon && (
-          <Icon
-            className={`${isSmall ? "w-3.5 h-3.5" : "w-4 h-4"} shrink-0 transition-colors duration-150 ${
-              pillActive ? "text-brand-600 dark:text-brand-300" : "text-slate-500 dark:text-slate-400"
-            }`}
-          />
-        )}
+        <span className={`flex items-center gap-2 min-w-0 flex-1 ${isSmall ? "px-3 py-1.5" : "px-3 py-2"}`}>
+          {Icon && (
+            <Icon
+              size={iconSize}
+              className={`${!iconSize ? (isSmall ? "w-3.5 h-3.5" : "w-4 h-4") : ""} shrink-0 transition-colors duration-150 ${
+                pillActive ? "text-brand-600 dark:text-brand-300" : "text-slate-500 dark:text-slate-400"
+              }`}
+            />
+          )}
 
-        <span className={isSmall ? "max-w-[160px] truncate" : "max-w-[210px] truncate"}>
-          {labelAll ? getDisplayText() : label}
+          <span className="truncate">
+            {labelAll ? getDisplayText() : label}
+          </span>
         </span>
 
         {!labelAll && seleccionadas.length > 0 && (
           <span
-            className={`bg-brand-600 text-white flex items-center justify-center ml-0.5 rounded-full transition-transform duration-150 ${
-              isSmall ? "text-[10px] font-bold w-4 h-4" : "text-xs w-5 h-5"
+            className={`bg-brand-600 text-white flex items-center justify-center rounded-full transition-transform duration-150 shrink-0 ${
+              isSmall ? "text-[10px] font-bold w-4 h-4 mr-2" : "text-xs w-5 h-5 mr-2"
             } ${abierto ? "scale-105" : ""}`}
           >
             {seleccionadas.length}
@@ -255,7 +259,7 @@ export function MultiSelect({
         )}
 
         <ChevronDown
-          className={`w-3.5 h-3.5 shrink-0 transition-all duration-200 ${
+          className={`mr-3 w-3.5 h-3.5 shrink-0 transition-all duration-200 ${
             abierto ? "rotate-180 text-slate-600 dark:text-slate-300" : pillActive ? "text-slate-600 dark:text-slate-300" : "text-slate-400 dark:text-slate-500"
           }`}
         />
@@ -276,11 +280,11 @@ export function MultiSelect({
               <span
                 className={`${checkboxBase} ${
                   seleccionadas.length === 0
-                    ? "bg-brand-600 border-brand-600 text-white shadow-sm scale-100"
-                    : "border-slate-300 dark:border-slate-600 bg-white dark:bg-transparent hover:border-slate-400 dark:hover:border-slate-500"
+                    ? "bg-brand-600 border-brand-600 text-white shadow-sm"
+                    : "border-slate-300 dark:border-slate-600 bg-white dark:bg-transparent"
                 }`}
               >
-                {seleccionadas.length === 0 && <Check className={checkIconClass} />}
+                {seleccionadas.length === 0 && <Check className="w-3 h-3" />}
               </span>
               <span className="truncate">{labelAll}</span>
             </button>
@@ -312,11 +316,11 @@ export function MultiSelect({
               <span
                 className={`${checkboxBase} ${
                   sel
-                    ? "bg-brand-600 border-brand-600 text-white shadow-sm scale-100"
-                    : "border-slate-300 dark:border-slate-600 bg-white dark:bg-transparent hover:border-slate-400 dark:hover:border-slate-500"
+                    ? "bg-brand-600 border-brand-600 text-white shadow-sm"
+                    : "border-slate-300 dark:border-slate-600 bg-white dark:bg-transparent"
                 }`}
               >
-                {sel && <Check className={checkIconClass} />}
+                {sel && <Check className="w-3 h-3" />}
               </span>
               <span className="truncate">{opcion}</span>
             </button>
@@ -390,8 +394,8 @@ export function SingleSelect({
         aria-haspopup="listbox"
         aria-expanded={abierto}
         className={`
-          inline-flex items-center transition-all duration-150 border outline-none focus-visible:ring-2 focus-visible:ring-brand-500/25 focus-visible:border-brand-500
-          ${isSmall ? "gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm" : "gap-2 px-3 py-2 rounded-xl text-sm font-medium"}
+          w-full inline-flex items-center cursor-pointer transition-all duration-150 border outline-none focus-visible:ring-2 focus-visible:ring-brand-500/25 focus-visible:border-brand-500
+          ${isSmall ? "rounded-lg text-xs font-semibold shadow-sm" : "rounded-xl text-sm font-medium"}
           ${
             tieneSeleccion
               ? "bg-white dark:bg-dark-elevated border-brand-300 dark:border-brand-700 text-brand-700 dark:text-brand-300 hover:bg-brand-50/60 dark:hover:bg-brand-900/20 shadow-sm"
@@ -400,10 +404,13 @@ export function SingleSelect({
           ${abierto ? "shadow-md -translate-y-[1px]" : ""}
         `}
       >
-        {Icon && <Icon className={isSmall ? "w-3.5 h-3.5 shrink-0" : "w-4 h-4 shrink-0"} />}
-        <span className="max-w-[150px] truncate">{textoBoton}</span>
+        <span className={`flex items-center gap-2 min-w-0 flex-1 ${isSmall ? "px-3 py-1.5" : "px-3 py-2"}`}>
+          {Icon && <Icon className={isSmall ? "w-3.5 h-3.5 shrink-0" : "w-4 h-4 shrink-0"} />}
+          <span className="truncate">{textoBoton}</span>
+        </span>
+
         <ChevronDown
-          className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${abierto ? "rotate-180" : ""}`}
+          className={`mr-3 w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${abierto ? "rotate-180" : ""}`}
         />
       </button>
 

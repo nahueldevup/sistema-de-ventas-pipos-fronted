@@ -4,7 +4,7 @@ import type { FiltrosAvanzados, Ordenamiento } from '@/types/filtros.types';
 import {
   Search, Filter, Plus,
   Minus, ChevronDown, X,
-  Printer, LayoutGrid, ListTodo
+  Printer, LayoutGrid, ListTodo, BrushCleaning
 } from 'lucide-react';
 
 interface BarraHerramientasProps {
@@ -43,8 +43,6 @@ export default function BarraHerramientas({
   onAbrirImprimirEtiquetas,
 }: BarraHerramientasProps) {
   const [filtrosAbierto, setFiltrosAbierto] = useState(false);
-
-  // Ref para el contenedor del dropdown de filtros (click outside)
   const filtroContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -58,122 +56,154 @@ export default function BarraHerramientas({
     return () => document.removeEventListener("mousedown", onClick);
   }, [filtrosAbierto]);
 
-  // ── Chips de filtros activos (memoizados) ──────────────────
-const chipsActivos = useMemo(() => {
-  const chips: { label: React.ReactNode; onRemove: () => void }[] = [];
+  const chipsActivos = useMemo(() => {
+    const chips: { label: React.ReactNode; onRemove: () => void }[] = [];
 
-  if (ordenamiento !== "relevancia") {
-    const labels: Record<string, string> = {
-      masVendidos: "Más vendidos",
-      menosVendidos: "Menos vendidos",
-      actividadReciente: "Actividad reciente",
-    };
+    if (ordenamiento !== "relevancia") {
+      const labels: Record<string, string> = {
+        masVendidos: "Más vendidos",
+        menosVendidos: "Menos vendidos",
+        actividadReciente: "Actividad reciente",
+      };
 
-    chips.push({
-      label: (
-        <span className="flex items-center gap-1 text-slate-700 dark:text-slate-300 font-medium">
-          Orden: <strong className="font-bold">{labels[ordenamiento]}</strong>
-        </span>
-      ),
-      onRemove: () => setOrdenamiento("relevancia"),
-    });
-  }
+      chips.push({
+        label: (
+          <span className="flex items-center gap-1 font-medium">
+            <span className="text-slate-500 dark:text-slate-400">Orden:</span>
+            <strong className="font-semibold text-slate-800 dark:text-slate-100">{labels[ordenamiento]}</strong>
+          </span>
+        ),
+        onRemove: () => setOrdenamiento("relevancia"),
+      });
+    }
 
-  if (filtros.estadoStock !== "todos") {
-    const labels: Record<string, string> = {
-      enStock: "En stock",
-      stockBajo: "Stock bajo",
-      agotados: "Agotados",
-    };
+    if (filtros.filtroConStock) {
+      chips.push({
+        label: (
+          <span className="flex items-center gap-1 font-medium text-slate-800 dark:text-slate-100">
+            En stock
+          </span>
+        ),
+        onRemove: () => setFiltros({ ...filtros, filtroConStock: false }),
+      });
+    }
 
-    chips.push({
-      label: (
-        <span className="flex items-center gap-1 font-bold text-slate-700 dark:text-slate-300">
-          Estado: {labels[filtros.estadoStock]}
-        </span>
-      ),
-      onRemove: () => setFiltros({ ...filtros, estadoStock: "todos" }),
-    });
-  }
+    if (filtros.filtroStockBajo) {
+      chips.push({
+        label: (
+          <span className="flex items-center gap-1 font-medium text-amber-700 dark:text-amber-400">
+            Stock bajo
+          </span>
+        ),
+        onRemove: () => setFiltros({ ...filtros, filtroStockBajo: false }),
+      });
+    }
 
-  if (filtros.categorias.length > 0) {
-    const resumenCategorias =
-      filtros.categorias.length === 1
-        ? filtros.categorias[0]
-        : filtros.categorias.length <= 2
-          ? filtros.categorias.join(", ")
-          : `${filtros.categorias.length} seleccionadas`;
+    if (filtros.filtroAgotados) {
+      chips.push({
+        label: (
+          <span className="flex items-center gap-1 font-medium text-red-600 dark:text-red-400">
+            Agotados
+          </span>
+        ),
+        onRemove: () => setFiltros({ ...filtros, filtroAgotados: false }),
+      });
+    }
 
-    chips.push({
-      label: (
-        <span className="flex items-center gap-1 text-brand-700 dark:text-brand-300 font-medium">
-          Categorías: <strong className="font-bold">{resumenCategorias}</strong>
-        </span>
-      ),
-      onRemove: () => setFiltros({ ...filtros, categorias: [] }),
-    });
-  }
+    if (filtros.filtroSinImagen) {
+      chips.push({
+        label: (
+          <span className="flex items-center gap-1 font-medium text-slate-800 dark:text-slate-100">
+            Sin imagen
+          </span>
+        ),
+        onRemove: () => setFiltros({ ...filtros, filtroSinImagen: false }),
+      });
+    }
 
-  if (filtros.proveedores.length > 0) {
-    const resumenProveedores =
-      filtros.proveedores.length === 1
-        ? filtros.proveedores[0]
-        : filtros.proveedores.length <= 2
-          ? filtros.proveedores.join(", ")
-          : `${filtros.proveedores.length} seleccionados`;
+    if (filtros.categorias.length > 0) {
+      const resumenCategorias =
+        filtros.categorias.length === 1
+          ? filtros.categorias[0]
+          : filtros.categorias.length <= 2
+            ? filtros.categorias.join(", ")
+            : `${filtros.categorias.length} seleccionadas`;
 
-    chips.push({
-      label: (
-        <span className="flex items-center gap-1 text-brand-700 dark:text-brand-300 font-medium">
-          Proveedores: <strong className="font-bold">{resumenProveedores}</strong>
-        </span>
-      ),
-      onRemove: () => setFiltros({ ...filtros, proveedores: [] }),
-    });
-  }
+      chips.push({
+        label: (
+          <span className="flex items-center gap-1 font-medium">
+            <span className="text-slate-500 dark:text-slate-400">Categorías:</span>
+            <strong className="font-semibold text-brand-700 dark:text-brand-300">{resumenCategorias}</strong>
+          </span>
+        ),
+        onRemove: () => setFiltros({ ...filtros, categorias: [] }),
+      });
+    }
 
-  if (filtros.precioMin) {
-    chips.push({
-      label: (
-        <span className="flex items-center gap-1 text-slate-700 dark:text-slate-300 font-medium">
-          Precio ≥ <strong>${filtros.precioMin}</strong>
-        </span>
-      ),
-      onRemove: () => setFiltros({ ...filtros, precioMin: "" }),
-    });
-  }
+    if (filtros.proveedores.length > 0) {
+      const resumenProveedores =
+        filtros.proveedores.length === 1
+          ? filtros.proveedores[0]
+          : filtros.proveedores.length <= 2
+            ? filtros.proveedores.join(", ")
+            : `${filtros.proveedores.length} seleccionados`;
 
-  if (filtros.precioMax) {
-    chips.push({
-      label: (
-        <span className="flex items-center gap-1 text-slate-700 dark:text-slate-300 font-medium">
-          Precio ≤ <strong>${filtros.precioMax}</strong>
-        </span>
-      ),
-      onRemove: () => setFiltros({ ...filtros, precioMax: "" }),
-    });
-  }
+      chips.push({
+        label: (
+          <span className="flex items-center gap-1 font-medium">
+            <span className="text-slate-500 dark:text-slate-400">Proveedores:</span>
+            <strong className="font-semibold text-brand-700 dark:text-brand-300">{resumenProveedores}</strong>
+          </span>
+        ),
+        onRemove: () => setFiltros({ ...filtros, proveedores: [] }),
+      });
+    }
 
-  if (filtros.fechaDesde || filtros.fechaHasta) {
-    chips.push({
-      label: (
-        <span className="flex items-center gap-1 text-slate-700 dark:text-slate-300 font-medium">
-          Fecha: <strong>{filtros.fechaDesde || "..."} → {filtros.fechaHasta || "..."}</strong>
-        </span>
-      ),
-      onRemove: () => setFiltros({ ...filtros, fechaDesde: "", fechaHasta: "" }),
-    });
-  }
+    if (filtros.precioMin) {
+      chips.push({
+        label: (
+          <span className="flex items-center gap-1 font-medium text-slate-700 dark:text-slate-300">
+            Precio ≥ <strong className="font-semibold">${filtros.precioMin}</strong>
+          </span>
+        ),
+        onRemove: () => setFiltros({ ...filtros, precioMin: "" }),
+      });
+    }
 
-  return chips;
-}, [ordenamiento, filtros, setOrdenamiento, setFiltros]);
+    if (filtros.precioMax) {
+      chips.push({
+        label: (
+          <span className="flex items-center gap-1 font-medium text-slate-700 dark:text-slate-300">
+            Precio ≤ <strong className="font-semibold">${filtros.precioMax}</strong>
+          </span>
+        ),
+        onRemove: () => setFiltros({ ...filtros, precioMax: "" }),
+      });
+    }
+
+    if (filtros.fechaDesde || filtros.fechaHasta) {
+      chips.push({
+        label: (
+          <span className="flex items-center gap-1 font-medium text-slate-700 dark:text-slate-300">
+            Fecha: <strong className="font-semibold">{filtros.fechaDesde || "..."} → {filtros.fechaHasta || "..."}</strong>
+          </span>
+        ),
+        onRemove: () => setFiltros({ ...filtros, fechaDesde: "", fechaHasta: "" }),
+      });
+    }
+
+    return chips;
+  }, [ordenamiento, filtros, setOrdenamiento, setFiltros]);
 
   const handleLimpiarFiltrosNav = useCallback(() => {
     setFiltros({
       ...filtros,
       categorias: [],
       proveedores: [],
-      estadoStock: "todos",
+      filtroConStock: false,
+      filtroStockBajo: false,
+      filtroAgotados: false,
+      filtroSinImagen: false,
       precioMin: "",
       precioMax: "",
       fechaCampo: "actividad",
@@ -186,7 +216,6 @@ const chipsActivos = useMemo(() => {
   return (
     <div className="bg-card p-4 rounded-2xl border border-border shadow-soft">
       <div className="flex flex-wrap items-center justify-between gap-4">
-
         <div className="flex items-center flex-1 min-w-[240px] border border-border rounded-xl bg-background focus-within:border-brand-500 focus-within:ring-1 focus-within:ring-brand-100 dark:focus-within:ring-brand-900 transition-all p-1.5 shadow-sm">
           <div className="pl-2.5 text-slate-400 dark:text-slate-500 flex items-center pr-2">
             <Search className="w-5 h-5" />
@@ -199,18 +228,16 @@ const chipsActivos = useMemo(() => {
             className="flex-1 py-1.5 text-sm outline-none text-foreground placeholder-slate-400 dark:placeholder-slate-500 bg-transparent min-w-0"
           />
 
-          <div
-            className="relative shrink-0 ml-2"
-            ref={filtroContainerRef}
-          >
+          <div className="relative shrink-0 ml-2" ref={filtroContainerRef}>
             <button
               onClick={() => setFiltrosAbierto(!filtrosAbierto)}
               aria-expanded={filtrosAbierto}
               aria-haspopup="dialog"
-              className={`px-3 py-1.5 border rounded-lg text-sm font-medium flex items-center gap-1.5 cursor-pointer transition-all shadow-sm active:scale-95 ${filtrosAbierto
+              className={`px-3 py-1.5 border rounded-lg text-sm font-medium flex items-center gap-1.5 cursor-pointer transition-all shadow-sm active:scale-95 ${
+                filtrosAbierto
                   ? 'border-brand-300 bg-brand-50 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300'
                   : 'border-slate-200 hover:border-slate-300 dark:border-dark-border text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-dark-elevated dark:hover:bg-slate-700'
-                }`}
+              }`}
             >
               <Filter className="w-4 h-4" /> Filtrar
               <ChevronDown className={`w-3.5 h-3.5 ml-0.5 text-slate-400 transition-transform ${filtrosAbierto ? 'rotate-180' : ''}`} />
@@ -234,9 +261,7 @@ const chipsActivos = useMemo(() => {
           </div>
         </div>
 
-        {/* Botones de acción */}
         <div className="flex flex-wrap items-center justify-end gap-2 w-full lg:w-auto">
-
           <div className="flex items-center h-[38px] border border-border rounded-xl bg-card shadow-sm px-1">
             <div className="flex items-center h-full px-1.5 gap-1">
               <button
@@ -273,22 +298,22 @@ const chipsActivos = useMemo(() => {
               onClick={() => setGananciaAutoActiva(!gananciaAutoActiva)}
               className="relative flex items-center h-full px-2 gap-2 cursor-pointer rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group"
             >
-              <div className={`relative w-8 h-[18px] rounded-full transition-colors duration-200 ${gananciaAutoActiva ? 'bg-brand-600' : 'bg-slate-300 dark:bg-slate-600'
-                }`}>
-                <div className={`absolute top-[2px] w-[14px] h-[14px] bg-white rounded-full shadow-sm transition-transform duration-200 ${gananciaAutoActiva ? 'translate-x-[16px]' : 'translate-x-[2px]'
-                  }`}></div>
+              <div className={`relative w-8 h-[18px] rounded-full transition-colors duration-200 ${
+                gananciaAutoActiva ? 'bg-brand-600' : 'bg-slate-300 dark:bg-slate-600'
+              }`}>
+                <div className={`absolute top-[2px] w-[14px] h-[14px] bg-white rounded-full shadow-sm transition-transform duration-200 ${
+                  gananciaAutoActiva ? 'translate-x-[16px]' : 'translate-x-[2px]'
+                }`} />
               </div>
               <span className="text-[13px] font-medium text-slate-500 dark:text-slate-400 pr-1">
                 Ganancia por defecto
               </span>
 
-              {/* Tooltip */}
               <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50">
                 <div className="bg-slate-800 dark:bg-slate-700 text-white text-xs rounded-lg px-3 py-2.5 shadow-xl leading-relaxed">
                   {gananciaAutoActiva
                     ? "El precio de venta se calcula solo al cargar un producto nuevo."
                     : "El precio de venta no se calcula automáticamente. Lo ingresás vos a mano."}
-                  {/* Flecha del tooltip */}
                   <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800 dark:border-t-slate-700" />
                 </div>
               </div>
@@ -301,6 +326,7 @@ const chipsActivos = useMemo(() => {
           >
             <ListTodo size={18} /> <span className="hidden sm:inline">Ajustar precios por inflación</span>
           </button>
+
           <button
             onClick={onAbrirCategorias}
             className="px-3 h-[38px] border border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border rounded-lg text-[#1F2937] dark:text-slate-200 text-sm font-semibold flex items-center gap-2 bg-white hover:bg-[#F3F4F6] dark:bg-dark-elevated dark:hover:bg-slate-700 cursor-pointer transition-all active:scale-95"
@@ -326,27 +352,31 @@ const chipsActivos = useMemo(() => {
       </div>
 
       {chipsActivos.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2 pt-4 mt-4 border-t border-[#E5E7EB] dark:border-dark-border">
-          <span className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mr-2">Filtros Activos:</span>
+        <div className="flex flex-wrap items-center gap-2 pt-4 mt-4 border-t border-slate-200 dark:border-dark-border">
+          <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mr-1">
+            Filtros Activos
+          </span>
           {chipsActivos.map((chip, i) => (
             <span
               key={i}
-              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-brand-50/50 dark:bg-brand-900/30 text-[13px] shadow-sm border border-brand-100 dark:border-brand-800/60"
+              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white shadow-sm text-xs transition-all dark:bg-dark-elevated dark:border-dark-border"
             >
               {chip.label}
               <button
                 onClick={chip.onRemove}
-                className="hover:bg-brand-200 dark:hover:bg-brand-800 rounded-full p-0.5 ml-1 transition-colors text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 cursor-pointer"
+                className="ml-1 rounded p-0.5 text-red-400/80 hover:bg-red-50 hover:text-red-700 transition-colors dark:text-red-500/70 dark:hover:bg-red-900/40 dark:hover:text-red-400 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-red-400/20"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
             </span>
           ))}
+          <div className="mx-1 h-5 w-px bg-slate-200 dark:bg-dark-border" />
           <button
             onClick={handleLimpiarFiltrosNav}
-            className="text-sm font-semibold text-brand-600 dark:text-brand-400 hover:underline hover:text-brand-700 dark:hover:text-brand-300 ml-2 cursor-pointer transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white shadow-sm text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors dark:bg-dark-elevated dark:border-dark-border dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-slate-400/20"
           >
-            Limpiar todo
+            <BrushCleaning size={16} />
+            Limpiar Filtros
           </button>
         </div>
       )}
