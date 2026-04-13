@@ -13,6 +13,7 @@ import {
   Percent,
   DollarSign,
   Minus,
+  PackageSearch,
 } from "lucide-react";
 import type { Producto } from "@/types/producto.types";
 import { ModalAccion } from "@/components/ui/modal-wrappers";
@@ -30,6 +31,7 @@ interface ModalActualizarPreciosProps {
 }
 
 type ModoAjuste = "porcentaje" | "monto" | "margen";
+type BaseAjuste = "precio" | "costo";
 
 const calcularMargen = (precioVenta: number, precioCompra: number) => {
   if (precioCompra <= 0) return null;
@@ -50,9 +52,9 @@ export default function ModalActualizarPrecios({
   const [seleccionados, setSeleccionados] = useState<Set<string>>(new Set());
 
   const [modoAjuste, setModoAjuste] = useState<ModoAjuste>("porcentaje");
+  const [aplicarSobre, setAplicarSobre] = useState<BaseAjuste>("precio");
   const [valorAjuste, setValorAjuste] = useState<string>("");
   const [esAumento, setEsAumento] = useState(true);
-  const [mantenerMargenOriginal, setMantenerMargenOriginal] = useState(false);
 
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
 
@@ -113,15 +115,22 @@ export default function ModalActualizarPrecios({
         return Math.max(0, redondearPrecio(precioCompra * (1 + valor / 100)));
       }
 
-      if (mantenerMargenOriginal && precioCompra > 0) {
-        const nuevoCosto = esAumento
-          ? precioCompra * (1 + valor / 100)
-          : precioCompra * (1 - valor / 100);
+      if (aplicarSobre === "costo" && precioCompra > 0) {
+        const nuevoCosto =
+          modoAjuste === "porcentaje"
+            ? esAumento
+              ? precioCompra * (1 + valor / 100)
+              : precioCompra * (1 - valor / 100)
+            : esAumento
+              ? precioCompra + valor
+              : precioCompra - valor;
 
+        const costoFinal = Math.max(0, nuevoCosto);
         const margenOriginal = calcularMargen(precioActual, precioCompra) ?? 0;
+
         return Math.max(
           0,
-          redondearPrecio(nuevoCosto * (1 + margenOriginal / 100))
+          redondearPrecio(costoFinal * (1 + margenOriginal / 100))
         );
       }
 
@@ -133,7 +142,7 @@ export default function ModalActualizarPrecios({
       const nuevoPrecio = esAumento ? precioActual + valor : precioActual - valor;
       return Math.max(0, redondearPrecio(nuevoPrecio));
     },
-    [modoAjuste, mantenerMargenOriginal, esAumento]
+    [modoAjuste, aplicarSobre, esAumento]
   );
 
   const calculoPreview = useMemo(() => {
@@ -269,8 +278,8 @@ export default function ModalActualizarPrecios({
     setCategoriasFiltro([]);
     setProveedoresFiltro([]);
     setValorAjuste("");
-    setMantenerMargenOriginal(false);
     setModoAjuste("porcentaje");
+    setAplicarSobre("precio");
     setEsAumento(true);
     onClose();
   };
@@ -298,18 +307,32 @@ export default function ModalActualizarPrecios({
 
   const getTextoAyuda = () => {
     if (modoAjuste === "margen") {
-      return "El sistema va a calcular el nuevo precio según el costo del producto.";
+      return "El sistema calcula automáticamente el precio según el costo del producto y la ganancia (%) que querés obtener.";
     }
 
+    if (aplicarSobre === "precio") {
+      if (modoAjuste === "monto") {
+        return esAumento
+          ? "Se suma un monto al precio de venta actual del producto.El costo no cambia, por lo que la ganancia puede subir de forma temporal hasta que actualices el costo del producto"
+          : "Se resta un monto al precio de venta actual del producto.El costo no cambia, por lo que la ganancia puede bajar de forma temporal hasta que actualices el costo del producto.";
+      }
+
+      return esAumento
+        ? "Se aumenta un porcentaje sobre el precio de venta actual. El costo no cambia, por lo que la ganancia puede subir de forma temporal hasta que actualices el costo del producto."
+        : "Se descuenta un porcentaje del precio de venta actual. El costo no cambia, por lo que la ganancia puede bajar de forma temporal hasta que actualices el costo del producto.";
+    }
+
+
+    // aplicarSobre === "costo"
     if (modoAjuste === "monto") {
       return esAumento
-        ? "Se suma un monto fijo al precio actual."
-        : "Se resta un monto fijo al precio actual.";
+        ? "Se suma un monto al costo del producto. El sistema recalcula el precio de venta automáticamente, por lo que la ganancia se mantiene estable."
+        : "Se resta un monto al costo del producto. El sistema recalcula el precio de venta automáticamente, por lo que la ganancia se mantiene estable.";
     }
 
     return esAumento
-      ? "Se aumenta un porcentaje sobre el precio actual."
-      : "Se descuenta un porcentaje del precio actual.";
+      ? "Se aumenta un porcentaje sobre el costo del producto. El sistema recalcula el precio de venta automáticamente, por lo que la ganancia se mantiene estable."
+      : "Se reduce un porcentaje del costo del producto. El sistema recalcula el precio de venta automáticamente, por lo que la ganancia se mantiene estable.";
   };
 
   return (
@@ -352,9 +375,8 @@ export default function ModalActualizarPrecios({
                     Cambio total estimado:
                   </span>
                   <span
-                    className={`font-bold text-lg ${
-                      totalDiferencia >= 0 ? "text-emerald-600" : "text-rose-600"
-                    }`}
+                    className={`font-bold text-lg ${totalDiferencia >= 0 ? "text-emerald-600" : "text-rose-600"
+                      }`}
                   >
                     {totalDiferencia >= 0 ? "+" : ""}
                     {formatearMoneda(totalDiferencia)}
@@ -517,29 +539,26 @@ export default function ModalActualizarPrecios({
                     <button
                       key={prod.id}
                       onClick={() => toggleSeleccion(prod.id)}
-                      className={`w-full flex items-center p-2.5 rounded-lg border text-left transition-all group/item ${
-                        isSelected
-                          ? "border-brand-500 bg-brand-50 dark:bg-brand-900/20 ring-1 ring-brand-500"
-                          : "border-[#E5E7EB] dark:border-dark-border hover:border-gray-300 dark:hover:border-slate-600 bg-white dark:bg-dark-card"
-                      }`}
+                      className={`w-full flex items-center p-2.5 rounded-lg border text-left transition-all group/item ${isSelected
+                        ? "border-brand-500 bg-brand-50 dark:bg-brand-900/20 ring-1 ring-brand-500"
+                        : "border-[#E5E7EB] dark:border-dark-border hover:border-gray-300 dark:hover:border-slate-600 bg-white dark:bg-dark-card"
+                        }`}
                     >
                       <div
-                        className={`w-4 h-4 rounded border mr-3 flex items-center justify-center shrink-0 transition-colors ${
-                          isSelected
-                            ? "bg-brand-500 border-brand-500 text-white"
-                            : "border-gray-300 dark:border-slate-600 bg-white dark:bg-dark-card"
-                        }`}
+                        className={`w-4 h-4 rounded border mr-3 flex items-center justify-center shrink-0 transition-colors ${isSelected
+                          ? "bg-brand-500 border-brand-500 text-white"
+                          : "border-gray-300 dark:border-slate-600 bg-white dark:bg-dark-card"
+                          }`}
                       >
                         {isSelected && <Check className="w-3 h-3" />}
                       </div>
 
                       <div className="flex-1 min-w-0">
                         <p
-                          className={`text-sm font-semibold truncate ${
-                            isSelected
-                              ? "text-brand-900 dark:text-brand-100"
-                              : "text-[#1F2937] dark:text-slate-200"
-                          }`}
+                          className={`text-sm font-semibold truncate ${isSelected
+                            ? "text-brand-900 dark:text-brand-100"
+                            : "text-[#1F2937] dark:text-slate-200"
+                            }`}
                         >
                           {prod.nombre}
                         </p>
@@ -594,11 +613,10 @@ export default function ModalActualizarPrecios({
                   <div className="grid grid-cols-3 gap-2">
                     <button
                       onClick={() => setModoAjuste("porcentaje")}
-                      className={`py-2 px-1 border-2 rounded-lg text-center transition-all flex flex-col items-center justify-center ${
-                        modoAjuste === "porcentaje"
-                          ? "border-brand-500 bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-300"
-                          : "border-[#E5E7EB] dark:border-dark-border hover:border-gray-300 dark:hover:border-slate-600 text-[#6B7280] dark:text-slate-400"
-                      }`}
+                      className={`py-2 px-1 border-2 rounded-lg text-center transition-all flex flex-col items-center justify-center ${modoAjuste === "porcentaje"
+                        ? "border-brand-500 bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-300"
+                        : "border-[#E5E7EB] dark:border-dark-border hover:border-gray-300 dark:hover:border-slate-600 text-[#6B7280] dark:text-slate-400"
+                        }`}
                     >
                       <Percent className="w-4 h-4 mb-1" />
                       <span className="text-[10px] sm:text-xs font-semibold uppercase">
@@ -608,11 +626,10 @@ export default function ModalActualizarPrecios({
 
                     <button
                       onClick={() => setModoAjuste("monto")}
-                      className={`py-2 px-1 border-2 rounded-lg text-center transition-all flex flex-col items-center justify-center ${
-                        modoAjuste === "monto"
-                          ? "border-brand-500 bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-300"
-                          : "border-[#E5E7EB] dark:border-dark-border hover:border-gray-300 dark:hover:border-slate-600 text-[#6B7280] dark:text-slate-400"
-                      }`}
+                      className={`py-2 px-1 border-2 rounded-lg text-center transition-all flex flex-col items-center justify-center ${modoAjuste === "monto"
+                        ? "border-brand-500 bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-300"
+                        : "border-[#E5E7EB] dark:border-dark-border hover:border-gray-300 dark:hover:border-slate-600 text-[#6B7280] dark:text-slate-400"
+                        }`}
                     >
                       <DollarSign className="w-4 h-4 mb-1" />
                       <span className="text-[10px] sm:text-xs font-semibold uppercase">
@@ -622,11 +639,10 @@ export default function ModalActualizarPrecios({
 
                     <button
                       onClick={() => setModoAjuste("margen")}
-                      className={`py-2 px-1 border-2 rounded-lg text-center transition-all flex flex-col items-center justify-center ${
-                        modoAjuste === "margen"
-                          ? "border-brand-500 bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-300"
-                          : "border-[#E5E7EB] dark:border-dark-border hover:border-gray-300 dark:hover:border-slate-600 text-[#6B7280] dark:text-slate-400"
-                      }`}
+                      className={`py-2 px-1 border-2 rounded-lg text-center transition-all flex flex-col items-center justify-center ${modoAjuste === "margen"
+                        ? "border-brand-500 bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-300"
+                        : "border-[#E5E7EB] dark:border-dark-border hover:border-gray-300 dark:hover:border-slate-600 text-[#6B7280] dark:text-slate-400"
+                        }`}
                     >
                       <TrendingUp className="w-4 h-4 mb-1" />
                       <span className="text-[10px] sm:text-xs font-semibold uppercase">
@@ -645,11 +661,10 @@ export default function ModalActualizarPrecios({
                     <div className="flex p-1 bg-[#F6F7F8] dark:bg-dark-card rounded-lg border border-[#E5E7EB] dark:border-dark-border">
                       <button
                         onClick={() => setEsAumento(true)}
-                        className={`flex-1 py-2 text-xs font-semibold rounded-md flex items-center justify-center gap-2 transition-all ${
-                          esAumento
-                            ? "bg-white dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 shadow-sm ring-1 ring-emerald-500/20"
-                            : "text-[#6B7280] dark:text-slate-400 hover:text-[#1F2937]"
-                        }`}
+                        className={`flex-1 py-2 text-xs font-semibold rounded-md flex items-center justify-center gap-2 transition-all ${esAumento
+                          ? "bg-white dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 shadow-sm ring-1 ring-emerald-500/20"
+                          : "text-[#6B7280] dark:text-slate-400 hover:text-[#1F2937]"
+                          }`}
                       >
                         <TrendingUp className="w-3.5 h-3.5" />
                         Subir
@@ -657,17 +672,53 @@ export default function ModalActualizarPrecios({
 
                       <button
                         onClick={() => setEsAumento(false)}
-                        className={`flex-1 py-2 text-xs font-semibold rounded-md flex items-center justify-center gap-2 transition-all ${
-                          !esAumento
-                            ? "bg-white dark:bg-slate-700 text-rose-600 dark:text-rose-400 shadow-sm ring-1 ring-rose-500/20"
-                            : "text-[#6B7280] dark:text-slate-400 hover:text-[#1F2937]"
-                        }`}
+                        className={`flex-1 py-2 text-xs font-semibold rounded-md flex items-center justify-center gap-2 transition-all ${!esAumento
+                          ? "bg-white dark:bg-slate-700 text-rose-600 dark:text-rose-400 shadow-sm ring-1 ring-rose-500/20"
+                          : "text-[#6B7280] dark:text-slate-400 hover:text-[#1F2937]"
+                          }`}
                       >
                         <Minus className="w-3.5 h-3.5" />
                         Bajar
                       </button>
                     </div>
                   </div>
+                )}
+
+                {modoAjuste !== "margen" && (
+                  <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                    <label className="block text-xs font-semibold text-[#6B7280] dark:text-slate-400 mb-2 uppercase">
+                      Aplicar sobre
+                    </label>
+
+                    <div className="flex p-1 bg-[#F6F7F8] dark:bg-dark-card rounded-lg border border-[#E5E7EB] dark:border-dark-border">
+                      <button
+                        onClick={() => setAplicarSobre("precio")}
+                        className={`flex-1 py-2 text-xs font-semibold rounded-md flex items-center justify-center gap-2 transition-all ${aplicarSobre === "precio"
+                          ? "bg-white dark:bg-slate-700 text-brand-700 dark:text-brand-300 shadow-sm ring-1 ring-brand-500/20"
+                          : "text-[#6B7280] dark:text-slate-400 hover:text-[#1F2937]"
+                          }`}
+                      >
+                        <DollarSign className="w-3.5 h-3.5" />
+                        Precio de Venta
+                      </button>
+
+                      <button
+                        onClick={() => setAplicarSobre("costo")}
+                        className={`flex-1 py-2 text-xs font-semibold rounded-md flex items-center justify-center gap-2 transition-all ${aplicarSobre === "costo"
+                          ? "bg-white dark:bg-slate-700 text-brand-700 dark:text-brand-300 shadow-sm ring-1 ring-brand-500/20"
+                          : "text-[#6B7280] dark:text-slate-400 hover:text-[#1F2937]"
+                          }`}
+                      >
+                        <PackageSearch className="w-3.5 h-3.5" />
+                        Costo del producto
+                      </button>
+                    </div>
+                    <div className="mt-2 flex gap-2 text-[12px] leading-relaxed text-blue-700 dark:text-blue-300">
+                      <span>ℹ️</span>
+                      <p>{getTextoAyuda()}</p>
+                    </div>
+                  </div>
+
                 )}
 
                 <div>
@@ -694,10 +745,6 @@ export default function ModalActualizarPrecios({
                       className="w-full pl-11 pr-4 py-3 text-lg font-semibold border border-[#E5E7EB] dark:border-dark-border rounded-lg outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all bg-[#F9FAFB] dark:bg-dark-elevated text-[#1F2937] dark:text-slate-200"
                     />
                   </div>
-
-                  <p className="mt-2 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
-                    {getTextoAyuda()}
-                  </p>
                 </div>
 
                 {ejemploRapido && valorAjuste && (
@@ -728,46 +775,6 @@ export default function ModalActualizarPrecios({
                         {formatearMoneda(ejemploRapido.gananciaDespues)}
                       </span>
                     </p>
-                  </div>
-                )}
-
-                {modoAjuste !== "margen" && (
-                  <div className="animate-in fade-in duration-300 pt-2 border-t border-dashed border-[#E5E7EB] dark:border-dark-border">
-                    <label className="flex items-start gap-3 cursor-pointer group">
-                      <div className="relative flex items-center mt-0.5">
-                        <input
-                          type="checkbox"
-                          className="sr-only"
-                          checked={mantenerMargenOriginal}
-                          onChange={(e) =>
-                            setMantenerMargenOriginal(e.target.checked)
-                          }
-                        />
-
-                        <div
-                          className={`w-5 h-5 rounded border transition-all flex items-center justify-center ${
-                            mantenerMargenOriginal
-                              ? "bg-brand-500 border-brand-500"
-                              : "border-gray-300 dark:border-slate-600 bg-white dark:bg-dark-elevated group-hover:border-brand-500"
-                          }`}
-                        >
-                          {mantenerMargenOriginal && (
-                            <Check className="w-3.5 h-3.5 text-white" />
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex-1">
-                        <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 leading-none mb-1.5">
-                          Mantener la misma ganancia (%)
-                        </p>
-
-                        <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                          El sistema ajusta el precio automáticamente según el costo
-                          para conservar el mismo porcentaje de ganancia.
-                        </p>
-                      </div>
-                    </label>
                   </div>
                 )}
               </div>
