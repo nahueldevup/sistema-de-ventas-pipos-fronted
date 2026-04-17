@@ -340,7 +340,7 @@ export default function ModalActualizarPrecios({
       open={isOpen}
       onOpenChange={(open) => !open && onClose()}
       title="Ajustar precios"
-      subtitle="Elegí productos, definí el ajuste y revisá el resultado antes de confirmar"
+      //subtitle="Elegí productos, definí el ajuste y revisá el resultado antes de confirmar"
       titleIcon={<TrendingUp className="w-5 h-5 text-brand-600" />}
       onCancelar={onClose}
       onAccion={handleConfirmarInicio}
@@ -598,24 +598,23 @@ export default function ModalActualizarPrecios({
         </div>
 
         <div className="hidden md:flex flex-1 flex-col bg-[#F6F7F8] dark:bg-dark-elevated/30 min-w-0">
-          <div className="p-6 flex-1 overflow-y-auto">
-            <div className="max-w-md mx-auto">
-              <h3 className="text-xs font-semibold text-[#6B7280] dark:text-slate-400 uppercase tracking-wide mb-4">
+          <div className="p-4 flex-1 overflow-y-auto">
+            <div>
+              <h4 className="text-xs font-semibold text-[#6B7280] dark:text-slate-400 uppercase tracking-wide mb-3">
                 2. Configurar ajuste
-              </h3>
+              </h4>
 
-              <div className="bg-white dark:bg-dark-card border border-[#E5E7EB] dark:border-dark-border rounded-xl p-5 space-y-5 shadow-sm">
+              <div className="bg-white dark:bg-dark-card border border-[#E5E7EB] dark:border-dark-border rounded-xl p-4 space-y-4 shadow-sm">
                 <div>
-                  <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-2 uppercase">
+                  <label className="block text-xs font-semibold text-[#6B7280] dark:text-slate-400 mb-2 uppercase" >
                     ¿Cómo querés ajustar?
                   </label>
-
                   <div className="grid grid-cols-3 gap-2">
                     <button
                       onClick={() => setModoAjuste("porcentaje")}
                       className={`py-2 px-1 border-2 rounded-lg text-center transition-all flex flex-col items-center justify-center ${modoAjuste === "porcentaje"
-                        ? "border-brand-500 bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-300"
-                        : "border-[#E5E7EB] dark:border-dark-border hover:border-gray-300 dark:hover:border-slate-600 text-[#6B7280] dark:text-slate-400"
+                        ? "border-[#1F2937] dark:border-slate-200 bg-[#1F2937] dark:bg-slate-200 text-white dark:text-[#1F2937] shadow-md"
+                        : "border-[#D1D5DB] dark:border-slate-600 hover:border-[#9CA3AF] dark:hover:border-slate-400 text-[#6B7280] dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-dark-elevated"
                         }`}
                     >
                       <Percent className="w-4 h-4 mb-1" />
@@ -627,8 +626,8 @@ export default function ModalActualizarPrecios({
                     <button
                       onClick={() => setModoAjuste("monto")}
                       className={`py-2 px-1 border-2 rounded-lg text-center transition-all flex flex-col items-center justify-center ${modoAjuste === "monto"
-                        ? "border-brand-500 bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-300"
-                        : "border-[#E5E7EB] dark:border-dark-border hover:border-gray-300 dark:hover:border-slate-600 text-[#6B7280] dark:text-slate-400"
+                        ? "border-[#1F2937] dark:border-slate-200 bg-[#1F2937] dark:bg-slate-200 text-white dark:text-[#1F2937] shadow-md"
+                        : "border-[#D1D5DB] dark:border-slate-600 hover:border-[#9CA3AF] dark:hover:border-slate-400 text-[#6B7280] dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-dark-elevated"
                         }`}
                     >
                       <DollarSign className="w-4 h-4 mb-1" />
@@ -640,8 +639,8 @@ export default function ModalActualizarPrecios({
                     <button
                       onClick={() => setModoAjuste("margen")}
                       className={`py-2 px-1 border-2 rounded-lg text-center transition-all flex flex-col items-center justify-center ${modoAjuste === "margen"
-                        ? "border-brand-500 bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-300"
-                        : "border-[#E5E7EB] dark:border-dark-border hover:border-gray-300 dark:hover:border-slate-600 text-[#6B7280] dark:text-slate-400"
+                        ? "border-[#1F2937] dark:border-slate-200 bg-[#1F2937] dark:bg-slate-200 text-white dark:text-[#1F2937] shadow-md"
+                        : "border-[#D1D5DB] dark:border-slate-600 hover:border-[#9CA3AF] dark:hover:border-slate-400 text-[#6B7280] dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-dark-elevated"
                         }`}
                     >
                       <TrendingUp className="w-4 h-4 mb-1" />
@@ -658,12 +657,12 @@ export default function ModalActualizarPrecios({
                       ¿Querés subir o bajar precios?
                     </label>
 
-                    <div className="flex p-1 bg-[#F6F7F8] dark:bg-dark-card rounded-lg border border-[#E5E7EB] dark:border-dark-border">
+                    <div className="grid grid-cols-2 gap-2">
                       <button
                         onClick={() => setEsAumento(true)}
-                        className={`flex-1 py-2 text-xs font-semibold rounded-md flex items-center justify-center gap-2 transition-all ${esAumento
-                          ? "bg-white dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 shadow-sm ring-1 ring-emerald-500/20"
-                          : "text-[#6B7280] dark:text-slate-400 hover:text-[#1F2937]"
+                        className={`py-2.5 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-all border-2 ${esAumento
+                          ? "border-emerald-600 bg-emerald-600 text-white shadow-md"
+                          : "border-[#D1D5DB] dark:border-slate-600 text-[#6B7280] dark:text-slate-400 hover:border-[#9CA3AF] hover:bg-gray-50 dark:hover:bg-dark-elevated"
                           }`}
                       >
                         <TrendingUp className="w-3.5 h-3.5" />
@@ -672,9 +671,9 @@ export default function ModalActualizarPrecios({
 
                       <button
                         onClick={() => setEsAumento(false)}
-                        className={`flex-1 py-2 text-xs font-semibold rounded-md flex items-center justify-center gap-2 transition-all ${!esAumento
-                          ? "bg-white dark:bg-slate-700 text-rose-600 dark:text-rose-400 shadow-sm ring-1 ring-rose-500/20"
-                          : "text-[#6B7280] dark:text-slate-400 hover:text-[#1F2937]"
+                        className={`py-2.5 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-all border-2 ${!esAumento
+                          ? "border-rose-600 bg-rose-600 text-white shadow-md"
+                          : "border-[#D1D5DB] dark:border-slate-600 text-[#6B7280] dark:text-slate-400 hover:border-[#9CA3AF] hover:bg-gray-50 dark:hover:bg-dark-elevated"
                           }`}
                       >
                         <Minus className="w-3.5 h-3.5" />
@@ -690,12 +689,12 @@ export default function ModalActualizarPrecios({
                       Aplicar sobre
                     </label>
 
-                    <div className="flex p-1 bg-[#F6F7F8] dark:bg-dark-card rounded-lg border border-[#E5E7EB] dark:border-dark-border">
+                    <div className="grid grid-cols-2 gap-2">
                       <button
                         onClick={() => setAplicarSobre("precio")}
-                        className={`flex-1 py-2 text-xs font-semibold rounded-md flex items-center justify-center gap-2 transition-all ${aplicarSobre === "precio"
-                          ? "bg-white dark:bg-slate-700 text-brand-700 dark:text-brand-300 shadow-sm ring-1 ring-brand-500/20"
-                          : "text-[#6B7280] dark:text-slate-400 hover:text-[#1F2937]"
+                        className={`py-2.5 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-all border-2 ${aplicarSobre === "precio"
+                          ? "border-[#1F2937] dark:border-slate-200 bg-[#1F2937] dark:bg-slate-200 text-white dark:text-[#1F2937] shadow-md"
+                          : "border-[#D1D5DB] dark:border-slate-600 text-[#6B7280] dark:text-slate-400 hover:border-[#9CA3AF] hover:bg-gray-50 dark:hover:bg-dark-elevated"
                           }`}
                       >
                         <DollarSign className="w-3.5 h-3.5" />
@@ -704,21 +703,20 @@ export default function ModalActualizarPrecios({
 
                       <button
                         onClick={() => setAplicarSobre("costo")}
-                        className={`flex-1 py-2 text-xs font-semibold rounded-md flex items-center justify-center gap-2 transition-all ${aplicarSobre === "costo"
-                          ? "bg-white dark:bg-slate-700 text-brand-700 dark:text-brand-300 shadow-sm ring-1 ring-brand-500/20"
-                          : "text-[#6B7280] dark:text-slate-400 hover:text-[#1F2937]"
+                        className={`py-2.5 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-all border-2 ${aplicarSobre === "costo"
+                          ? "border-[#1F2937] dark:border-slate-200 bg-[#1F2937] dark:bg-slate-200 text-white dark:text-[#1F2937] shadow-md"
+                          : "border-[#D1D5DB] dark:border-slate-600 text-[#6B7280] dark:text-slate-400 hover:border-[#9CA3AF] hover:bg-gray-50 dark:hover:bg-dark-elevated"
                           }`}
                       >
                         <PackageSearch className="w-3.5 h-3.5" />
                         Costo del producto
                       </button>
                     </div>
-                    <div className="mt-2 flex gap-2 text-[12px] leading-relaxed text-blue-700 dark:text-blue-300">
-                      <span>ℹ️</span>
+                    <div className="mt-2 flex gap-2 text-[13px] leading-snug text-[#6B7280] dark:text-slate-400">
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
                       <p>{getTextoAyuda()}</p>
                     </div>
                   </div>
-
                 )}
 
                 <div>
