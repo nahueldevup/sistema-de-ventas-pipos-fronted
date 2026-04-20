@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import type { Producto } from '@/types/producto.types';
 import { getCategoriaColor, formatearPesos, getRowBg } from '@/lib/productoUtils';
 import MenuOpcionesProducto from './MenuOpcionesProducto';
 import { ArrowUpRight, ImageOff } from 'lucide-react';
+import { getImagenProducto } from '@/datos/imagenes.datos';
 
 interface FilaProductoProps {
   producto: Producto;
@@ -20,6 +22,11 @@ export default function FilaProducto({
   onCerrarMenu,
   onEditar,
 }: FilaProductoProps) {
+  const [imgError, setImgError] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
+
+  const imagenSrc = !imgError ? getImagenProducto(producto.id) : undefined;
+
   return (
     <tr
       className={`${getRowBg(index)} hover-fila transition-colors duration-150 group cursor-pointer`}
@@ -27,8 +34,19 @@ export default function FilaProducto({
     >
       <td className="py-3 pl-6 pr-2">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#F6F7F8] dark:bg-slate-800/80 text-[#6B7280] dark:text-slate-300 flex items-center justify-center font-semibold text-lg cursor-zoom-in hover:scale-150 transition-transform origin-left z-10 border border-[#E5E7EB] dark:border-slate-700/60 shrink-0">
-            <ImageOff className="w-5 h-5 opacity-50" />
+          <div className="w-10 h-10 rounded-xl bg-white dark:bg-slate-900 flex items-center justify-center overflow-hidden cursor-zoom-in hover:scale-150 transition-transform origin-left z-10 border border-[#E5E7EB] dark:border-slate-700/60 shrink-0">
+            {imagenSrc ? (
+              <img
+                src={imagenSrc}
+                alt={producto.nombre}
+                loading="lazy"
+                onLoad={() => setImgLoaded(true)}
+                onError={() => setImgError(true)}
+                className={`w-full h-full object-contain p-1 transition-opacity duration-200 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
+              />
+            ) : (
+              <ImageOff className="w-5 h-5 text-[#6B7280] dark:text-slate-300 opacity-50" />
+            )}
           </div>
           <div className="flex flex-col">
             <span className="text-[15px] font-semibold text-[#1F2937] dark:text-slate-50">{producto.nombre}</span>
