@@ -146,7 +146,7 @@ export default function Productos() {
   }, []);
 
   return (
-    <div className="flex flex-col gap-6 font-sans -mt-3">
+    <div className="flex flex-col gap-4 font-sans -mt-3">
 
       {/* BARRA DE HERRAMIENTAS + TOGGLE VISTA */}
       <div className="flex flex-col gap-3">
