@@ -18,6 +18,7 @@ import BarraHerramientas from "@/features/productos/components/BarraHerramientas
 import TablaProductos from "@/features/productos/components/TablaProductos";
 import VistaCards from "@/features/productos/components/VistaCards";
 import ToggleVista, { type TipoVista } from "@/features/productos/components/ToggleVista";
+import FiltrosRapidos from '@/features/productos/components/FiltrosRapidos';
 import useFiltrosProductos from "@/hooks/useFiltrosProductos";
 import { PRODUCTOS_EJEMPLO } from "@/datos/productos.datos";
 
@@ -167,15 +168,25 @@ export default function Productos() {
           onAbrirImprimirEtiquetas={() => setModalActivo("etiquetas")}
         />
 
-        {/* Toggle de vista — alineado a la derecha, debajo de la barra */}
-        <div className="flex items-center justify-between px-1">
-          <p className="text-sm font-medium text-[#6B7280] dark:text-slate-400">
-            <span className="font-bold text-[#1F2937] dark:text-slate-200">
-              {productosFiltrados.length}
-            </span>{" "}
-            producto{productosFiltrados.length !== 1 ? "s" : ""} encontrado
-            {productosFiltrados.length !== 1 ? "s" : ""}
-          </p>
+        {/* Toggle de vista y Filtros Rápidos */}
+        <div className="flex flex-wrap items-center justify-between gap-4 px-1">
+          <div className="flex flex-wrap items-center gap-4">
+            <p className="text-sm font-medium text-[#6B7280] dark:text-slate-400">
+              <span className="font-bold text-[#1F2937] dark:text-slate-200">
+                {productosFiltrados.length}
+              </span>{" "}
+              producto{productosFiltrados.length !== 1 ? "s" : ""} encontrado
+              {productosFiltrados.length !== 1 ? "s" : ""}
+            </p>
+
+            <div className="hidden sm:block w-px h-5 bg-slate-200 dark:bg-dark-border" />
+
+            <FiltrosRapidos
+              filtrosRapidos={filtrosRapidos}
+              setFiltrosRapidos={setFiltrosRapidos}
+              categoriasUnicas={categoriasUnicas}
+            />
+          </div>
 
           <ToggleVista vista={vista} onChange={setVista} />
         </div>
@@ -186,10 +197,6 @@ export default function Productos() {
         <TablaProductos
           productos={productosFiltrados}
           onEditar={handleEditar}
-          ordenamiento={ordenamiento}
-          filtrosRapidos={filtrosRapidos}
-          setFiltrosRapidos={setFiltrosRapidos}
-          categoriasUnicas={categoriasUnicas}
         />
       ) : (
         <VistaCards

@@ -4,7 +4,8 @@ import type { FiltrosAvanzados, Ordenamiento } from '@/types/filtros.types';
 import {
   Search, Filter, Plus,
   Minus, ChevronDown, X,
-  Printer, LayoutGrid, ListTodo, BrushCleaning
+  Printer, LayoutGrid, ListTodo, BrushCleaning,
+  ArrowRightLeft
 } from 'lucide-react';
 
 interface BarraHerramientasProps {
@@ -306,7 +307,7 @@ export default function BarraHerramientas({
                 }`} />
               </div>
               <span className="text-[13px] font-medium text-slate-500 dark:text-slate-400 pr-1">
-                Ganancia por defecto
+                Margen
               </span>
 
               <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50">
@@ -319,6 +320,14 @@ export default function BarraHerramientas({
               </div>
             </button>
           </div>
+
+          <button
+            type="button"
+            className="px-3 h-[38px] border border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border rounded-lg text-[#1F2937] dark:text-slate-200 text-sm font-semibold flex items-center gap-2 bg-white hover:bg-[#F3F4F6] dark:bg-dark-elevated dark:hover:bg-slate-700 cursor-pointer transition-all active:scale-95"
+          >
+            <ArrowRightLeft size={18} />
+            <span className="hidden sm:inline">Importar / Exportar</span>
+          </button>
 
           <button
             onClick={onAbrirActualizarPrecios}

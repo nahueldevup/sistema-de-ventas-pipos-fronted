@@ -1,39 +1,21 @@
 import { useState } from 'react';
 import type { Producto } from '@/types/producto.types';
-import type { FiltrosRapidosTabla, Ordenamiento } from '@/types/filtros.types';
-import CabeceraTablaProductos from './CabeceraTablaProductos';
 import PaginacionTabla from './PaginacionTabla';
 import FilaProducto from './FilaProducto';
 
 interface TablaProductosProps {
   productos: Producto[];
   onEditar: (producto: Producto) => void;
-  ordenamiento: Ordenamiento;
-  filtrosRapidos: FiltrosRapidosTabla;
-  setFiltrosRapidos: (filtros: FiltrosRapidosTabla) => void;
-  categoriasUnicas: string[];
 }
 
 export default function TablaProductos({
   productos,
   onEditar,
-  ordenamiento,
-  filtrosRapidos,
-  setFiltrosRapidos,
-  categoriasUnicas,
 }: TablaProductosProps) {
   const [menuAbiertoId, setMenuAbiertoId] = useState<string | null>(null);
 
   return (
     <div className="bg-card rounded-2xl border border-border shadow-soft overflow-hidden flex flex-col">
-
-      <CabeceraTablaProductos
-        productosLength={productos.length}
-        ordenamiento={ordenamiento}
-        filtrosRapidos={filtrosRapidos}
-        setFiltrosRapidos={setFiltrosRapidos}
-        categoriasUnicas={categoriasUnicas}
-      />
 
       {/* Tabla */}
       <div className="overflow-x-auto min-h-[400px]">
