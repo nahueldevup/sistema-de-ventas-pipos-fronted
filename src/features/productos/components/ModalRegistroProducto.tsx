@@ -258,7 +258,7 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
               {/* Precio de compra */}
               <div className="col-span-3">
                 <label htmlFor="precioCompra" className="block text-[10px] font-semibold text-[#6B7280] dark:text-slate-400 mb-1.5 uppercase tracking-wide">
-                  Precio de costo
+                  Precio costo
                 </label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280] text-sm font-semibold" aria-hidden="true">$</span>
@@ -315,7 +315,7 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
               {/* Precio de venta */}
               <div className="col-span-3">
                 <label htmlFor="precioVenta" className="block text-[10px] font-semibold text-[#6B7280] dark:text-slate-400 mb-1.5 uppercase tracking-wide">
-                  Precio final
+                  Precio venta
                 </label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280] dark:text-slate-400 text-sm font-semibold" aria-hidden="true">$</span>

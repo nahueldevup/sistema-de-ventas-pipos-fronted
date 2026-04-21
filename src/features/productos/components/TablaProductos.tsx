@@ -24,8 +24,8 @@ export default function TablaProductos({
             <tr>
               <th className="py-4 pl-6 pr-2 min-w-[280px]">PRODUCTO</th>
               <th className="py-4 px-2 text-center">STOCK ACTUAL</th>
-              <th className="py-4 px-2 text-center">PRECIO FINAL</th>
-              <th className="py-4 px-2 text-center">COSTO</th>
+              <th className="py-4 px-2 text-center">PRECIO VENTA</th>
+              <th className="py-4 px-2 text-center">PRECIO COSTO</th>
               <th className="py-4 px-2">GANANCIA</th>
               <th className="py-4 px-2">CATEGORÍA</th>
               <th className="py-4 pl-2 pr-8 min-w-[140px]">PROVEEDOR</th>

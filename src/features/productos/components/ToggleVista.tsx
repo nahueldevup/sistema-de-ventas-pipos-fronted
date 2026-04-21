@@ -1,4 +1,4 @@
-import { LayoutGrid, List, Table2 } from "lucide-react";
+import { LayoutGrid, List} from "lucide-react";
 
 export type TipoVista = "tabla" | "cards";
 
