@@ -1,4 +1,4 @@
-import { LayoutGrid, Table2 } from "lucide-react";
+import { LayoutGrid, List, Table2 } from "lucide-react";
 
 export type TipoVista = "tabla" | "cards";
 
@@ -26,7 +26,7 @@ export default function ToggleVista({ vista, onChange }: ToggleVistaProps) {
           }
         `}
       >
-        <Table2 className="w-4 h-4" strokeWidth={1.8} />
+        <List size={19}/>
       </button>
 
       <button
@@ -45,7 +45,7 @@ export default function ToggleVista({ vista, onChange }: ToggleVistaProps) {
           }
         `}
       >
-        <LayoutGrid className="w-4 h-4" strokeWidth={1.8} />
+        <LayoutGrid size={19}/>
       </button>
     </div>
   );

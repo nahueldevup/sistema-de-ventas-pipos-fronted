@@ -333,7 +333,7 @@ export default function BarraHerramientas({
             onClick={onAbrirActualizarPrecios}
             className="px-3 h-[38px] border border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border rounded-lg text-[#1F2937] dark:text-slate-200 text-sm font-semibold flex items-center gap-2 bg-white hover:bg-[#F3F4F6] dark:bg-dark-elevated dark:hover:bg-slate-700 cursor-pointer transition-all active:scale-95"
           >
-            <ListTodo size={18} /> <span className="hidden sm:inline">Ajustar precios por inflación</span>
+            <ListTodo size={18} /> <span className="hidden sm:inline">Ajustar precios</span>
           </button>
 
           <button
