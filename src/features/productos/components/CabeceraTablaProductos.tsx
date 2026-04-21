@@ -1,4 +1,4 @@
-import { Upload, Download, AlertCircle,Filter, BrushCleaning, PackageX } from 'lucide-react';
+import { Upload, Download, AlertCircle,Filter, BrushCleaning, PackageX, ArrowRightLeft } from 'lucide-react';
 import { MultiSelect } from '@/components/ui/multi-select';
 import type { FiltrosRapidosTabla, Ordenamiento } from '@/types/filtros.types';
 
@@ -125,14 +125,7 @@ export default function CabeceraTablaProductos({
           type="button"
           className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95 dark:bg-dark-elevated dark:border-dark-border dark:text-slate-200 dark:hover:bg-slate-800 outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20"
         >
-          <Upload size={16} /> Cargar
-        </button>
-
-        <button
-          type="button"
-          className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95 dark:bg-dark-elevated dark:border-dark-border dark:text-slate-200 dark:hover:bg-slate-800 outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20"
-        >
-          <Download size={16} /> Descargar
+          <ArrowRightLeft  size={16} />Importar / Exportar
         </button>
       </div>
     </div>
