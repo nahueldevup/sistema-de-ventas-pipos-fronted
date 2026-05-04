@@ -19,4 +19,4 @@ export interface FiltrosRapidosTabla {
   filtroAgotados: boolean;
 }
 
-export type Ordenamiento = 'relevancia' | 'masVendidos' | 'menosVendidos' | 'actividadReciente';
+export type Ordenamiento = 'relevancia' | 'actividadReciente';

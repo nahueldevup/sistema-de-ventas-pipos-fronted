@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   ImageOff,
   ArrowUpRight,
@@ -9,31 +9,47 @@ import {
   Trash2,
   History,
 } from "lucide-react";
-import type { Producto } from "@/types/producto.types";
+import type { Product } from "@/schemas/product.schema";
 import { getCategoriaColor, formatearPesos } from "@/lib/productoUtils";
-import { getImagenProducto } from "@/datos/imagenes.datos";
 
 interface VistaCardsProps {
-  productos: Producto[];
-  onEditar: (producto: Producto) => void;
+  productos: Product[];
+  onEditar: (producto: Product) => void;
+  onBorrar?: (producto: Product) => void;
+  onImprimir?: (producto: Product) => void;
 }
 
 interface CardProductoProps {
-  producto: Producto;
-  onEditar: (producto: Producto) => void;
+  producto: Product;
+  onEditar: (producto: Product) => void;
+  onBorrar?: (producto: Product) => void;
+  onImprimir?: (producto: Product) => void;
+  menuAbierto: boolean;
+  onMenuToggle: (abierto: boolean) => void;
+  onMouseEnter: () => void;
 }
 
-function CardProducto({ producto, onEditar }: CardProductoProps) {
+function CardProducto({ producto, onEditar, onBorrar, onImprimir, menuAbierto, onMenuToggle, onMouseEnter }: CardProductoProps) {
   const [imgError, setImgError] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
-  const [menuAbierto, setMenuAbierto] = useState(false);
 
-  const imagenSrc = !imgError ? getImagenProducto(producto.id) : undefined;
+  // Cerrar con Escape
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && menuAbierto) {
+        onMenuToggle(false);
+      }
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [menuAbierto, onMenuToggle]);
+
+  const imagenSrc = !imgError ? producto.image : undefined;
 
   const estadoStock =
-    producto.existencia <= 0
+    producto.stock <= 0
       ? "agotado"
-      : producto.existencia <= 5
+      : producto.stock <= (producto.minStock || 5)
       ? "bajo"
       : "normal";
 
@@ -45,18 +61,22 @@ function CardProducto({ producto, onEditar }: CardProductoProps) {
       dot: "bg-red-500 animate-pulse",
     },
     bajo: {
-      label: `Stock: ${producto.existencia}`,
+      label: `Stock: ${producto.stock}`,
       clase:
         "bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800/40",
       dot: "bg-amber-500",
     },
     normal: {
-      label: `Stock: ${producto.existencia}`,
+      label: `Stock: ${producto.stock}`,
       clase:
         "bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800/40",
       dot: "bg-emerald-500",
     },
   }[estadoStock];
+
+  const utilidad = producto.salePrice - producto.costPrice;
+  const categoriaLabel = producto.categoryId || 'Sin categoría';
+  const proveedorLabel = producto.supplierId || 'Sin proveedor';
 
   return (
     <article
@@ -73,13 +93,14 @@ function CardProducto({ producto, onEditar }: CardProductoProps) {
         cursor-pointer
       "
       onClick={() => onEditar(producto)}
+      onMouseEnter={onMouseEnter}
     >
       {/* ── Imagen ─────────────────────────────────────────── */}
       <div className="relative aspect-[4/3] bg-white dark:bg-slate-900 overflow-hidden shrink-0">
         {imagenSrc ? (
           <img
             src={imagenSrc}
-            alt={producto.nombre}
+            alt={producto.name}
             loading="lazy"
             onLoad={() => setImgLoaded(true)}
             onError={() => setImgError(true)}
@@ -111,8 +132,8 @@ function CardProducto({ producto, onEditar }: CardProductoProps) {
           className="absolute top-2.5 right-2.5 flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/90 dark:bg-dark-card/90 border border-white/60 dark:border-dark-border/60 backdrop-blur-sm text-[11px] font-semibold text-slate-600 dark:text-slate-300"
           onClick={(e) => e.stopPropagation()}
         >
-          <span className={`w-2 h-2 rounded-full ${getCategoriaColor(producto.categoria)}`} />
-          {producto.categoria}
+          <span className={`w-2 h-2 rounded-full ${getCategoriaColor(categoriaLabel)}`} />
+          {categoriaLabel}
         </div>
       </div>
 
@@ -121,10 +142,10 @@ function CardProducto({ producto, onEditar }: CardProductoProps) {
         {/* Nombre y código */}
         <div className="min-w-0">
           <h3 className="text-[15px] font-semibold text-[#1F2937] dark:text-slate-50 leading-snug line-clamp-2">
-            {producto.nombre}
+            {producto.name}
           </h3>
           <p className="text-xs text-[#6B7280] dark:text-slate-400 font-mono mt-0.5 truncate">
-            {producto.codigo}
+            {producto.barcode || '-'}
           </p>
         </div>
 
@@ -135,7 +156,7 @@ function CardProducto({ producto, onEditar }: CardProductoProps) {
               Precio final
             </p>
             <p className="text-xl font-bold text-[#1F2937] dark:text-white leading-none">
-              {formatearPesos(producto.precioVenta)}
+              {formatearPesos(producto.salePrice)}
             </p>
           </div>
           <div className="text-right">
@@ -143,7 +164,7 @@ function CardProducto({ producto, onEditar }: CardProductoProps) {
               Costo
             </p>
             <p className="text-sm font-semibold text-[#6B7280] dark:text-slate-400 leading-none">
-              {formatearPesos(producto.precioCompra)}
+              {formatearPesos(producto.costPrice)}
             </p>
           </div>
         </div>
@@ -153,33 +174,33 @@ function CardProducto({ producto, onEditar }: CardProductoProps) {
           <div className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
             <ArrowUpRight className="w-3.5 h-3.5" />
             <span className="text-[13px] font-bold">
-              {formatearPesos(producto.utilidad)}
+              {formatearPesos(utilidad)}
             </span>
             <span className="text-[12px] font-medium text-[#6B7280] dark:text-slate-400">
-              ({producto.porcentaje}%)
+              ({producto.profitMargin}%)
             </span>
           </div>
 
           <p className="text-[12px] text-[#6B7280] dark:text-slate-400 font-medium truncate max-w-[100px]">
-            {producto.proveedor}
+            {proveedorLabel}
           </p>
         </div>
       </div>
 
       {/* ── Botones de acción (aparecen en hover) ─────────── */}
       <div
-        className="
+        className={`
           absolute bottom-0 left-0 right-0
-          flex items-center justify-between
-          px-4 py-3
+          flex items-center justify-between gap-1.5
+          px-3 py-3
           bg-gradient-to-t from-white via-white/95 to-transparent
           dark:from-dark-card dark:via-dark-card/95
-          translate-y-full group-hover:translate-y-0
           transition-transform duration-200 ease-out
-        "
+          ${menuAbierto ? 'translate-y-0' : 'translate-y-full group-hover:translate-y-0'}
+        `}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <button
             type="button"
             onClick={(e) => {
@@ -188,7 +209,7 @@ function CardProducto({ producto, onEditar }: CardProductoProps) {
             }}
             title="Editar producto"
             className="
-              flex items-center gap-1.5 px-3 py-1.5
+              flex items-center gap-1 px-2.5 py-1.5
               rounded-lg border border-sky-200 dark:border-sky-800/60
               bg-sky-50 dark:bg-sky-900/20
               text-sky-700 dark:text-sky-400
@@ -204,15 +225,19 @@ function CardProducto({ producto, onEditar }: CardProductoProps) {
           <button
             type="button"
             title="Imprimir etiqueta"
-            className="
-              flex items-center gap-1.5 px-3 py-1.5
-              rounded-lg border border-emerald-200 dark:border-emerald-800/60
-              bg-emerald-50 dark:bg-emerald-900/20
-              text-emerald-700 dark:text-emerald-400
-              text-xs font-semibold
-              hover:bg-emerald-100 dark:hover:bg-emerald-900/40
-              transition-colors cursor-pointer
-            "
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onImprimir) onImprimir(producto);
+            }}
+            disabled={!onImprimir}
+            className={`
+              flex items-center gap-1 px-2.5 py-1.5
+              rounded-lg border text-xs font-semibold
+              transition-colors
+              ${onImprimir 
+                ? 'border-emerald-200 dark:border-emerald-800/60 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 cursor-pointer' 
+                : 'border-slate-200 dark:border-slate-800/60 bg-slate-50 dark:bg-slate-900/20 text-slate-400 dark:text-slate-500 cursor-not-allowed'}
+            `}
           >
             <Printer className="w-3.5 h-3.5" />
             Etiqueta
@@ -225,7 +250,7 @@ function CardProducto({ producto, onEditar }: CardProductoProps) {
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              setMenuAbierto((v) => !v);
+              onMenuToggle(!menuAbierto);
             }}
             className="
               w-7 h-7 flex items-center justify-center rounded-lg
@@ -246,39 +271,53 @@ function CardProducto({ producto, onEditar }: CardProductoProps) {
                 className="fixed inset-0 z-40"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setMenuAbierto(false);
+                  onMenuToggle(false);
                 }}
               />
-              <div className="absolute bottom-full right-0 mb-2 z-50 w-44 bg-white dark:bg-dark-card border border-[#E5E7EB] dark:border-dark-border rounded-xl shadow-lg overflow-hidden py-1 animate-in fade-in slide-in-from-bottom-2 duration-150">
+              <div className="absolute bottom-full right-0 mb-2 z-50 w-48 bg-white dark:bg-dark-card border border-[#E5E7EB] dark:border-dark-border rounded-xl shadow-lg overflow-hidden py-1 animate-in fade-in slide-in-from-bottom-2 duration-150">
                 <button
                   type="button"
                   className="flex w-full items-center gap-2 px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                  onClick={(e) => { e.stopPropagation(); setMenuAbierto(false); onEditar(producto); }}
+                  onClick={(e) => { e.stopPropagation(); onMenuToggle(false); onEditar(producto); }}
                 >
                   <Edit2 className="h-4 w-4 text-sky-600 dark:text-sky-400" />
                   Editar producto
                 </button>
                 <button
                   type="button"
-                  className="flex w-full items-center gap-2 px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                  onClick={(e) => { e.stopPropagation(); setMenuAbierto(false); }}
+                  className={`flex w-full items-center gap-2 px-3 py-2 text-sm font-medium transition-colors ${
+                    onImprimir
+                      ? 'cursor-pointer text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'
+                      : 'cursor-not-allowed text-slate-400 dark:text-slate-600'
+                  }`}
+                  disabled={!onImprimir}
+                  onClick={(e) => { e.stopPropagation(); onMenuToggle(false); onImprimir?.(producto); }}
                 >
-                  <Printer className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                  <Printer className="h-4 w-4" />
                   Imprimir etiqueta
                 </button>
                 <button
                   type="button"
-                  className="flex w-full items-center gap-2 px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                  onClick={(e) => { e.stopPropagation(); setMenuAbierto(false); }}
+                  className="flex w-full items-start gap-2 px-3 py-2 text-sm font-medium cursor-not-allowed text-slate-400 dark:text-slate-500"
+                  disabled
+                  title="Próximamente"
                 >
-                  <History className="h-4 w-4 text-violet-600 dark:text-violet-400" />
-                  Historial de precios
+                  <History className="h-4 w-4 shrink-0 mt-0.5 text-violet-400 dark:text-violet-600" />
+                  <div className="flex flex-col items-start gap-1">
+                    <span className="whitespace-nowrap">Historial de precios</span>
+                    <span className="text-[10px] leading-none bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 px-1.5 py-0.5 rounded-full font-semibold">Próximamente</span>
+                  </div>
                 </button>
                 <div className="mx-2 my-1 h-px bg-[#E5E7EB] dark:bg-dark-border" />
                 <button
                   type="button"
-                  className="flex w-full items-center gap-2 px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer"
-                  onClick={(e) => { e.stopPropagation(); setMenuAbierto(false); }}
+                  className={`flex w-full items-center gap-2 px-3 py-2 text-sm font-medium transition-colors ${
+                    onBorrar
+                      ? 'cursor-pointer text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20'
+                      : 'cursor-not-allowed text-slate-400 dark:text-slate-600'
+                  }`}
+                  disabled={!onBorrar}
+                  onClick={(e) => { e.stopPropagation(); onMenuToggle(false); onBorrar?.(producto); }}
                 >
                   <Trash2 className="h-4 w-4" />
                   Borrar producto
@@ -292,7 +331,9 @@ function CardProducto({ producto, onEditar }: CardProductoProps) {
   );
 }
 
-export default function VistaCards({ productos, onEditar }: VistaCardsProps) {
+export default function VistaCards({ productos, onEditar, onBorrar, onImprimir }: VistaCardsProps) {
+  const [openMenuProductId, setOpenMenuProductId] = useState<string | null>(null);
+
   if (productos.length === 0) {
     return (
       <div className="bg-white dark:bg-dark-card rounded-2xl border border-[#E5E7EB] dark:border-dark-border flex flex-col items-center justify-center py-16 gap-3">
@@ -320,6 +361,15 @@ export default function VistaCards({ productos, onEditar }: VistaCardsProps) {
           key={producto.id}
           producto={producto}
           onEditar={onEditar}
+          onBorrar={onBorrar}
+          onImprimir={onImprimir}
+          menuAbierto={openMenuProductId === producto.id}
+          onMenuToggle={(abierto) => setOpenMenuProductId(abierto ? producto.id! : null)}
+          onMouseEnter={() => {
+            if (openMenuProductId && openMenuProductId !== producto.id) {
+              setOpenMenuProductId(null);
+            }
+          }}
         />
       ))}
     </div>

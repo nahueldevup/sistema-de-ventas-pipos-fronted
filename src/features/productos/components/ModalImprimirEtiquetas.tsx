@@ -1,29 +1,44 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { X, Printer, Search, Package } from "lucide-react";
 import Fuse from "fuse.js";
-import type { Producto } from "@/types/producto.types";
+import type { PersistedProduct } from "@/schemas/product.schema";
 import { ModalAccion } from "@/components/ui/modal-wrappers";
 import EtiquetaPreview from "./EtiquetaPreview";
 
 interface ModalImprimirEtiquetasProps {
   isOpen: boolean;
   onClose: () => void;
-  todosLosProductos: Producto[];
+  todosLosProductos: PersistedProduct[];
+  productoPreseleccionadoId?: string | null;
 }
 
 export default function ModalImprimirEtiquetas({
   isOpen,
   onClose,
   todosLosProductos,
+  productoPreseleccionadoId,
 }: ModalImprimirEtiquetasProps) {
   const [busqueda, setBusqueda] = useState("");
   const [seleccionados, setSeleccionados] = useState<Set<string>>(new Set());
+
+  // Inicializar con el producto preseleccionado si existe y el modal se abre
+
+  useEffect(() => {
+    if (isOpen) {
+      if (productoPreseleccionadoId) {
+        setSeleccionados(new Set([productoPreseleccionadoId]));
+      } else {
+        setSeleccionados(new Set());
+      }
+      setBusqueda(""); // Opcional: limpiar búsqueda al abrir
+    }
+  }, [isOpen, productoPreseleccionadoId]);
 
   // ── Fuse.js para búsqueda fuzzy ─────────────────────────────
   const fuse = useMemo(
     () =>
       new Fuse(todosLosProductos, {
-        keys: ["nombre", "codigo"],
+        keys: ["name", "barcode"],
         threshold: 0.35,
         includeScore: true,
       }),
@@ -65,7 +80,7 @@ export default function ModalImprimirEtiquetas({
     const mapa = new Map(todosLosProductos.map((p) => [p.id, p]));
     return Array.from(seleccionados)
       .map((id) => mapa.get(id))
-      .filter((p): p is Producto => p !== undefined);
+      .filter((p): p is PersistedProduct => p !== undefined);
   }, [todosLosProductos, seleccionados]);
 
   // ── Impresión ───────────────────────────────────────────────
@@ -75,11 +90,7 @@ export default function ModalImprimirEtiquetas({
     // Genero el HTML de las etiquetas con estilos inline para la ventana de impresión
     const etiquetasHTML = productosSeleccionados
       .map((producto) => {
-        const codigoLimpio = producto.codigo.replace(/^#/, "");
-        const precioPorUnidad =
-          producto.unidadesPorBulto && producto.unidadesPorBulto > 1
-            ? (producto.precioVenta / producto.unidadesPorBulto).toFixed(2)
-            : null;
+        const codigoLimpio = (producto.barcode || "").replace(/^#/, "");
 
         return `
           <div style="
@@ -93,20 +104,12 @@ export default function ModalImprimirEtiquetas({
             break-inside: avoid;
           ">
             <p style="font-size: 13px; font-weight: 700; color: #1e293b; margin: 0 0 8px 0; line-height: 1.3;">
-              ${producto.nombre}
+              ${producto.name}
             </p>
             <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px;">
               <span style="font-size: 24px; font-weight: 900; color: #0f172a; letter-spacing: -0.5px;">
-                $${producto.precioVenta.toLocaleString("es-AR", { minimumFractionDigits: 2 })}
+                $${producto.salePrice.toLocaleString("es-AR", { minimumFractionDigits: 2 })}
               </span>
-              ${
-                precioPorUnidad
-                  ? `<div style="text-align: right; line-height: 1.3;">
-                      <p style="font-size: 11px; font-weight: 700; color: #475569; margin: 0;">x${producto.unidadesPorBulto} unidad</p>
-                      <p style="font-size: 10px; color: #64748b; margin: 0;">$${precioPorUnidad} x und</p>
-                    </div>`
-                  : ""
-              }
             </div>
             <div style="text-align: center; margin-bottom: 8px;" class="barcode-container" data-code="${codigoLimpio}"></div>
             <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 6px; border-top: 1px solid #e2e8f0;">

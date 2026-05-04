@@ -15,7 +15,7 @@ import {
   Minus,
   PackageSearch,
 } from "lucide-react";
-import type { Producto } from "@/types/producto.types";
+import type { PersistedProduct } from "@/schemas/product.schema";
 import { ModalAccion } from "@/components/ui/modal-wrappers";
 import { Button } from "@/components/ui/button";
 import { MultiSelect } from "@/components/ui/multi-select";
@@ -23,7 +23,7 @@ import { MultiSelect } from "@/components/ui/multi-select";
 interface ModalActualizarPreciosProps {
   isOpen: boolean;
   onClose: () => void;
-  todosLosProductos: Producto[];
+  todosLosProductos: PersistedProduct[];
   onActualizarPrecios: (
     productosIds: string[],
     nuevoPrecio: number | ((prev: number) => number)
@@ -61,7 +61,8 @@ export default function ModalActualizarPrecios({
   const categoriasUnicas = useMemo(() => {
     const cats = new Set<string>();
     todosLosProductos.forEach((p) => {
-      if (p.categoria) cats.add(p.categoria);
+      const cat = p.categoryId || 'Sin categoría';
+      if (cat) cats.add(cat);
     });
     return Array.from(cats).sort();
   }, [todosLosProductos]);
@@ -69,7 +70,8 @@ export default function ModalActualizarPrecios({
   const proveedoresUnicos = useMemo(() => {
     const provs = new Set<string>();
     todosLosProductos.forEach((p) => {
-      if (p.proveedor) provs.add(p.proveedor);
+      const prov = p.supplierId || 'Sin proveedor';
+      if (prov) provs.add(prov);
     });
     return Array.from(provs).sort();
   }, [todosLosProductos]);
@@ -82,12 +84,15 @@ export default function ModalActualizarPrecios({
     let result = todosLosProductos;
 
     if (categoriasFiltro.length > 0) {
-      result = result.filter((p) => categoriasFiltro.includes(p.categoria));
+      result = result.filter((p) => categoriasFiltro.includes(p.categoryId || 'Sin categoría'));
     }
 
     if (proveedoresFiltro.length > 0) {
       result = result.filter(
-        (p) => p.proveedor && proveedoresFiltro.includes(p.proveedor)
+        (p) => {
+          const prov = p.supplierId || 'Sin proveedor';
+          return proveedoresFiltro.includes(prov);
+        }
       );
     }
 
@@ -95,8 +100,8 @@ export default function ModalActualizarPrecios({
       const lowerBusqueda = busqueda.toLowerCase();
       result = result.filter(
         (p) =>
-          p.nombre.toLowerCase().includes(lowerBusqueda) ||
-          p.codigo.toLowerCase().includes(lowerBusqueda)
+          p.name.toLowerCase().includes(lowerBusqueda) ||
+          (p.barcode || '').toLowerCase().includes(lowerBusqueda)
       );
     }
 
@@ -149,23 +154,23 @@ export default function ModalActualizarPrecios({
     const valor = parseFloat(valorAjuste) || 0;
 
     return productosSeleccionadosList.map((prod) => {
-      const margenAntes = calcularMargen(prod.precioVenta, prod.precioCompra);
+      const margenAntes = calcularMargen(prod.salePrice, prod.costPrice);
       const precioNuevo = calcularNuevoPrecio(
-        prod.precioVenta,
-        prod.precioCompra,
+        prod.salePrice,
+        prod.costPrice,
         valor
       );
-      const margenDespues = calcularMargen(precioNuevo, prod.precioCompra);
+      const margenDespues = calcularMargen(precioNuevo, prod.costPrice);
 
       return {
         ...prod,
-        precioAnterior: prod.precioVenta,
+        precioAnterior: prod.salePrice,
         precioNuevo,
-        diferencia: precioNuevo - prod.precioVenta,
+        diferencia: precioNuevo - prod.salePrice,
         margenAntes,
         margenDespues,
-        gananciaAntes: prod.precioVenta - prod.precioCompra,
-        gananciaDespues: precioNuevo - prod.precioCompra,
+        gananciaAntes: prod.salePrice - prod.costPrice,
+        gananciaDespues: precioNuevo - prod.costPrice,
       };
     });
   }, [productosSeleccionadosList, valorAjuste, calcularNuevoPrecio]);
@@ -199,17 +204,17 @@ export default function ModalActualizarPrecios({
 
     const valor = parseFloat(valorAjuste) || 0;
     const precioNuevo = calcularNuevoPrecio(
-      productoBase.precioVenta,
-      productoBase.precioCompra,
+      productoBase.salePrice,
+      productoBase.costPrice,
       valor
     );
 
     return {
-      nombre: productoBase.nombre,
-      precioAnterior: productoBase.precioVenta,
+      nombre: productoBase.name,
+      precioAnterior: productoBase.salePrice,
       precioNuevo,
-      gananciaAntes: productoBase.precioVenta - productoBase.precioCompra,
-      gananciaDespues: precioNuevo - productoBase.precioCompra,
+      gananciaAntes: productoBase.salePrice - productoBase.costPrice,
+      gananciaDespues: precioNuevo - productoBase.costPrice,
     };
   }, [productosSeleccionadosList, todosLosProductos, valorAjuste, calcularNuevoPrecio]);
 
@@ -257,8 +262,8 @@ export default function ModalActualizarPrecios({
 
     todosLosProductos.forEach((p) => {
       if (idsSet.has(p.id)) {
-        preciosActuales.set(p.id, p.precioVenta);
-        costosActuales.set(p.id, p.precioCompra);
+        preciosActuales.set(p.id, p.salePrice);
+        costosActuales.set(p.id, p.costPrice);
       }
     });
 
@@ -401,7 +406,7 @@ export default function ModalActualizarPrecios({
                     >
                       <div className="flex justify-between items-center gap-3">
                         <span className="font-medium text-[#1F2937] dark:text-slate-300 truncate w-1/2">
-                          {item.nombre}
+                          {item.name}
                         </span>
 
                         <div className="flex items-center gap-3 font-mono">
@@ -560,13 +565,13 @@ export default function ModalActualizarPrecios({
                             : "text-[#1F2937] dark:text-slate-200"
                             }`}
                         >
-                          {prod.nombre}
+                          {prod.name}
                         </p>
 
                         <p className="text-[10px] text-[#6B7280] dark:text-slate-400 font-mono mt-0.5">
-                          {prod.codigo} •{" "}
+                          {prod.barcode || ''} •{" "}
                           <span className="font-semibold">
-                            ${prod.precioVenta.toLocaleString()}
+                            ${prod.salePrice.toLocaleString()}
                           </span>
                         </p>
                       </div>

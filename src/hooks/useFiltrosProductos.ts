@@ -1,12 +1,12 @@
 import { useState, useMemo } from 'react';
-import type { Producto } from '@/types/producto.types';
+import type { Product } from '@/schemas/product.schema';
 import type {
   FiltrosAvanzados,
   FiltrosRapidosTabla,
   Ordenamiento,
 } from '@/types/filtros.types';
 
-export default function useFiltrosProductos(productos: Producto[]) {
+export default function useFiltrosProductos(productos: Product[]) {
   const [ordenamiento, setOrdenamiento] = useState<Ordenamiento>('relevancia');
 
   const [filtrosAvanzados, setFiltrosAvanzados] = useState<FiltrosAvanzados>({
@@ -37,8 +37,8 @@ export default function useFiltrosProductos(productos: Producto[]) {
           // ── Filtros avanzados ─────────────────────────────────────────────
           if (filtrosAvanzados.busqueda) {
             const term = filtrosAvanzados.busqueda.toLowerCase();
-            const coincideNombre = producto.nombre.toLowerCase().includes(term);
-            const coincideCodigo = (producto.codigo || '').toLowerCase().includes(term);
+            const coincideNombre = producto.name.toLowerCase().includes(term);
+            const coincideCodigo = (producto.barcode || '').toLowerCase().includes(term);
 
             if (!coincideNombre && !coincideCodigo) {
               return false;
@@ -47,27 +47,27 @@ export default function useFiltrosProductos(productos: Producto[]) {
 
           if (
             filtrosAvanzados.categorias.length > 0 &&
-            !filtrosAvanzados.categorias.includes(producto.categoria)
+            !filtrosAvanzados.categorias.includes(producto.categoryId || '')
           ) {
             return false;
           }
 
           if (
             filtrosAvanzados.proveedores.length > 0 &&
-            !filtrosAvanzados.proveedores.includes(producto.proveedor)
+            !filtrosAvanzados.proveedores.includes(producto.supplierId || '')
           ) {
             return false;
           }
 
           // Filtro "Con stock"
-          if (filtrosAvanzados.filtroConStock && producto.existencia <= 0) {
+          if (filtrosAvanzados.filtroConStock && producto.stock <= 0) {
             return false;
           }
 
           // Stock avanzado combinable (stock bajo / agotados)
           if (filtrosAvanzados.filtroStockBajo || filtrosAvanzados.filtroAgotados) {
-            const esStockBajo = producto.existencia > 0 && producto.existencia <= 5;
-            const esAgotado = producto.existencia === 0;
+            const esStockBajo = producto.stock > 0 && producto.stock <= (producto.minStock || 5);
+            const esAgotado = producto.stock === 0;
 
             if (filtrosAvanzados.filtroStockBajo && filtrosAvanzados.filtroAgotados) {
               if (!esStockBajo && !esAgotado) return false;
@@ -79,53 +79,41 @@ export default function useFiltrosProductos(productos: Producto[]) {
           }
 
           // TODO: Filtro "Sin imagen" — activar cuando Producto tenga campo imagen
-          // if (filtrosAvanzados.filtroSinImagen && producto.imagen) {
+          // if (filtrosAvanzados.filtroSinImagen && producto.image) {
           //   return false;
           // }
 
           if (
             filtrosAvanzados.precioMin &&
-            producto.precioVenta < Number(filtrosAvanzados.precioMin)
+            producto.salePrice < Number(filtrosAvanzados.precioMin)
           ) {
             return false;
           }
 
           if (
             filtrosAvanzados.precioMax &&
-            producto.precioVenta > Number(filtrosAvanzados.precioMax)
+            producto.salePrice > Number(filtrosAvanzados.precioMax)
           ) {
             return false;
           }
 
+          // Filtro por fechas — comparamos Dates con strings de input YYYY-MM-DD
           if (filtrosAvanzados.fechaDesde || filtrosAvanzados.fechaHasta) {
-            if (filtrosAvanzados.fechaCampo === 'actividad') {
-              const act =
-                producto.ultimaActividad ||
-                producto.fechaModificacion ||
-                producto.fechaCreacion;
+            // Usamos updatedAt como "actividad" y "modificación"; createdAt para "creación"
+            const fechaProducto =
+              filtrosAvanzados.fechaCampo === 'creacion'
+                ? producto.createdAt
+                : producto.updatedAt; // tanto 'actividad' como 'modificacion' usan updatedAt
 
-              const pasaAct =
-                (!filtrosAvanzados.fechaDesde || act >= filtrosAvanzados.fechaDesde) &&
-                (!filtrosAvanzados.fechaHasta || act <= filtrosAvanzados.fechaHasta);
+            if (fechaProducto) {
+              const fechaStr = fechaProducto instanceof Date
+                ? fechaProducto.toISOString().slice(0, 10)
+                : String(fechaProducto).slice(0, 10);
 
-              if (!pasaAct) return false;
-            } else {
-              const fechaProducto =
-                filtrosAvanzados.fechaCampo === 'creacion'
-                  ? producto.fechaCreacion
-                  : producto.fechaModificacion;
-
-              if (
-                filtrosAvanzados.fechaDesde &&
-                fechaProducto < filtrosAvanzados.fechaDesde
-              ) {
+              if (filtrosAvanzados.fechaDesde && fechaStr < filtrosAvanzados.fechaDesde) {
                 return false;
               }
-
-              if (
-                filtrosAvanzados.fechaHasta &&
-                fechaProducto > filtrosAvanzados.fechaHasta
-              ) {
+              if (filtrosAvanzados.fechaHasta && fechaStr > filtrosAvanzados.fechaHasta) {
                 return false;
               }
             }
@@ -134,14 +122,14 @@ export default function useFiltrosProductos(productos: Producto[]) {
           // ── Filtros rápidos de tabla ──────────────────────────────────────
           if (
             filtrosRapidos.categorias.length > 0 &&
-            !filtrosRapidos.categorias.includes(producto.categoria)
+            !filtrosRapidos.categorias.includes(producto.categoryId || '')
           ) {
             return false;
           }
 
           if (filtrosRapidos.filtroStockBajo || filtrosRapidos.filtroAgotados) {
-            const esStockBajo = producto.existencia > 0 && producto.existencia <= 5;
-            const esAgotado = producto.existencia === 0;
+            const esStockBajo = producto.stock > 0 && producto.stock <= (producto.minStock || 5);
+            const esAgotado = producto.stock === 0;
 
             if (filtrosRapidos.filtroStockBajo && filtrosRapidos.filtroAgotados) {
               if (!esStockBajo && !esAgotado) return false;
@@ -156,12 +144,11 @@ export default function useFiltrosProductos(productos: Producto[]) {
         })
         .sort((a, b) => {
           switch (ordenamiento) {
-            case 'masVendidos':
-              return b.ventasTotales - a.ventasTotales;
-            case 'menosVendidos':
-              return a.ventasTotales - b.ventasTotales;
-            case 'actividadReciente':
-              return (b.ultimaActividad || '').localeCompare(a.ultimaActividad || '');
+            case 'actividadReciente': {
+              const dateA = a.updatedAt instanceof Date ? a.updatedAt.getTime() : 0;
+              const dateB = b.updatedAt instanceof Date ? b.updatedAt.getTime() : 0;
+              return dateB - dateA;
+            }
             default:
               return 0;
           }

@@ -1,7 +1,7 @@
-import type { Producto } from "@/types/producto.types";
+import type { PersistedProduct } from "@/schemas/product.schema";
 
 interface EtiquetaPreviewProps {
-  producto: Producto;
+  producto: PersistedProduct;
 }
 
 /**
@@ -10,36 +10,20 @@ interface EtiquetaPreviewProps {
  */
 export default function EtiquetaPreview({ producto }: EtiquetaPreviewProps) {
   // Limpio el # del código para que react-barcode lo acepte como EAN
-  const codigoLimpio = producto.codigo.replace(/^#/, "");
-  const precioPorUnidad =
-    producto.unidadesPorBulto && producto.unidadesPorBulto > 1
-      ? (producto.precioVenta / producto.unidadesPorBulto).toFixed(2)
-      : null;
-
-
+  const codigoLimpio = (producto.barcode || "").replace(/^#/, "");
 
   return (
     <div className="bg-white rounded-xl p-3 w-full h-full shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] select-none flex flex-col justify-between">
       {/* Nombre del producto */}
       <p className="text-[11px] sm:text-xs font-bold text-slate-800 leading-snug mb-1.5 line-clamp-2">
-        {producto.nombre}
+        {producto.name}
       </p>
 
-      {/* Fila de precio + info de bulto */}
+      {/* Fila de precio */}
       <div className="flex items-baseline justify-between mb-2">
         <span className="text-xl font-black text-slate-900 tracking-tight">
-          ${producto.precioVenta.toLocaleString("es-AR", { minimumFractionDigits: 2 })}
+          ${producto.salePrice.toLocaleString("es-AR", { minimumFractionDigits: 2 })}
         </span>
-        {producto.unidadesPorBulto && producto.unidadesPorBulto > 1 && (
-          <div className="text-right leading-tight">
-            <p className="text-xs font-bold text-slate-600">
-              x{producto.unidadesPorBulto} unidad
-            </p>
-            <p className="text-[11px] text-slate-500">
-              ${precioPorUnidad} x und
-            </p>
-          </div>
-        )}
       </div>
 
       {/* Código de barras simulado (SVG genérico) para fluidez visual */}

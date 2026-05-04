@@ -1,10 +1,13 @@
-import { Image as ImageIcon, Barcode, Check, ChevronDown, Plus, Minus } from "lucide-react"
+import { Image as ImageIcon, Barcode, Check, ChevronDown, Plus, Minus, X as XIcon } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
+import { useForm, Controller } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { calcularPrecioVenta } from "@/lib/precioUtils"
-import type { ProductoDatos } from "@/types/producto.types"
+import { ProductSchema, type Product } from "@/schemas/product.schema"
+import type { z } from "zod"
+import { useCreateProducto, useUpdateProducto } from "@/features/productos/hooks/useProductos"
 import { ModalFormulario } from "@/components/ui/modal-wrappers"
-export type { ProductoDatos } from "@/types/producto.types"
-
+import { MOCK_STORE_ID } from "@/config/mock.config"
 
 interface CustomSelectProps {
   id: string;
@@ -36,7 +39,7 @@ function CustomSelect({ id, value, onChange, options }: CustomSelectProps) {
         className={`w-full flex items-center justify-between border ${isOpen ? 'border-brand-500 ring-2 ring-brand-500/20' : 'border-[#E5E7EB] dark:border-dark-border'} rounded-lg pl-3 pr-2 py-2 text-sm outline-none transition-all bg-white dark:bg-dark-elevated cursor-pointer`}
       >
         <span className="font-semibold text-[#1F2937] dark:text-slate-300 truncate pr-2">
-          {value}
+          {value || "Seleccionar..."}
         </span>
         <ChevronDown className={`w-4 h-4 text-[#6B7280] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
@@ -72,60 +75,160 @@ function CustomSelect({ id, value, onChange, options }: CustomSelectProps) {
 interface ModalRegistroProductoProps {
   isOpen: boolean;
   onClose: () => void;
-  productoAEditar?: ProductoDatos | null;
+  productoAEditar?: Product | null;
   margenGananciaGlobal: number;
 }
 
+/** Tipo input del formulario (antes del refine de Zod) */
+type ProductFormInput = z.input<typeof ProductSchema>;
+
 export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar, margenGananciaGlobal }: ModalRegistroProductoProps) {
-  const [codigo, setCodigo] = useState("")
-  const [descripcion, setDescripcion] = useState("")
-  const [categoria, setCategoria] = useState("Sin categoría")
-  const [proveedor, setProveedor] = useState("Sin proveedor")
-  const [precioCompra, setPrecioCompra] = useState("")
-  const [precioVenta, setPrecioVenta] = useState("")
-  const [margenLocal, setMargenLocal] = useState(margenGananciaGlobal)
-  const [existencia, setExistencia] = useState("")
-  const [stockMinimo, setStockMinimo] = useState("5")
+  const { register, handleSubmit, control, watch, setValue, formState: { errors }, reset } = useForm<ProductFormInput>({
+    resolver: zodResolver(ProductSchema),
+    defaultValues: {
+      storeId: MOCK_STORE_ID,
+      name: "",
+      barcode: "",
+      categoryId: "Sin categoría",
+      supplierId: "Sin proveedor",
+      costPrice: 0,
+      salePrice: 0,
+      profitMargin: margenGananciaGlobal,
+      stock: 0,
+      minStock: 5,
+      allowDecimalQuantity: false,
+      unit: "UNIT",
+      image: null,
+    }
+  });
+
+  // ── Estado de imagen (preview + base64) ──────────────────────
+  const [imagenPreview, setImagenPreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validar tamaño (máx 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      alert('La imagen no puede superar los 2MB');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const base64 = ev.target?.result as string;
+      setImagenPreview(base64);
+      setValue('image', base64, { shouldValidate: true });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveImage = () => {
+    setImagenPreview(null);
+    setValue('image', null, { shouldValidate: true });
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const createProducto = useCreateProducto();
+  const updateProducto = useUpdateProducto();
+  
+  const isPending = createProducto.isPending || updateProducto.isPending;
+
+  // Lógica de Ganancia
+  const costPrice = watch("costPrice");
+  const profitMargin = watch("profitMargin");
+  const salePrice = watch("salePrice");
+  
+  const [lastEdited, setLastEdited] = useState<"costPrice" | "profitMargin" | "salePrice" | null>(null);
 
   useEffect(() => {
-    if (isOpen && !productoAEditar) {
-      setMargenLocal(margenGananciaGlobal);
+    if (lastEdited === "costPrice" || lastEdited === "profitMargin") {
+      const costo = Number(costPrice) || 0;
+      const margen = Number(profitMargin) || 0;
+      const venta = calcularPrecioVenta(costo, margen, false, 0);
+      if (Number(salePrice) !== venta) {
+        setValue("salePrice", venta, { shouldValidate: true });
+      }
+    } else if (lastEdited === "salePrice") {
+      const costo = Number(costPrice) || 0;
+      const venta = Number(salePrice) || 0;
+      if (costo > 0) {
+        const margen = ((venta - costo) / costo) * 100;
+        if (Number(profitMargin) !== Math.round(margen)) {
+          setValue("profitMargin", Math.round(margen), { shouldValidate: true });
+        }
+      }
     }
-  }, [isOpen, margenGananciaGlobal, productoAEditar]);
+  }, [costPrice, profitMargin, salePrice, lastEdited, setValue]);
 
   useEffect(() => {
-    if (precioCompra && !isNaN(Number(precioCompra))) {
-      const nuevoPrecio = calcularPrecioVenta(precioCompra, margenLocal, false, 0);
-      setPrecioVenta(nuevoPrecio.toString());
+    if (isOpen) {
+      if (productoAEditar) {
+        reset({
+          storeId: productoAEditar.storeId || MOCK_STORE_ID,
+          name: productoAEditar.name || "",
+          barcode: productoAEditar.barcode || "",
+          categoryId: productoAEditar.categoryId || "Sin categoría",
+          supplierId: productoAEditar.supplierId || "Sin proveedor",
+          costPrice: productoAEditar.costPrice || 0,
+          salePrice: productoAEditar.salePrice || 0,
+          profitMargin: productoAEditar.profitMargin ?? margenGananciaGlobal,
+          stock: productoAEditar.stock || 0,
+          minStock: productoAEditar.minStock || 5,
+          allowDecimalQuantity: productoAEditar.allowDecimalQuantity ?? false,
+          unit: productoAEditar.unit || "UNIT",
+          image: productoAEditar.image || null,
+        });
+        setImagenPreview(productoAEditar.image || null);
+      } else {
+        reset({
+          storeId: MOCK_STORE_ID,
+          name: "",
+          barcode: "",
+          categoryId: "Sin categoría",
+          supplierId: "Sin proveedor",
+          costPrice: 0,
+          salePrice: 0,
+          profitMargin: margenGananciaGlobal,
+          stock: 0,
+          minStock: 5,
+          allowDecimalQuantity: false,
+          unit: "UNIT",
+          image: null,
+        });
+        setImagenPreview(null);
+      }
+      setLastEdited(null);
     }
-  }, [precioCompra, margenLocal]);
-
-  useEffect(() => {
-    if (productoAEditar) {
-      setCodigo(productoAEditar.codigo)
-      setDescripcion(productoAEditar.descripcion)
-      setCategoria(productoAEditar.categoria)
-      setProveedor(productoAEditar.proveedor || "Sin proveedor")
-      setPrecioCompra(productoAEditar.precioCompra)
-      setPrecioVenta(productoAEditar.precioVenta)
-      setExistencia(productoAEditar.existencia)
-      setStockMinimo(productoAEditar.stockMinimo)
-    } else {
-      setCodigo("")
-      setDescripcion("")
-      setCategoria("Sin categoría")
-      setProveedor("Sin proveedor")
-      setPrecioCompra("")
-      setPrecioVenta("")
-      setExistencia("")
-      setStockMinimo("5")
-    }
-  }, [productoAEditar, isOpen])
+  }, [productoAEditar, isOpen, reset, margenGananciaGlobal]);
 
   const generarCodigoBarras = () => {
-    const random = Math.floor(Math.random() * 9000000000000 + 1000000000000).toString()
-    setCodigo(random)
+    const random = Math.floor(Math.random() * 9000000000000 + 1000000000000).toString();
+    setValue("barcode", random, { shouldValidate: true });
   }
+
+  const onSubmit = (data: ProductFormInput) => {
+    // Después del zodResolver, los datos ya están validados — casteamos al tipo output
+    const payload = data as Product;
+    
+    if (productoAEditar && productoAEditar.id) {
+      updateProducto.mutate({ id: productoAEditar.id, data: payload }, {
+        onSuccess: () => {
+          reset();
+          onClose();
+        }
+      });
+    } else {
+      createProducto.mutate(payload, {
+        onSuccess: () => {
+          reset();
+          onClose();
+        }
+      });
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -137,7 +240,8 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
       onOpenChange={(open) => !open && onClose()}
       title={tituloModal}
       onCancelar={onClose}
-      onGuardar={() => {/* lógica de guardado */}}
+      onGuardar={handleSubmit(onSubmit)}
+      guardarDisabled={isPending}
     >
         {/* Cuerpo optimizado */}
         <div className="px-6 py-5 overflow-y-auto flex-1">
@@ -147,21 +251,60 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
             
             {/* Columna izquierda - Imagen (más estrecha) */}
             <div className="col-span-4">
-              <div
-                role="button"
-                tabIndex={0}
-                aria-label="Subir imagen del producto"
-                title="Subir imagen del producto"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                  }
-                }}
-                className="w-full aspect-square rounded-xl border-2 border-dashed border-[#E5E7EB] dark:border-dark-border bg-[#F6F7F8] dark:bg-dark-elevated flex flex-col items-center justify-center text-[#6B7280] dark:text-slate-500 hover:border-brand-500 hover:bg-brand-50 dark:hover:bg-brand-900/20 hover:text-brand-600 dark:hover:text-brand-400 transition-all cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/50"
-              >
-                <ImageIcon className="w-10 h-10 mb-2 group-hover:scale-110 transition-transform" />
-                <span className="text-xs font-semibold text-center px-2">Subir imagen</span>
-              </div>
+              {/* Input file oculto */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/avif"
+                className="hidden"
+                onChange={handleImageUpload}
+              />
+
+              {imagenPreview ? (
+                <div className="relative w-full aspect-square rounded-xl border border-[#E5E7EB] dark:border-dark-border bg-white dark:bg-dark-elevated overflow-hidden group">
+                  <img
+                    src={imagenPreview}
+                    alt="Preview"
+                    className="w-full h-full object-contain p-2"
+                  />
+                  {/* Botón cambiar */}
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="px-3 py-1.5 rounded-lg bg-white/90 text-slate-800 text-xs font-semibold hover:bg-white transition-colors cursor-pointer"
+                    >
+                      Cambiar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="w-8 h-8 rounded-lg bg-red-500/90 text-white flex items-center justify-center hover:bg-red-600 transition-colors cursor-pointer"
+                    >
+                      <XIcon className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Subir imagen del producto"
+                  title="Subir imagen del producto"
+                  onClick={() => fileInputRef.current?.click()}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      fileInputRef.current?.click();
+                    }
+                  }}
+                  className="w-full aspect-square rounded-xl border-2 border-dashed border-[#E5E7EB] dark:border-dark-border bg-[#F6F7F8] dark:bg-dark-elevated flex flex-col items-center justify-center text-[#6B7280] dark:text-slate-500 hover:border-brand-500 hover:bg-brand-50 dark:hover:bg-brand-900/20 hover:text-brand-600 dark:hover:text-brand-400 transition-all cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/50"
+                >
+                  <ImageIcon className="w-10 h-10 mb-2 group-hover:scale-110 transition-transform" />
+                  <span className="text-xs font-semibold text-center px-2">Subir imagen</span>
+                  <span className="text-[10px] text-slate-400 mt-1">PNG, JPG (máx 2MB)</span>
+                </div>
+              )}
             </div>
 
             {/* Columna derecha - Campos principales */}
@@ -175,8 +318,7 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
                   <input
                     id="codigo"
                     type="text"
-                    value={codigo}
-                    onChange={(e) => setCodigo(e.target.value)}
+                    {...register("barcode")}
                     placeholder="Escanea o escribe"
                     className="flex-1 border border-[#E5E7EB] dark:border-dark-border rounded-lg px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all font-medium text-[#1F2937] dark:text-slate-200 bg-white dark:bg-dark-elevated"
                   />
@@ -191,43 +333,58 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
                     Generar Código
                   </button>
                 </div>
+                {errors.barcode && <p className="text-xs text-red-500 mt-1">{errors.barcode.message}</p>}
               </div>
 
               {/* Categoría y Proveedor en una fila */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label htmlFor="categoria" className="block text-xs font-semibold text-[#6B7280] dark:text-slate-400 mb-1.5 uppercase tracking-wide">Categoría</label>
-                  <CustomSelect
-                    id="categoria"
-                    value={categoria}
-                    onChange={setCategoria}
-                    options={[
-                      "Sin categoría",
-                      "Higiene Personal",
-                      "Bebidas",
-                      "Limpieza",
-                      "Lácteos",
-                      "Alimentos",
-                      "Farmacia"
-                    ]}
+                  <Controller
+                    name="categoryId"
+                    control={control}
+                    render={({ field }) => (
+                      <CustomSelect
+                        id="categoria"
+                        value={field.value || "Sin categoría"}
+                        onChange={field.onChange}
+                        options={[
+                          "Sin categoría",
+                          "Higiene Personal",
+                          "Bebidas",
+                          "Limpieza",
+                          "Lácteos",
+                          "Alimentos",
+                          "Farmacia"
+                        ]}
+                      />
+                    )}
                   />
+                  {errors.categoryId && <p className="text-xs text-red-500 mt-1">{errors.categoryId.message}</p>}
                 </div>
                 <div>
                   <label htmlFor="proveedor" className="block text-xs font-semibold text-[#6B7280] dark:text-slate-400 mb-1.5 uppercase tracking-wide">Proveedor</label>
-                  <CustomSelect
-                    id="proveedor"
-                    value={proveedor}
-                    onChange={setProveedor}
-                    options={[
-                      "Sin proveedor",
-                      "Avon",
-                      "Danone",
-                      "Unilever",
-                      "Mastellone",
-                      "Coca-Cola",
-                      "Arcor"
-                    ]}
+                  <Controller
+                    name="supplierId"
+                    control={control}
+                    render={({ field }) => (
+                      <CustomSelect
+                        id="proveedor"
+                        value={field.value || "Sin proveedor"}
+                        onChange={field.onChange}
+                        options={[
+                          "Sin proveedor",
+                          "Avon",
+                          "Danone",
+                          "Unilever",
+                          "Mastellone",
+                          "Coca-Cola",
+                          "Arcor"
+                        ]}
+                      />
+                    )}
                   />
+                  {errors.supplierId && <p className="text-xs text-red-500 mt-1">{errors.supplierId.message}</p>}
                 </div>
               </div>
 
@@ -236,12 +393,12 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
                 <label htmlFor="descripcion" className="block text-xs font-semibold text-[#6B7280] dark:text-slate-400 mb-1.5 uppercase tracking-wide">Nombre del producto</label>
                 <textarea
                   id="descripcion"
-                  value={descripcion}
-                  onChange={(e) => setDescripcion(e.target.value)}
+                  {...register("name")}
                   rows={2}
                   placeholder="Escribe el nombre del producto"
                   className="w-full border border-[#E5E7EB] dark:border-dark-border rounded-lg px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all resize-none font-medium text-[#1F2937] dark:text-slate-200 bg-white dark:bg-dark-elevated"
                 ></textarea>
+                {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
               </div>
             </div>
           </div>
@@ -265,12 +422,14 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
                   <input
                     id="precioCompra"
                     type="number"
-                    value={precioCompra}
-                    onChange={(e) => setPrecioCompra(e.target.value)}
+                    step="any"
+                    {...register("costPrice")}
+                    onFocus={() => setLastEdited("costPrice")}
                     placeholder="0"
                     className="w-full border border-[#E5E7EB] dark:border-dark-border rounded-lg pl-7 pr-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all font-semibold text-[#1F2937] dark:text-slate-100 bg-white dark:bg-dark-card"
                   />
                 </div>
+                {errors.costPrice && <p className="text-xs text-red-500 mt-1">{errors.costPrice.message}</p>}
               </div>
 
               {/* Margen stepper compacto */}
@@ -281,7 +440,10 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
                 <div className="flex items-center border border-[#E5E7EB] dark:border-dark-border rounded-lg overflow-hidden bg-white dark:bg-dark-elevated h-[36px]">
                   <button
                     type="button"
-                    onClick={() => setMargenLocal(Math.max(0, margenLocal - 5))}
+                    onClick={() => {
+                      setLastEdited("profitMargin");
+                      setValue("profitMargin", Math.max(0, (Number(profitMargin) || 0) - 5), { shouldValidate: true });
+                    }}
                     className="w-8 h-full flex items-center justify-center text-[#6B7280] hover:bg-[#F3F4F6] dark:hover:bg-slate-700 hover:text-[#1F2937] dark:hover:text-slate-200 transition-colors cursor-pointer border-r border-inherit"
                     title="Reducir margen"
                     aria-label="Reducir margen"
@@ -291,18 +453,24 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
                   <div className="relative flex-1 h-full flex items-center justify-center bg-transparent">
                     <input
                       type="text"
-                      value={margenLocal}
-                      onChange={(e) => {
-                        const val = e.target.value.replace(/[^0-9]/g, '');
-                        setMargenLocal(val === '' ? 0 : Math.min(999, parseInt(val, 10)));
-                      }}
+                      {...register("profitMargin", {
+                        onChange: (e) => {
+                          const val = e.target.value.replace(/[^0-9]/g, '');
+                          e.target.value = val;
+                          setLastEdited("profitMargin");
+                        }
+                      })}
+                      onFocus={() => setLastEdited("profitMargin")}
                       className="w-full h-full text-center pr-2 text-[14px] font-semibold text-[#1F2937] dark:text-white bg-transparent outline-none transition-colors"
                     />
                     <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[12px] font-semibold text-[#6B7280] pointer-events-none">%</span>
                   </div>
                   <button
                     type="button"
-                    onClick={() => setMargenLocal(margenLocal + 5)}
+                    onClick={() => {
+                      setLastEdited("profitMargin");
+                      setValue("profitMargin", (Number(profitMargin) || 0) + 5, { shouldValidate: true });
+                    }}
                     className="w-8 h-full flex items-center justify-center text-[#6B7280] hover:bg-[#F3F4F6] dark:hover:bg-slate-700 hover:text-[#1F2937] dark:hover:text-slate-200 transition-colors cursor-pointer border-l border-inherit"
                     title="Aumentar margen"
                     aria-label="Aumentar margen"
@@ -310,6 +478,7 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
                     <Plus className="w-3.5 h-3.5" />
                   </button>
                 </div>
+                {errors.profitMargin && <p className="text-xs text-red-500 mt-1 text-center">{errors.profitMargin.message}</p>}
               </div>
 
               {/* Precio de venta */}
@@ -322,12 +491,14 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
                   <input
                     id="precioVenta"
                     type="number"
-                    value={precioVenta}
-                    onChange={(e) => setPrecioVenta(e.target.value)}
+                    step="any"
+                    {...register("salePrice")}
+                    onFocus={() => setLastEdited("salePrice")}
                     placeholder="0"
                     className="w-full border border-[#E5E7EB] dark:border-dark-border rounded-lg pl-7 pr-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all font-semibold text-[#1F2937] dark:text-slate-100 bg-white dark:bg-dark-card"
                   />
                 </div>
+                {errors.salePrice && <p className="text-xs text-red-500 mt-1">{errors.salePrice.message}</p>}
               </div>
 
               {/* Inventario compacto */}
@@ -339,13 +510,15 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
                   <input
                     id="existencia"
                     type="text"
-                    value={existencia}
-                    onChange={(e) => {
-                      const val = e.target.value.replace(/[^0-9]/g, '');
-                      setExistencia(val === '' ? '0' : val);
-                    }}
+                    {...register("stock", {
+                      onChange: (e) => {
+                        const val = e.target.value.replace(/[^0-9.-]/g, '');
+                        e.target.value = val;
+                      }
+                    })}
                     className="w-full h-[36px] border border-[#E5E7EB] dark:border-dark-border rounded-lg px-2 text-[14px] outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all font-semibold text-[#1F2937] dark:text-white bg-white dark:bg-dark-elevated text-center"
                   />
+                  {errors.stock && <p className="text-xs text-red-500 mt-1">{errors.stock.message}</p>}
                 </div>
                 <div>
                   <label htmlFor="stockMinimo" className="block text-[10px] font-semibold text-[#6B7280] dark:text-slate-400 mb-1.5 uppercase tracking-wide">
@@ -354,14 +527,16 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
                   <input
                     id="stockMinimo"
                     type="text"
-                    value={stockMinimo}
-                    onChange={(e) => {
-                      const val = e.target.value.replace(/[^0-9]/g, '');
-                      setStockMinimo(val === '' ? '0' : val);
-                    }}
+                    {...register("minStock", {
+                      onChange: (e) => {
+                        const val = e.target.value.replace(/[^0-9.-]/g, '');
+                        e.target.value = val;
+                      }
+                    })}
                     className="w-full h-[36px] border border-[#E5E7EB] dark:border-dark-border rounded-lg px-2 text-[14px] outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all font-semibold text-[#1F2937] dark:text-white bg-white dark:bg-dark-elevated text-center"
                     title="Cantidad mínima para alerta de stock bajo"
                   />
+                  {errors.minStock && <p className="text-xs text-red-500 mt-1">{errors.minStock.message}</p>}
                 </div>
               </div>
             </div>

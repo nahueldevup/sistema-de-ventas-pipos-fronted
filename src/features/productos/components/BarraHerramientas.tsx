@@ -62,8 +62,6 @@ export default function BarraHerramientas({
 
     if (ordenamiento !== "relevancia") {
       const labels: Record<string, string> = {
-        masVendidos: "Más vendidos",
-        menosVendidos: "Menos vendidos",
         actividadReciente: "Actividad reciente",
       };
 
