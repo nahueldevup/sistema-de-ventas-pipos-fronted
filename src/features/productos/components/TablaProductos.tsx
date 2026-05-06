@@ -22,6 +22,8 @@ export interface TablaProductosProps {
 
 const columnHelper = createColumnHelper<Product>();
 
+const ROW_HEIGHT = 76;
+
 export default function TablaProductos({ productos, onEditar, onBorrar, onImprimir }: TablaProductosProps) {
   const [menuAbiertoId, setMenuAbiertoId] = useState<string | null>(null);
 
@@ -37,27 +39,27 @@ export default function TablaProductos({ productos, onEditar, onBorrar, onImprim
           const p = row.original;
           const imagenSrc = p.image;
           return (
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 w-[280px]">
               <div className="w-10 h-10 rounded-xl bg-white dark:bg-slate-900 flex items-center justify-center overflow-hidden cursor-zoom-in hover:scale-150 transition-transform origin-left z-10 border border-[#E5E7EB] dark:border-slate-700/60 shrink-0">
                 {imagenSrc ? (
                   <img
                     src={imagenSrc}
                     alt={p.name}
                     loading="lazy"
-                    className="w-full h-full object-contain p-1"
+                    className="w-full h-full object-contain p-1 shrink-0"
                   />
                 ) : (
-                  <ImageOff className="w-5 h-5 text-[#6B7280] dark:text-slate-300 opacity-50" />
+                  <ImageOff className="w-5 h-5 text-[#6B7280] dark:text-slate-300 opacity-50 shrink-0" />
                 )}
               </div>
-              <div className="flex flex-col">
-                <span className="text-[15px] font-semibold text-[#1F2937] dark:text-slate-50">{p.name}</span>
-                <span className="text-sm text-[#6B7280] dark:text-slate-300 font-semibold tracking-wide">#{p.barcode || '-'}</span>
+              <div className="flex flex-col min-w-0 whitespace-normal">
+                <span className="text-[15px] font-semibold text-[#1F2937] dark:text-slate-50 line-clamp-2 leading-tight break-words" title={p.name}>{p.name}</span>
+                <span className="text-sm text-[#6B7280] dark:text-slate-300 font-semibold tracking-wide truncate mt-0.5">#{p.barcode || '-'}</span>
               </div>
             </div>
           );
         },
-        meta: { className: 'py-3 pl-6 pr-2', headerClassName: 'py-4 pl-6 pr-2 min-w-[280px]' },
+        meta: { className: 'py-2 pl-6 pr-2', headerClassName: 'py-4 pl-6 pr-2 min-w-[280px]' },
       }),
 
       // ── STOCK ACTUAL ─────────────────────────────────────────
@@ -107,7 +109,7 @@ export default function TablaProductos({ productos, onEditar, onBorrar, onImprim
             </div>
           );
         },
-        meta: { className: 'py-3 px-2', headerClassName: 'py-4 px-2 text-center' },
+        meta: { className: 'py-2 px-2', headerClassName: 'py-4 px-2 text-center' },
       }),
 
       // ── PRECIO VENTA ─────────────────────────────────────────
@@ -123,7 +125,7 @@ export default function TablaProductos({ productos, onEditar, onBorrar, onImprim
             className="w-[105px] h-9 text-center px-1.5 font-semibold outline-none text-[14px] rounded-lg border transition-all bg-white dark:bg-dark-card cursor-text hover:bg-[#F3F4F6] dark:hover:bg-slate-800 border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border dark:hover:border-slate-500 text-[#1F2937] dark:text-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
           />
         ),
-        meta: { className: 'py-3 px-2 text-center', headerClassName: 'py-4 px-2 text-center' },
+        meta: { className: 'py-2 px-2 text-center', headerClassName: 'py-4 px-2 text-center' },
       }),
 
       // ── PRECIO COSTO ─────────────────────────────────────────
@@ -139,7 +141,7 @@ export default function TablaProductos({ productos, onEditar, onBorrar, onImprim
             className="w-[105px] h-9 text-center px-1.5 font-semibold outline-none text-[14px] rounded-lg border transition-all bg-white dark:bg-dark-card cursor-text hover:bg-[#F3F4F6] dark:hover:bg-slate-800 border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border dark:hover:border-slate-500 text-[#1F2937] dark:text-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
           />
         ),
-        meta: { className: 'py-3 px-2 text-center', headerClassName: 'py-4 px-2 text-center' },
+        meta: { className: 'py-2 px-2 text-center', headerClassName: 'py-4 px-2 text-center' },
       }),
 
       // ── GANANCIA ─────────────────────────────────────────────
@@ -150,18 +152,18 @@ export default function TablaProductos({ productos, onEditar, onBorrar, onImprim
           const p = row.original;
           const utilidad = p.salePrice - p.costPrice;
           return (
-            <div className="flex items-center gap-1.5 whitespace-nowrap">
-              <span className="font-bold text-green-700 dark:text-green-500 text-[14px] flex items-center gap-0.5">
+            <div className="flex items-center gap-1.5 whitespace-nowrap min-w-0">
+              <span className="font-bold text-green-700 dark:text-green-500 text-[14px] flex items-center gap-0.5 shrink-0">
                 <ArrowUpRight className="w-3.5 h-3.5" />
                 +{formatearPesos(utilidad)}
               </span>
-              <span className="text-[13px] font-medium text-[#6B7280] dark:text-slate-400">
+              <span className="text-[13px] font-medium text-[#6B7280] dark:text-slate-400 truncate">
                 ({p.profitMargin}%)
               </span>
             </div>
           );
         },
-        meta: { className: 'py-3 px-2', headerClassName: 'py-4 px-2' },
+        meta: { className: 'py-2 px-2', headerClassName: 'py-4 px-2' },
       }),
 
       // ── CATEGORÍA ────────────────────────────────────────────
@@ -170,22 +172,24 @@ export default function TablaProductos({ productos, onEditar, onBorrar, onImprim
         cell: (info) => {
           const cat = info.getValue() || 'Sin categoría';
           return (
-            <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${getCategoriaColor(cat)}`} />
-              <span className="text-[14px] text-[#6B7280] dark:text-slate-300 font-medium">{cat}</span>
+            <div className="flex items-center gap-2 min-w-0">
+              <div className={`w-2 h-2 rounded-full shrink-0 ${getCategoriaColor(cat)}`} />
+              <span className="text-[14px] text-[#6B7280] dark:text-slate-300 font-medium truncate" title={cat}>{cat}</span>
             </div>
           );
         },
-        meta: { className: 'py-3 px-2', headerClassName: 'py-4 px-2' },
+        meta: { className: 'py-2 px-2', headerClassName: 'py-4 px-2' },
       }),
 
       // ── PROVEEDOR ────────────────────────────────────────────
       columnHelper.accessor('supplierId', {
         header: 'PROVEEDOR',
         cell: (info) => (
-          <span className="text-[15px] font-medium text-[#1F2937] dark:text-slate-200">{info.getValue() || 'Sin proveedor'}</span>
+          <div className="truncate max-w-[120px]" title={info.getValue() || 'Sin proveedor'}>
+            <span className="text-[15px] font-medium text-[#1F2937] dark:text-slate-200">{info.getValue() || 'Sin proveedor'}</span>
+          </div>
         ),
-        meta: { className: 'py-3 pl-2 pr-8', headerClassName: 'py-4 pl-2 pr-8 min-w-[140px]' },
+        meta: { className: 'py-2 pl-2 pr-8', headerClassName: 'py-4 pl-2 pr-8 min-w-[140px]' },
       }),
     ],
     []
@@ -203,8 +207,9 @@ export default function TablaProductos({ productos, onEditar, onBorrar, onImprim
   const rowVirtualizer = useVirtualizer({
     count: rows.length,
     getScrollElement: () => tableContainerRef.current,
-    estimateSize: () => 68,
+    estimateSize: () => ROW_HEIGHT,
     overscan: 10,
+    getItemKey: (index) => rows[index]?.original.id ?? index,
   });
 
   const virtualItems = rowVirtualizer.getVirtualItems();
@@ -283,22 +288,22 @@ export default function TablaProductos({ productos, onEditar, onBorrar, onImprim
                 return (
                   <tr
                     key={row.id}
-                    ref={rowVirtualizer.measureElement}
                     data-index={virtualRow.index}
-                    className={`${getRowBg(virtualRow.index)} hover-fila transition-colors duration-150 group cursor-pointer`}
+                    className={`${getRowBg(virtualRow.index)} hover-fila transition-colors duration-150 group cursor-pointer overflow-hidden`}
+                    style={{ height: `${ROW_HEIGHT}px`, minHeight: `${ROW_HEIGHT}px`, maxHeight: `${ROW_HEIGHT}px` }}
                     onClick={() => onEditar?.(p)}
                   >
                     {row.getVisibleCells().map((cell) => {
                       const cellMeta = cell.column.columnDef.meta?.className;
                       return (
-                        <td key={cell.id} className={cellMeta || 'py-3 px-2'}>
+                        <td key={cell.id} className={cellMeta || 'py-2 px-2'}>
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </td>
                       );
                     })}
                     {onEditar && (
                       <td
-                        className={`py-3 px-6 sticky right-0 transition-colors duration-150 shadow-sticky-col ${
+                        className={`py-2 px-6 sticky right-0 transition-colors duration-150 shadow-sticky-col ${
                           isMenuAbierto ? 'z-50' : 'z-10'
                         }`}
                         style={{ backgroundColor: 'inherit' }}

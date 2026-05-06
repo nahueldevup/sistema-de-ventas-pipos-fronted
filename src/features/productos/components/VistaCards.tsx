@@ -141,7 +141,7 @@ function CardProducto({ producto, onEditar, onBorrar, onImprimir, menuAbierto, o
       <div className="flex flex-col flex-1 p-4 gap-3">
         {/* Nombre y código */}
         <div className="min-w-0">
-          <h3 className="text-[15px] font-semibold text-[#1F2937] dark:text-slate-50 leading-snug line-clamp-2">
+          <h3 className="text-[15px] font-semibold text-[#1F2937] dark:text-slate-50 leading-snug line-clamp-2 break-words" title={producto.name}>
             {producto.name}
           </h3>
           <p className="text-xs text-[#6B7280] dark:text-slate-400 font-mono mt-0.5 truncate">
