@@ -4,6 +4,7 @@ import InicioSesion from "@/pages/InicioSesion"
 import PanelControlLayout from "@/layouts/PanelControlLayout"
 import PanelControl from "@/pages/PanelControl"
 import Productos from "@/pages/Productos"
+import Vender from "@/pages/Vender"
 
 export default function App() {
   return (
@@ -21,6 +22,12 @@ export default function App() {
           <Route path="/productos" element={
             <PanelControlLayout>
               <Productos />
+            </PanelControlLayout>
+          } />
+
+          <Route path="/vender" element={
+            <PanelControlLayout>
+              <Vender />
             </PanelControlLayout>
           } />
 

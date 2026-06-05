@@ -1,5 +1,6 @@
 import { type Product, ProductSchema } from '../../schemas/product.schema';
 import { PRODUCTOS_EJEMPLO } from '../../datos/productos.datos';
+import { generateId } from '../../lib/utils';
 
 export class ProductService {
   private static STORAGE_KEY = 'pipos_mock_products';
@@ -48,7 +49,7 @@ export class ProductService {
   ): Promise<Product> {
     const newProduct = {
       ...data,
-      id: crypto.randomUUID(),
+      id: generateId(),
       createdAt: new Date(),
       updatedAt: new Date(),
     };
