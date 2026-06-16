@@ -7,9 +7,10 @@ interface CardProductoVentaProps {
   producto: Product;
   onAgregar: (producto: Product) => void;
   enCarrito: boolean;
+  cantidadEnCarrito?: number;
 }
 
-export default memo(function CardProductoVenta({ producto, onAgregar, enCarrito }: CardProductoVentaProps) {
+export default memo(function CardProductoVenta({ producto, onAgregar, enCarrito, cantidadEnCarrito = 0 }: CardProductoVentaProps) {
   const [imgError, setImgError] = useState(false);
   const [animando, setAnimando] = useState(false);
 
@@ -21,15 +22,15 @@ export default memo(function CardProductoVenta({ producto, onAgregar, enCarrito 
     if (agotado) return;
     setAnimando(true);
     onAgregar(producto);
-    setTimeout(() => setAnimando(false), 300);
+    setTimeout(() => setAnimando(false), 150);
   };
 
-  // Color del indicador de stock
-  const stockDot = agotado
-    ? 'bg-red-500 animate-pulse'
+  // Color del indicador de stock según nivel
+  const stockColor = agotado
+    ? 'text-red-400'
     : stockBajo
-      ? 'bg-amber-500'
-      : 'bg-emerald-500';
+      ? 'text-amber-400'
+      : 'text-emerald-400';
 
   return (
     <button
@@ -38,8 +39,8 @@ export default memo(function CardProductoVenta({ producto, onAgregar, enCarrito 
       disabled={agotado}
       title={agotado ? 'Sin stock disponible' : `Agregar ${producto.name} al carrito`}
       className={`
-        relative flex flex-col bg-card border border-border rounded-xl overflow-hidden
-        transition-all duration-200 ease-out text-left cursor-pointer group
+        relative flex flex-col bg-card border border-border rounded-xl overflow-hidden shadow-md
+        transition-all duration-150 ease-out text-left cursor-pointer group
         ${agotado
           ? 'opacity-50 cursor-not-allowed'
           : 'hover:border-brand-400 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_4px_16px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 active:scale-[0.97]'
@@ -64,24 +65,25 @@ export default memo(function CardProductoVenta({ producto, onAgregar, enCarrito 
           </div>
         )}
 
-        {/* Indicador de stock */}
-        <div
-          className={`absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full border-2 border-white dark:border-dark-card ${stockDot}`}
-          title={agotado ? 'Agotado' : stockBajo ? `Stock bajo: ${producto.stock}` : `Stock: ${producto.stock}`}
-        />
 
-        {/* Badge "En carrito" */}
-        {enCarrito && !agotado && (
-          <div className="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded-md bg-brand-600 text-white text-[10px] font-bold">
-            ✓
+        {/* Badge "En carrito" (Cantidad) */}
+        {enCarrito && !agotado && cantidadEnCarrito > 0 && (
+          <div className="absolute top-1.5 left-1.5 min-w-[1.5rem] h-6 px-1.5 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold shadow-sm">
+            {cantidadEnCarrito}
           </div>
         )}
       </div>
 
+      {/* Indicador de stock */}
+      <div className={`flex items-center gap-1 px-2.5 py-1 text-xs font-semibold tracking-wide border-t border-black/5 dark:border-white/[0.09] ${stockColor}`}>
+        <span>●</span>
+        <span>{producto.stock} Disponibles</span>
+      </div>
+
       {/* Info */}
-      <div className="flex flex-col gap-0.5 p-2.5 flex-1 min-w-0">
+      <div className="flex flex-col gap-0.5 px-2.5 pt-1 pb-2.5 flex-1 min-w-0 border-t border-black/5 dark:border-white/[0.09]">
         <span
-          className="text-[13px] font-semibold text-slate-800 dark:text-slate-100 leading-tight truncate break-words"
+          className="text-[13px] font-semibold text-slate-800 dark:text-slate-100 leading-tight line-clamp-2 break-words h-[2.03rem] overflow-hidden"
           title={producto.name}
         >
           {producto.name}

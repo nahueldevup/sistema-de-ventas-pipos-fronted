@@ -69,12 +69,12 @@ export default memo(function Sidebar({
         className={`
           fixed md:relative inset-y-0 left-0 z-30 bg-sidebar text-sidebar-foreground border-r border-border/80 flex flex-col justify-between shadow-[4px_0_24px_rgba(7,18,16,0.06)] transition-all duration-200 ease-in-out antialiased
           ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-          ${isExpanded ? 'w-[240px]' : 'w-[80px]'}
+          ${isExpanded ? 'w-[240px]' : 'w-[65px]'}
         `}
       >
         <div className="flex flex-col overflow-hidden whitespace-nowrap h-full">
           {/* Logo Area */}
-          <div className={`h-[64px] flex items-center ${isExpanded ? 'px-4 gap-3' : 'justify-center'} border-b border-border/80 relative transition-all duration-200`}>
+          <div className={`h-[48px] flex items-center ${isExpanded ? 'px-4 gap-3' : 'justify-center'} border-b border-border/80 relative transition-all duration-200`}>
             {/* Hamburger para Escritorio */}
             <button
               onClick={handleToggle}

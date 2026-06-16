@@ -100,64 +100,18 @@ export default function Vender() {
   }
 
   return (
-    <div className="h-[calc(100vh-64px)] flex flex-col gap-4 -m-6 p-4">
-      {/* Header con estado de caja */}
-      <div className="flex items-center justify-between shrink-0">
-        <div className="flex items-center gap-3">
-          <h1 className="text-[20px] font-bold text-slate-800 dark:text-slate-100 sr-only">
-            Vender
-          </h1>
-
-          {/* Chip dinámico de estado de caja */}
-          {hayCajaAbierta ? (
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/40">
-              <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              <span className="text-[12px] font-bold text-emerald-700 dark:text-emerald-400">
-                Caja abierta
-              </span>
-            </div>
-          ) : (
-            <button
-              type="button"
-              onClick={() => setModalAbrirOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-50 hover:bg-brand-100 dark:bg-brand-900/20 dark:hover:bg-brand-900/40 border border-brand-200 dark:border-brand-800/40 transition-colors cursor-pointer"
-            >
-              <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse" />
-              <span className="text-[12px] font-bold text-brand-700 dark:text-brand-400">
-                Abrir caja
-              </span>
-            </button>
-          )}
-        </div>
-
-        {/* Botón cerrar caja */}
-        {hayCajaAbierta && (
-          <button
-            type="button"
-            onClick={() => setModalCerrarOpen(true)}
-            className="
-              flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg
-              text-[12px] font-semibold
-              text-red-600 dark:text-red-400
-              border border-red-200 dark:border-red-800/40
-              hover:bg-red-50 dark:hover:bg-red-900/20
-              transition-colors cursor-pointer
-            "
-          >
-            <Lock className="w-3.5 h-3.5" />
-            Cerrar caja
-          </button>
-        )}
-      </div>
-
+    <div className="h-[calc(100vh-48px)] flex flex-col gap-4 -m-6 p-4">
       {/* Layout split */}
       <div className="flex-1 grid grid-cols-[1fr_380px] gap-4 min-h-0">
         {/* Panel izquierdo — Productos */}
-        <div className="min-h-0 overflow-hidden flex flex-col">
+        <div className="min-h-0 overflow-visible flex flex-col">
           <GrillaProductosVenta
             productos={productos}
             carritoItems={carrito.items}
             onAgregarProducto={carrito.agregarProducto}
+            isCajaAbierta={hayCajaAbierta}
+            onAbrirCajaClick={() => setModalAbrirOpen(true)}
+            onCerrarCajaClick={() => setModalCerrarOpen(true)}
           />
         </div>
 
