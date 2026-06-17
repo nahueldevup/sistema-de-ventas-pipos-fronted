@@ -167,7 +167,7 @@ export default function GrillaProductosVenta({
   };
 
   return (
-    <div className="flex flex-col gap-4 h-full min-h-0">
+    <div className="flex flex-col gap-3 h-full min-h-0">
       <div className="shrink-0">
         <BarraHerramientasVentas
           busqueda={busqueda}
@@ -190,7 +190,7 @@ export default function GrillaProductosVenta({
       </div>
 
       {/* Grilla/Lista de productos */}
-      <div className="flex-1 overflow-y-auto hide-scrollbar rounded-xl pt-2 -mt-2 px-2 -mx-2">
+      <div className="flex-1 overflow-y-auto scrollbar-thin rounded-xl pt-2 -mt-2 px-2 -mx-2">
         {productosOrdenados.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 gap-3 h-full">
             <Package className="w-12 h-12 text-slate-300 dark:text-slate-600" />

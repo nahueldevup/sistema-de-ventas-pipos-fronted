@@ -11,26 +11,15 @@ export default function App() {
     <ThemeProvider>
       <BrowserRouter>
         <Routes>
+          {/* Login — sin sidebar ni header */}
           <Route path="/" element={<InicioSesion />} />
-          
-          <Route path="/panel" element={
-            <PanelControlLayout>
-              <PanelControl />
-            </PanelControlLayout>
-          } />
 
-          <Route path="/productos" element={
-            <PanelControlLayout>
-              <Productos />
-            </PanelControlLayout>
-          } />
-
-          <Route path="/vender" element={
-            <PanelControlLayout>
-              <Vender />
-            </PanelControlLayout>
-          } />
-
+          {/* Rutas protegidas con layout (sidebar + header) */}
+          <Route element={<PanelControlLayout />}>
+            <Route path="/panel" element={<PanelControl />} />
+            <Route path="/productos" element={<Productos />} />
+            <Route path="/vender" element={<Vender />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

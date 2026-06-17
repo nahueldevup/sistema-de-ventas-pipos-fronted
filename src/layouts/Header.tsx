@@ -1,100 +1,84 @@
-import { Menu, Bell, Sun, Moon } from "lucide-react"
+import { Menu, Bell } from "lucide-react"
 import { memo, useMemo } from "react"
 import { useLocation } from "react-router-dom"
 import { useTheme } from "@/hooks/useTheme"
 
 interface HeaderProps {
-    onMenuClick: () => void
+  onMenuClick: () => void
 }
 
 const routeTitles: Record<string, string> = {
-    "/": "Inicio - Bienvenido",
-    "/vender": "Vender",
-    "/productos": "Productos",
-    "/clientes": "Clientes",
-    "/caja": "Caja",
+  "/panel": "Inicio",
+  "/vender": "Vender",
+  "/productos": "Productos",
+  "/clientes": "Clientes",
+  "/caja": "Caja",
+  "/categorias": "Categorías",
+  "/proveedores": "Proveedores",
+  "/pagos": "Pagos",
+  "/reportes": "Reportes",
 }
 
 export default memo(function Header({ onMenuClick }: HeaderProps) {
-    const { isDark, toggleTheme } = useTheme()
-    const location = useLocation()
+  const location = useLocation()
+  const { isDark } = useTheme()
 
-    const pageTitle = useMemo(() => {
-        const pathname = location.pathname
+  const pageTitle = useMemo(() => {
+    const p = location.pathname
+    if (routeTitles[p]) return routeTitles[p]
+    const match = Object.keys(routeTitles)
+      .filter((r) => p.startsWith(r))
+      .sort((a, b) => b.length - a.length)[0]
+    return match ? routeTitles[match] : "Inicio"
+  }, [location.pathname])
 
-        if (routeTitles[pathname]) return routeTitles[pathname]
+  return (
+    <header
+      className={`
+        h-14 flex items-center justify-between px-5 shrink-0 border-b
+        ${isDark
+          ? "bg-[#111514] border-white/10 text-slate-100"
+          : "bg-white border-slate-200 text-slate-900"
+        }
+      `}
+    >
+      {/* Izquierda: hamburguesa mobile + título */}
+      <div className="flex items-center gap-3 min-w-0">
+        <button
+          onClick={onMenuClick}
+          className={`md:hidden p-2 rounded-xl cursor-pointer transition-colors ${
+            isDark ? "hover:bg-white/10 text-slate-300" : "hover:bg-slate-100 text-slate-600"
+          }`}
+          aria-label="Abrir menú"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+        <h1 className="text-[15px] font-bold tracking-[-0.01em] truncate">
+          {pageTitle}
+        </h1>
+      </div>
 
-        const matchedPrefix = Object.keys(routeTitles)
-            .filter((route) => route !== "/" && pathname.startsWith(route))
-            .sort((a, b) => b.length - a.length)[0]
+      {/* Derecha: notificaciones + avatar */}
+      <div className="flex items-center gap-3">
+        <button
+          className={`p-2 rounded-full cursor-pointer transition-colors ${
+            isDark
+              ? "text-slate-400 hover:bg-white/10 hover:text-slate-200"
+              : "text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+          }`}
+          aria-label="Notificaciones"
+        >
+          <Bell className="w-5 h-5" />
+        </button>
 
-        return matchedPrefix ? routeTitles[matchedPrefix] : "Panel de control"
-    }, [location.pathname])
-
-    return (
-        <header className="h-[48px] bg-header border-b border-border/80 flex items-center justify-between px-4 sm:px-5 md:px-6 z-10">
-            <div className="flex items-center gap-3 md:gap-4 min-w-0">
-                <button
-                    onClick={onMenuClick}
-                    className="md:hidden p-2 text-foreground cursor-pointer hover:bg-muted/80 rounded-xl transition-colors"
-                    aria-label="Abrir menú"
-                >
-                    <Menu className="w-6 h-6" />
-                </button>
-
-                <h2 className="truncate text-[20px] leading-none font-bold tracking-[-0.015em] text-slate-800 dark:text-slate-100">
-                    {pageTitle}
-                </h2>
-            </div>
-
-            <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
-                {/* Theme Toggle puramente CSS (Rendimiento máximo) */}
-                <button
-                    onClick={toggleTheme}
-                    className="relative flex h-9 w-[58px] items-center rounded-full border shadow-sm transition-colors duration-300 cursor-pointer border-amber-200/80 bg-amber-50 dark:border-indigo-400/25 dark:bg-slate-800"
-                    title={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
-                    aria-label="Alternar tema"
-                >
-                    <span
-                        className="absolute left-[4px] flex h-7 w-7 items-center justify-center rounded-full shadow-sm transition-all duration-300 ease-out transform translate-x-0 bg-white border border-amber-200 dark:translate-x-[21px] dark:bg-slate-900 dark:border-indigo-300/30"
-                    >
-                        {/* 
-                          Usando puramente las clases dark: le quitamos todo el peso a React
-                          durante el toggle en el main thread de la netbook. CSS se encarga.
-                        */}
-                        <Sun
-                            className="absolute h-4 w-4 text-amber-500 transition-opacity duration-200 opacity-100 dark:opacity-0"
-                            strokeWidth={1.9}
-                        />
-                        <Moon
-                            className="absolute h-4 w-4 text-sky-300 transition-opacity duration-200 opacity-0 dark:opacity-100"
-                            strokeWidth={1.9}
-                        />
-                    </span>
-                </button>
-
-                <button
-                    className="p-2 text-slate-400 dark:text-slate-500 hover:bg-slate-100 dark:hover:bg-dark-elevated hover:text-slate-600 dark:hover:text-slate-300 rounded-xl transition-colors cursor-pointer"
-                    aria-label="Notificaciones"
-                >
-                    <Bell className="w-5 h-5" />
-                </button>
-
-                <div className="flex items-center gap-3 pl-3 sm:pl-5 border-l border-border/80">
-                    <div className="text-right hidden sm:block leading-tight">
-                        <p className="text-[14px] font-semibold text-slate-800 dark:text-slate-100">
-                            Hola, Nahuel
-                        </p>
-                        <p className="text-[12px] font-medium text-slate-500 dark:text-slate-400">
-                            Administrador
-                        </p>
-                    </div>
-
-                    <div className="w-10 h-10 bg-brand-100 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 rounded-full flex items-center justify-center text-[15px] font-bold border-2 border-white dark:border-dark-card shadow-sm">
-                        N
-                    </div>
-                </div>
-            </div>
-        </header>
-    )
+        <div className={`w-9 h-9 rounded-full flex items-center justify-center text-[13px] font-bold border-2 ${
+          isDark
+            ? "bg-emerald-500 text-slate-950 border-emerald-400"
+            : "bg-emerald-600 text-white border-emerald-700"
+        }`}>
+          N
+        </div>
+      </div>
+    </header>
+  )
 })

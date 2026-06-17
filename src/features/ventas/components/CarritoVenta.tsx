@@ -80,7 +80,7 @@ export default function CarritoVenta({
         <CarritoVacio />
       ) : (
         <>
-          <div className="flex-1 overflow-y-auto hide-scrollbar">
+          <div className="flex-1 overflow-y-auto scrollbar-thin">
             {items.map((item) => (
               <ItemCarrito
                 key={item.productId}

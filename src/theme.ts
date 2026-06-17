@@ -24,11 +24,12 @@
 //   Violeta: "270 77% 35%"
 //   Naranja: "25 90% 45%"
 //   Rojo:    "0 72% 40%"
-//   Teal:    "170 77% 29%"  ← el actual
+//   Teal:    "170 77% 29%"
+//   Emerald: "160 84% 27%"  ← el actual
 //
-// NOTA: Si cambiás esto, actualizá también --brand-hue en globals.css
+// NOTA: Si cambiás esto, actualizá también --brand-hue en index.css
 
-export const BRAND_HUE = "170 77%"; // matiz + saturación (no cambies el %)
+export const BRAND_HUE = "160 84%"; // matiz + saturación (emerald)
 
 export const BRAND = {
     // Escala de claridad del color principal (de más claro a más oscuro)
@@ -38,7 +39,7 @@ export const BRAND = {
     300: `hsl(${BRAND_HUE} 65%)`,  // bordes normales
     400: `hsl(${BRAND_HUE} 50%)`,  // elementos secundarios
     500: `hsl(${BRAND_HUE} 38%)`,  // color base
-    600: `hsl(${BRAND_HUE} 29%)`,  // ← botones principales (el más usado)
+    600: `hsl(${BRAND_HUE} 27%)`,  // ← botones principales (emerald-600 exacto)
     700: `hsl(${BRAND_HUE} 22%)`,  // hover de botones
     800: `hsl(${BRAND_HUE} 15%)`,  // texto sobre fondos claros
     900: `hsl(${BRAND_HUE} 8%)`,   // texto muy oscuro
@@ -78,64 +79,38 @@ export const LIGHT = {
 
 export const DARK = {
     // ── Fondo de página ──────────────────────────────────
-    // hsl(226 10% 7.5%) ≈ #0F1117
-    // NO es negro puro. El negro puro causa "halo" blanco alrededor
-    // del texto en pantallas baratas (efecto subpixel rendering).
-    // Este gris muy oscuro elimina ese problema.
-    surface: "hsl(226 10% 7.5%)",
+    // #111514 — verde-oscuro profundo
+    // NO es negro puro. El tinte verdoso sutil (sat 6-10%) en
+    // todas las superficies crea coherencia cromática con la
+    // paleta emerald de la app. En pantallas TN baratas se ve
+    // "más rico" que el gris puro.
+    surface: "#111514",
 
     // ── Fondo de tarjetas y modales ──────────────────────
-    // hsl(226 10% 13%) ≈ #1A1D27
-    // Se nota contra el fondo (5.5% más claro) sin necesidad
-    // de bordes ni sombras. El ojo distingue "esto es una tarjeta
-    // sobre un fondo" por la diferencia de luminosidad sola.
-    card: "hsl(226 10% 13%)",
+    // hsl(160 8% 11%) — verde-gris oscuro
+    // Se nota contra el fondo por diferencia de luminosidad.
+    card: "hsl(160 8% 11%)",
 
     // ── Superficie elevada (inputs, dropdowns, selects) ──
-    // hsl(226 10% 18%) ≈ #242836
-    // NUEVA variable. Sin esto, los inputs se fundían con el
-    // fondo del modal y el usuario no sabía dónde hacer click.
-    // Al ser 5% más clara que la tarjeta, crea un "pozo" visual
-    // que el cerebro interpreta como "acá se puede escribir".
-    elevated: "hsl(226 10% 18%)",
+    // hsl(160 8% 15%) — pozo visual para inputs
+    elevated: "hsl(160 8% 15%)",
 
     // ── Líneas divisoras ─────────────────────────────────
-    // hsl(226 10% 20%) ≈ #2A2E3D
-    // ANTES: hsl(0 0% 22%) = #383838 (gris puro)
-    // El gris puro se confundía con los fondos grises puros.
-    // Con el mismo tinte azul que los fondos, la línea se integra
-    // pero se nota. Ratio contra card: ~1.8:1, suficiente para
-    // SEPARAR sin ser una línea gritona.
-    border: "hsl(226 10% 20%)",
+    // hsl(160 6% 20%) — se integra con el tinte verdoso
+    border: "hsl(160 6% 20%)",
 
     // ── Sidebar y header ─────────────────────────────────
-    // Misma luminosidad que card para que se vean como "la misma
-    // superficie" que los modales, creando continuidad visual.
-    sidebar: "hsl(226 10% 13%)",
-    header: "hsl(226 10% 13%)",
+    sidebar: "hsl(160 10% 9%)",
+    header: "hsl(160 10% 9%)",
 
     // ── Tabla ────────────────────────────────────────────
-    // tableHeader queda entre surface y card (11%) para que las
-    // cabeceras se vean como una capa intermedia.
-    // tableZebra es más oscuro que surface (9%) para que las filas
-    // alternadas se distingan sutilmente.
-    tableHeader: "hsl(226 10% 11%)",
-    tableZebra: "hsl(226 10% 9%)",
+    tableHeader: "hsl(160 8% 11%)",
+    tableZebra: "hsl(160 6% 8%)",
 
     // ── Textos ───────────────────────────────────────────
-    // foreground: hsl(216 1% 95%) ≈ #F0F2F5
-    // NO es blanco puro. Blanco puro sobre negro puro tiene
-    // contraste 21:1 (excesivo), causa fatiga y "vibración" en
-    // paneles baratos. Blanco roto a 95% mantiene ratio ~16:1
-    // (pasa AAA) pero elimina la fatiga.
-    //
-    // mutedForeground: hsl(230 9% 59%) ≈ #8B8FA3
-    // ANTES: hsl(0 0% 60%) = #999 (gris puro)
-    // El gris puro se confundía con bordes y otros elementos grises.
-    // El sutil tinte azul lo asocia con el texto principal pero se
-    // distingue claramente. Ratio contra card: ~4.5:1 (pasa AA).
-    foreground: "hsl(216 1% 95%)",
-    mutedForeground: "hsl(230 9% 59%)",
+    // Blanco roto con sutil tinte verde, contraste ~16:1 (AAA)
+    foreground: "hsl(150 5% 95%)",
+    mutedForeground: "hsl(155 5% 58%)",
 } as const;
 
 // ─────────────────────────────────────────────────────────

@@ -274,7 +274,7 @@ export const BarraHerramientasVentas: React.FC<BarraHerramientasVentasProps> = (
   return (
     <div
       ref={containerRef}
-      className="flex flex-col gap-3 bg-card p-3.5 rounded-xl border border-border shadow-sm"
+      className="flex flex-col gap-3 bg-card p-3 rounded-xl border border-border shadow-sm"
       style={{
         transformOrigin: 'top left',
         transform: scaleFactor < 1 ? `scale(${scaleFactor})` : undefined,

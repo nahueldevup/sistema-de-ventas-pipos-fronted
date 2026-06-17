@@ -1,48 +1,42 @@
-import { useState } from "react"
+import { useState, useCallback } from "react"
+import { Outlet } from "react-router-dom"
+import { useTheme } from "@/hooks/useTheme"
 import Sidebar from "./Sidebar"
 import Header from "./Header"
 
-export default function PanelControlLayout({ children }: { children: React.ReactNode }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isDesktopPinned, setIsDesktopPinned] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+export default function PanelControlLayout() {
+  const { isDark } = useTheme()
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(true)
 
-  const handleMenuClick = () => {
+  const handleMenuClick = useCallback(() => {
     if (window.innerWidth >= 768) {
-      setIsDesktopPinned(!isDesktopPinned);
+      setIsExpanded((prev) => !prev)
     } else {
-      setIsSidebarOpen(true);
+      setIsSidebarOpen(true)
     }
-  };
-
-  const handleMainClick = () => {
-    if (window.innerWidth >= 768 && isDesktopPinned) {
-      setIsDesktopPinned(false);
-    }
-  };
+  }, [])
 
   return (
-    <div className="bg-background text-foreground antialiased h-screen overflow-hidden flex">
-      <Sidebar 
-        isOpen={isSidebarOpen} 
-        onClose={() => setIsSidebarOpen(false)} 
-        isDesktopPinned={isDesktopPinned}
-        isHovered={isHovered}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        onToggleMenu={handleMenuClick}
+    <div className="flex h-screen w-screen overflow-hidden">
+      <Sidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        isExpanded={isExpanded}
+        onToggleExpanded={() => setIsExpanded((prev) => !prev)}
       />
-      
-      <main 
-        className="flex-1 flex flex-col h-screen overflow-hidden relative"
-        onClick={handleMainClick}
-      >
+
+      <div className="flex-1 flex flex-col overflow-hidden">
         <Header onMenuClick={handleMenuClick} />
-        
-        <div className="flex-1 overflow-y-auto p-6 scroll-smooth hide-scrollbar">
-          {children}
-        </div>
-      </main>
+
+        <main
+          className={`flex-1 overflow-y-auto p-6 scroll-smooth hide-scrollbar ${
+            isDark ? "bg-[#181f1c]" : "bg-white"
+          }`}
+        >
+          <Outlet />
+        </main>
+      </div>
     </div>
   )
 }
