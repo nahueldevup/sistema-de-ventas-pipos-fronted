@@ -62,7 +62,7 @@ export default function CarritoVenta({
             onClick={handleVaciar}
             className={`
               flex items-center gap-1.5 px-3 py-1.5 rounded-lg
-              text-[12px] font-semibold transition-all duration-200 cursor-pointer
+              text-[12px] font-semibold transition-colors duration-150 cursor-pointer
               ${confirmandoVaciar
                 ? 'bg-red-600 text-white'
                 : 'text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20'

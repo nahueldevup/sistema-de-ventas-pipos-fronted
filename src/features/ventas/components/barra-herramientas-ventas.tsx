@@ -275,7 +275,7 @@ export const BarraHerramientasVentas: React.FC<BarraHerramientasVentasProps> = (
       className="flex flex-col gap-3 bg-card p-3 rounded-xl border border-border shadow-sm"
       style={{
         zoom: scaleFactor < 1 ? scaleFactor : undefined,
-        transition: 'zoom 200ms ease-in-out',
+        transition: 'zoom 200ms ease-out',
       }}
     >
       {/* FILA SUPERIOR: Búsqueda, Filtros y Gestión */}
@@ -311,7 +311,7 @@ export const BarraHerramientasVentas: React.FC<BarraHerramientasVentasProps> = (
                   ? 'Todas las categorías'
                   : `Categorías (${categoriasSeleccionadas.length})`}
               </span>
-              <ChevronDown className="h-4 w-4 opacity-50 shrink-0 ml-2 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+              <ChevronDown className="h-4 w-4 opacity-50 shrink-0 ml-2 transition-transform duration-150 ease-linear group-data-[state=open]:rotate-180" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-[240px] p-2 bg-card dark:bg-slate-900 border border-border shadow-md z-50" align="start">

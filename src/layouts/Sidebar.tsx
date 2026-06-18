@@ -166,7 +166,7 @@ export default memo(function Sidebar({
               {/* Chevron */}
               {hasSubs && (
                 <ChevronDown
-                  className={`w-5 h-5 shrink-0 transition-transform duration-200 ${
+                  className={`w-5 h-5 shrink-0 transition-transform duration-150 ease-linear ${
                     selfActive ? tk.iconActive : tk.chevron
                   } ${isOpen ? "rotate-180" : ""}`}
                 />
@@ -178,7 +178,7 @@ export default memo(function Sidebar({
         {/* Sub-items con animación grid */}
         {isExpanded && hasSubs && (
           <div
-            className="grid transition-[grid-template-rows] duration-200 ease-out"
+            className={`grid transition-[grid-template-rows,opacity] ${isOpen ? "duration-[180ms] ease-out opacity-100" : "duration-150 ease-in opacity-0"}`}
             style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
           >
             <div className="overflow-hidden">
@@ -232,7 +232,7 @@ export default memo(function Sidebar({
           fixed md:relative inset-y-0 left-0 z-30
           ${tk.sidebar} border-r ${tk.border}
           flex flex-col
-          transition-all duration-200 ease-out antialiased
+          transition-[width,transform] duration-200 ease-out antialiased
           ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
           ${isExpanded ? "w-[220px]" : "w-[60px]"}
         `}
@@ -367,13 +367,13 @@ export default memo(function Sidebar({
           <button
             onClick={() => navigate("/")}
             className={`
-              flex items-center gap-3 rounded-full transition-colors duration-150 cursor-pointer
+              flex items-center gap-3 rounded-full transition-colors duration-150 cursor-pointer group
               ${isExpanded ? "w-full px-3 py-2.5" : "w-10 h-10 justify-center"}
               ${tk.logout}
             `}
             title={!isExpanded ? "Cerrar sesión" : undefined}
           >
-            <LogOut className="w-5 h-5 shrink-0" strokeWidth={1.8} />
+            <LogOut className="w-5 h-5 shrink-0 transition-transform duration-150 group-hover:-translate-x-0.5" strokeWidth={1.8} />
             {isExpanded && (
               <span className="text-[14px] font-medium leading-none">Cerrar sesión</span>
             )}
