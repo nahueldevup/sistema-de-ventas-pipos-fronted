@@ -39,12 +39,15 @@ import { formatearPesos } from '@/lib/ventaUtils';
 // ── Configuración de visibilidad de botones ─────────────────────────────
 const TOOLBAR_CONFIG_KEY = 'pipos_toolbar_ventas_config';
 
+const MAX_VISIBLE_BUTTONS = 5;
+
 interface ToolbarVisibilityConfig {
   aperturaCaja: boolean;
   consultarPrecio: boolean;
   montoManual: boolean;
   devolucion: boolean;
   gastosIngresos: boolean;
+  nuevoProducto: boolean;
 }
 
 const TOOLBAR_DEFAULTS: ToolbarVisibilityConfig = {
@@ -53,6 +56,7 @@ const TOOLBAR_DEFAULTS: ToolbarVisibilityConfig = {
   montoManual: true,
   devolucion: true,
   gastosIngresos: true,
+  nuevoProducto: false, // default false para no romper el flujo existente
 };
 
 // Labels legibles para cada botón
@@ -62,7 +66,29 @@ const TOOLBAR_LABELS: Record<keyof ToolbarVisibilityConfig, string> = {
   montoManual: 'Monto Manual',
   devolucion: 'Devolución',
   gastosIngresos: 'Gastos e Ingresos',
+  nuevoProducto: 'Nuevo Producto',
 };
+
+/** Sanitiza una config para que nunca haya más de MAX_VISIBLE_BUTTONS en true */
+function sanitizeConfig(config: ToolbarVisibilityConfig): ToolbarVisibilityConfig {
+  const keys = Object.keys(config) as Array<keyof ToolbarVisibilityConfig>;
+  const activeCount = keys.filter((k) => config[k]).length;
+  if (activeCount <= MAX_VISIBLE_BUTTONS) return config;
+
+  // Desactivar los excedentes de derecha a izquierda (prioridad: orden de TOOLBAR_DEFAULTS)
+  const sanitized = { ...config };
+  let toDisable = activeCount - MAX_VISIBLE_BUTTONS;
+  // Recorremos en orden inverso al de TOOLBAR_DEFAULTS para afectar los menos prioritarios
+  const orderedKeys = (Object.keys(TOOLBAR_DEFAULTS) as Array<keyof ToolbarVisibilityConfig>).slice().reverse();
+  for (const k of orderedKeys) {
+    if (toDisable <= 0) break;
+    if (sanitized[k]) {
+      sanitized[k] = false;
+      toDisable--;
+    }
+  }
+  return sanitized;
+}
 
 /** Lee la config de localStorage y la mergea con defaults (try/catch seguro) */
 function loadToolbarConfig(): ToolbarVisibilityConfig {
@@ -70,15 +96,19 @@ function loadToolbarConfig(): ToolbarVisibilityConfig {
     const raw = localStorage.getItem(TOOLBAR_CONFIG_KEY);
     if (!raw) return { ...TOOLBAR_DEFAULTS };
     const parsed = JSON.parse(raw) as Partial<ToolbarVisibilityConfig>;
-    // Merge: defaults + lo guardado (así claves nuevas arrancan en true)
-    return { ...TOOLBAR_DEFAULTS, ...parsed };
+    // Merge: defaults + lo guardado (así claves nuevas arrancan en su default)
+    const merged = { ...TOOLBAR_DEFAULTS, ...parsed };
+    // Sanitizar para respetar el límite de 5
+    return sanitizeConfig(merged);
   } catch {
     return { ...TOOLBAR_DEFAULTS };
   }
 }
 
 function saveToolbarConfig(config: ToolbarVisibilityConfig): void {
-  localStorage.setItem(TOOLBAR_CONFIG_KEY, JSON.stringify(config));
+  // Sanitizar antes de guardar como capa de seguridad adicional
+  const safe = sanitizeConfig(config);
+  localStorage.setItem(TOOLBAR_CONFIG_KEY, JSON.stringify(safe));
 }
 
 interface Categoria {
@@ -141,7 +171,13 @@ export const BarraHerramientasVentas: React.FC<BarraHerramientasVentasProps> = (
 
   const toggleButtonVisibility = useCallback((key: keyof ToolbarVisibilityConfig) => {
     setToolbarConfig(prev => {
-      const next = { ...prev, [key]: !prev[key] };
+      const willBeTrue = !prev[key];
+      // Si se va a activar, verificar que no supere el límite
+      if (willBeTrue) {
+        const currentActive = (Object.keys(prev) as Array<keyof ToolbarVisibilityConfig>).filter((k) => prev[k]).length;
+        if (currentActive >= MAX_VISIBLE_BUTTONS) return prev; // límite alcanzado, no hacer nada
+      }
+      const next = { ...prev, [key]: willBeTrue };
       saveToolbarConfig(next);
       return next;
     });
@@ -282,7 +318,7 @@ export const BarraHerramientasVentas: React.FC<BarraHerramientasVentasProps> = (
       <div className="flex items-center gap-2">
 
         {/* BUSCADOR PRINCIPAL (Atajo F) */}
-        <div className="relative flex-1 min-w-[200px]">
+        <div className="relative flex-1 min-w-[140px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
           <Input
             ref={buscadorRef}
@@ -367,15 +403,6 @@ export const BarraHerramientasVentas: React.FC<BarraHerramientasVentasProps> = (
           </PopoverContent>
         </Popover>
 
-        {/* NUEVO PRODUCTO */}
-        <Button
-          variant="outline"
-          onClick={onNuevoProductoClick}
-          className="gap-2 text-sm shrink-0"
-        >
-          <Plus className="h-4 w-4" />
-          <span>Producto</span>
-        </Button>
 
         {/* TOGGLE VISTA (Grilla / Fila) */}
         <div className="flex items-center h-8 rounded-lg border border-input bg-background shrink-0 overflow-hidden">
@@ -407,6 +434,143 @@ export const BarraHerramientasVentas: React.FC<BarraHerramientasVentasProps> = (
             <List className="h-4 w-4" />
           </button>
         </div>
+
+        {/* BOTÓN ENGRANAJE: Configuración de visibilidad */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" className="shrink-0 px-2">
+              <Settings className="h-4 w-4" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[260px] p-0 bg-card dark:bg-slate-900 border border-border shadow-md z-50" align="end">
+            {/* Sección: Configurar barra */}
+            <div className="px-3 pt-3 pb-2">
+              <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Configurar barra</h4>
+              <p className="text-[10px] text-muted-foreground mb-2">Máximo 5 botones visibles</p>
+              <div className="flex flex-col gap-1">
+                {(Object.keys(TOOLBAR_DEFAULTS) as Array<keyof ToolbarVisibilityConfig>).map((key) => {
+                  const isChecked = toolbarConfig[key];
+                  const activeCount = (Object.keys(toolbarConfig) as Array<keyof ToolbarVisibilityConfig>).filter((k) => toolbarConfig[k]).length;
+                  const limitReached = activeCount >= MAX_VISIBLE_BUTTONS;
+                  const isDisabled = limitReached && !isChecked;
+                  return (
+                    <label
+                      key={key}
+                      className={cn(
+                        "flex items-center gap-2.5 px-2 py-1.5 rounded-md transition-colors",
+                        isDisabled
+                          ? "opacity-50 cursor-not-allowed"
+                          : "cursor-pointer hover:bg-accent"
+                      )}
+                    >
+                      <Checkbox
+                        checked={isChecked}
+                        disabled={isDisabled}
+                        onCheckedChange={() => !isDisabled && toggleButtonVisibility(key)}
+                      />
+                      <span className="text-sm select-none">{TOOLBAR_LABELS[key]}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Sección: Acciones rápidas (solo si hay botones ocultos) */}
+            {Object.values(toolbarConfig).some(v => !v) && (
+              <>
+                <div className="h-px bg-border" />
+                <div className="px-3 pt-2 pb-3">
+                  <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Acciones rápidas</h4>
+                  <div className="flex flex-col gap-0.5">
+                    {!toolbarConfig.aperturaCaja && (
+                      <button
+                        type="button"
+                        onClick={isCajaAbierta ? onCerrarCajaClick : onAbrirCajaClick}
+                        className="w-full flex items-center justify-between gap-2 px-2 py-2 rounded-md text-sm cursor-pointer transition-colors duration-150 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-foreground active:bg-slate-200 dark:active:bg-slate-700"
+                      >
+                        <span className="flex items-center gap-2">
+                          {isCajaAbierta
+                            ? <><Lock className="h-4 w-4 text-red-500" /><span>Cierre de caja</span></>
+                            : <><LockOpen className="h-4 w-4 text-emerald-600" /><span>Apertura de Caja</span></>
+                          }
+                        </span>
+                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                      </button>
+                    )}
+                    {!toolbarConfig.consultarPrecio && (
+                      <button
+                        type="button"
+                        onClick={() => setIsConsultarPrecioOpen(true)}
+                        className="w-full flex items-center justify-between gap-2 px-2 py-2 rounded-md text-sm cursor-pointer transition-colors duration-150 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-foreground active:bg-slate-200 dark:active:bg-slate-700"
+                      >
+                        <span className="flex items-center gap-2">
+                          <HelpCircle className="h-4 w-4 text-blue-500" />
+                          <span>Consultar Precio</span>
+                        </span>
+                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                      </button>
+                    )}
+                    {!toolbarConfig.montoManual && (
+                      <button
+                        type="button"
+                        onClick={onMontoManualClick}
+                        className="w-full flex items-center justify-between gap-2 px-2 py-2 rounded-md text-sm cursor-pointer transition-colors duration-150 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-foreground active:bg-slate-200 dark:active:bg-slate-700"
+                      >
+                        <span className="flex items-center gap-2">
+                          <Coins className="h-4 w-4 text-amber-500" />
+                          <span>Monto Manual</span>
+                        </span>
+                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                      </button>
+                    )}
+                    {!toolbarConfig.devolucion && (
+                      <button
+                        type="button"
+                        onClick={onDevolucionClick}
+                        className="w-full flex items-center justify-between gap-2 px-2 py-2 rounded-md text-sm cursor-pointer transition-colors duration-150 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-foreground active:bg-slate-200 dark:active:bg-slate-700"
+                      >
+                        <span className="flex items-center gap-2">
+                          <RotateCcw className="h-4 w-4 text-destructive" />
+                          <span>Devolución</span>
+                        </span>
+                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                      </button>
+                    )}
+                    {!toolbarConfig.gastosIngresos && (
+                      <button
+                        type="button"
+                        onClick={onGastosIngresosClick}
+                        className="w-full flex items-center justify-between gap-2 px-2 py-2 rounded-md text-sm cursor-pointer transition-colors duration-150 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-foreground active:bg-slate-200 dark:active:bg-slate-700"
+                      >
+                        <span className="flex items-center gap-2">
+                          <div className="flex gap-0.5">
+                            <CircleArrowDown className="h-4 w-4 text-emerald-500" />
+                            <CircleArrowUp className="h-4 w-4 text-red-500" />
+                          </div>
+                          <span>Gastos e Ingresos</span>
+                        </span>
+                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                      </button>
+                    )}
+                    {!toolbarConfig.nuevoProducto && (
+                      <button
+                        type="button"
+                        onClick={onNuevoProductoClick}
+                        className="w-full flex items-center justify-between gap-2 px-2 py-2 rounded-md text-sm cursor-pointer transition-colors duration-150 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-foreground active:bg-slate-200 dark:active:bg-slate-700"
+                      >
+                        <span className="flex items-center gap-2">
+                          <Plus className="h-4 w-4" />
+                          <span>Nuevo Producto</span>
+                        </span>
+                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
+          </PopoverContent>
+        </Popover>
 
       </div>
 
@@ -524,116 +688,18 @@ export const BarraHerramientasVentas: React.FC<BarraHerramientasVentasProps> = (
           </Button>
         )}
 
-        {/* BOTÓN ENGRANAJE: Configuración de visibilidad */}
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline" className="ml-auto shrink-0 px-2">
-              <Settings className="h-4 w-4" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-[260px] p-0 bg-card dark:bg-slate-900 border border-border shadow-md z-50" align="end">
-            {/* Sección: Configurar barra */}
-            <div className="px-3 pt-3 pb-2">
-              <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Configurar barra</h4>
-              <div className="flex flex-col gap-1">
-                {(Object.keys(TOOLBAR_DEFAULTS) as Array<keyof ToolbarVisibilityConfig>).map((key) => (
-                  <label
-                    key={key}
-                    className="flex items-center gap-2.5 px-2 py-1.5 rounded-md cursor-pointer hover:bg-accent transition-colors"
-                  >
-                    <Checkbox
-                      checked={toolbarConfig[key]}
-                      onCheckedChange={() => toggleButtonVisibility(key)}
-                    />
-                    <span className="text-sm select-none">{TOOLBAR_LABELS[key]}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
+        {/* NUEVO PRODUCTO */}
+        {toolbarConfig.nuevoProducto && (
+          <Button
+            variant="outline"
+            onClick={onNuevoProductoClick}
+            className="gap-2 text-sm shrink-0"
+          >
+            <Plus className="h-4 w-4" />
+            <span>Nuevo Producto</span>
+          </Button>
+        )}
 
-            {/* Sección: Acciones rápidas (solo si hay botones ocultos) */}
-            {Object.values(toolbarConfig).some(v => !v) && (
-              <>
-                <div className="h-px bg-border" />
-                <div className="px-3 pt-2 pb-3">
-                  <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Acciones rápidas</h4>
-                  <div className="flex flex-col gap-0.5">
-                    {!toolbarConfig.aperturaCaja && (
-                      <button
-                        type="button"
-                        onClick={isCajaAbierta ? onCerrarCajaClick : onAbrirCajaClick}
-                        className="w-full flex items-center justify-between gap-2 px-2 py-2 rounded-md text-sm cursor-pointer transition-colors duration-150 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-foreground active:bg-slate-200 dark:active:bg-slate-700"
-                      >
-                        <span className="flex items-center gap-2">
-                          {isCajaAbierta
-                            ? <><Lock className="h-4 w-4 text-red-500" /><span>Cierre de caja</span></>
-                            : <><LockOpen className="h-4 w-4 text-emerald-600" /><span>Apertura de Caja</span></>
-                          }
-                        </span>
-                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                      </button>
-                    )}
-                    {!toolbarConfig.consultarPrecio && (
-                      <button
-                        type="button"
-                        onClick={() => setIsConsultarPrecioOpen(true)}
-                        className="w-full flex items-center justify-between gap-2 px-2 py-2 rounded-md text-sm cursor-pointer transition-colors duration-150 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-foreground active:bg-slate-200 dark:active:bg-slate-700"
-                      >
-                        <span className="flex items-center gap-2">
-                          <HelpCircle className="h-4 w-4 text-blue-500" />
-                          <span>Consultar Precio</span>
-                        </span>
-                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                      </button>
-                    )}
-                    {!toolbarConfig.montoManual && (
-                      <button
-                        type="button"
-                        onClick={onMontoManualClick}
-                        className="w-full flex items-center justify-between gap-2 px-2 py-2 rounded-md text-sm cursor-pointer transition-colors duration-150 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-foreground active:bg-slate-200 dark:active:bg-slate-700"
-                      >
-                        <span className="flex items-center gap-2">
-                          <Coins className="h-4 w-4 text-amber-500" />
-                          <span>Monto Manual</span>
-                        </span>
-                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                      </button>
-                    )}
-                    {!toolbarConfig.devolucion && (
-                      <button
-                        type="button"
-                        onClick={onDevolucionClick}
-                        className="w-full flex items-center justify-between gap-2 px-2 py-2 rounded-md text-sm cursor-pointer transition-colors duration-150 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-foreground active:bg-slate-200 dark:active:bg-slate-700"
-                      >
-                        <span className="flex items-center gap-2">
-                          <RotateCcw className="h-4 w-4 text-destructive" />
-                          <span>Devolución</span>
-                        </span>
-                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                      </button>
-                    )}
-                    {!toolbarConfig.gastosIngresos && (
-                      <button
-                        type="button"
-                        onClick={onGastosIngresosClick}
-                        className="w-full flex items-center justify-between gap-2 px-2 py-2 rounded-md text-sm cursor-pointer transition-colors duration-150 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-foreground active:bg-slate-200 dark:active:bg-slate-700"
-                      >
-                        <span className="flex items-center gap-2">
-                          <div className="flex gap-0.5">
-                            <CircleArrowDown className="h-4 w-4 text-emerald-500" />
-                            <CircleArrowUp className="h-4 w-4 text-red-500" />
-                          </div>
-                          <span>Gastos e Ingresos</span>
-                        </span>
-                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </>
-            )}
-          </PopoverContent>
-        </Popover>
 
       </div>
     </div>
