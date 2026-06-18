@@ -150,17 +150,15 @@ export const BarraHerramientasVentas: React.FC<BarraHerramientasVentasProps> = (
   // ── Escalado proporcional al expandir sidebar ────────────────────────
   // Detecta cambios de ancho del <aside> (sidebar) vía ResizeObserver.
   // Cuando el sidebar se expande (>100px), calcula un factor de escala
-  // para que la barra mantenga el layout sin wrap.
+  // y lo aplica como CSS zoom para que la barra mantenga el layout sin wrap.
+  // zoom (a diferencia de transform: scale) afecta el layout directamente,
+  // evitando desbordamientos que empujen al carrito.
   const SIDEBAR_COLLAPSED_WIDTH = 80;
   const [scaleFactor, setScaleFactor] = useState(1);
-  const [barHeight, setBarHeight] = useState(0);
 
   const recalcScale = useCallback(() => {
     const aside = document.querySelector('aside');
     if (!aside || !containerRef.current) return;
-
-    // Medir la altura original de la barra (offsetHeight no se ve afectado por transform)
-    setBarHeight(containerRef.current.offsetHeight);
 
     const sidebarWidth = aside.getBoundingClientRect().width;
     const isExpanded = sidebarWidth > SIDEBAR_COLLAPSED_WIDTH + 20;
@@ -276,12 +274,8 @@ export const BarraHerramientasVentas: React.FC<BarraHerramientasVentasProps> = (
       ref={containerRef}
       className="flex flex-col gap-3 bg-card p-3 rounded-xl border border-border shadow-sm"
       style={{
-        transformOrigin: 'top left',
-        transform: scaleFactor < 1 ? `scale(${scaleFactor})` : undefined,
-        width: scaleFactor < 1 ? `calc(100% / ${scaleFactor})` : '100%',
-        // Compensar el espacio sobrante que deja el scale en el flujo del DOM
-        marginBottom: scaleFactor < 1 ? `${-(barHeight * (1 - scaleFactor))}px` : undefined,
-        transition: 'transform 200ms ease-in-out, width 200ms ease-in-out, margin-bottom 200ms ease-in-out',
+        zoom: scaleFactor < 1 ? scaleFactor : undefined,
+        transition: 'zoom 200ms ease-in-out',
       }}
     >
       {/* FILA SUPERIOR: Búsqueda, Filtros y Gestión */}
