@@ -575,7 +575,7 @@ export const BarraHerramientasVentas: React.FC<BarraHerramientasVentasProps> = (
       </div>
 
       {/* FILA INFERIOR: Acciones Operativas */}
-      <div className="flex items-center gap-2">
+      <div className="flex flex-nowrap items-center gap-2">
 
         {/* CONTROL DE CAJA DINÁMICO */}
         {toolbarConfig.aperturaCaja && (
