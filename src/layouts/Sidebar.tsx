@@ -8,6 +8,7 @@ import {
   Sun,
   Moon,
   Plus,
+  Bell,
 } from "lucide-react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useTheme } from "@/hooks/useTheme"
@@ -248,14 +249,14 @@ export default memo(function Sidebar({
           </button>
 
           {isExpanded && (
-            <div className="flex items-center gap-2.5 min-w-0">
+            <div className="flex items-center gap-2.5 min-w-0 flex-1">
               <div
                 className="w-8 h-8 shrink-0 rounded-xl flex items-center justify-center shadow-sm"
                 style={{ background: "linear-gradient(135deg, #22c55e, #15803d)" }}
               >
                 <ShoppingBag className="w-[18px] h-[18px] text-white" />
               </div>
-              <div className="flex flex-col min-w-0">
+              <div className="flex flex-col min-w-0 flex-1">
                 <span className={`font-bold text-[16px] leading-tight tracking-tight ${tk.logoText}`}>
                   Pipos
                 </span>
@@ -263,6 +264,16 @@ export default memo(function Sidebar({
                   Ventas
                 </span>
               </div>
+              <button
+                className={`p-1.5 rounded-full cursor-pointer transition-colors shrink-0 mr-1 ${
+                  isDark
+                    ? "text-slate-400 hover:bg-white/10 hover:text-slate-200"
+                    : "text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+                }`}
+                aria-label="Notificaciones"
+              >
+                <Bell className="w-[18px] h-[18px]" />
+              </button>
             </div>
           )}
 
