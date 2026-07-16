@@ -102,7 +102,7 @@ export default function Vender() {
   return (
     <div className="h-[100vh] flex flex-col gap-3 -m-6 p-3">
       {/* Layout split */}
-      <div className="flex-1 grid grid-cols-[1fr_380px] gap-3 min-h-0">
+      <div className="flex-1 grid grid-cols-[1fr_423px] gap-3 min-h-0">
         {/* Panel izquierdo — Productos */}
         <div className="min-h-0 overflow-visible flex flex-col">
           <GrillaProductosVenta
