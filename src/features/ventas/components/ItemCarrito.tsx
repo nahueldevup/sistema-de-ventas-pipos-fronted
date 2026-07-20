@@ -15,7 +15,7 @@ export default memo(function ItemCarrito({ item, onActualizarCantidad, onQuitar 
 
   return (
     <div className={`
-      flex items-center gap-3 px-4 py-3 border-b border-border/60 last:border-b-0
+      flex items-center gap-2.5 px-3 py-2 border-b border-border/60 last:border-b-0
       transition-colors duration-150 hover:bg-slate-50/50 dark:hover:bg-slate-800/30
       ${superaStock ? 'bg-amber-50/50 dark:bg-amber-900/10' : ''}
     `}>

@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
-import { CheckCircle2, XCircle, Lock } from 'lucide-react';
+import { CheckCircle2, XCircle } from 'lucide-react';
 import { useGetProductos } from '@/features/productos/hooks/useProductos';
 import { useCarrito } from '@/features/ventas/hooks/useCarrito';
 import { useCreateVenta } from '@/features/ventas/hooks/useVentas';
@@ -102,7 +102,7 @@ export default function Vender() {
   return (
     <div className="h-[100vh] flex flex-col gap-3 -m-6 p-3">
       {/* Layout split */}
-      <div className="flex-1 grid grid-cols-[1fr_423px] gap-3 min-h-0">
+      <div className="flex-1 grid grid-cols-[1fr_429px] gap-3 min-h-0">
         {/* Panel izquierdo — Productos */}
         <div className="min-h-0 overflow-visible flex flex-col">
           <GrillaProductosVenta
@@ -127,6 +127,7 @@ export default function Vender() {
             onQuitarProducto={carrito.quitarProducto}
             onVaciarCarrito={carrito.vaciarCarrito}
             onConfirmar={handleConfirmarVenta}
+            onSetDescuentoGlobal={carrito.setDescuentoGlobal}
             confirmando={crearVenta.isPending}
           />
         </div>

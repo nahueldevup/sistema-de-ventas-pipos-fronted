@@ -8,7 +8,6 @@ import {
   Coins,
   HelpCircle,
   X,
-  Check,
   ImageOff,
   LockOpen,
   Lock,

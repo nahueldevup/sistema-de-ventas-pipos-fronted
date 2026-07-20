@@ -18,15 +18,10 @@ export default memo(function FilaProductoVenta({ producto, onAgregar, enCarrito,
   const [loading, setLoading] = useState(false);
 
   const agotado = producto.stock <= 0;
-  const stockBajo = !agotado && producto.stock <= (producto.minStock || 5);
+  const stockBajo = !agotado && producto.stock < 5;
   const imagenSrc = !imgError ? producto.image : undefined;
 
-  // Color del indicador de stock (mismo patrón que la tarjeta)
-  const stockColor = agotado
-    ? 'text-red-400'
-    : stockBajo
-      ? 'text-amber-400'
-      : 'text-emerald-400';
+
 
   const handleAgregar = useCallback(() => {
     if (agotado || loading) return;
@@ -87,11 +82,23 @@ export default memo(function FilaProductoVenta({ producto, onAgregar, enCarrito,
           <span className="text-muted-foreground font-mono">
             {producto.barcode || producto.sku || 'Sin cód.'}
           </span>
-          {/* Indicador de stock — formato "● X Disponibles" igual que la tarjeta */}
-          <div className={cn("flex items-center gap-1 font-semibold", stockColor)}>
-            <span>●</span>
-            <span>{producto.stock} Disponibles</span>
-          </div>
+          {/* Indicador de stock — siempre con cantidad, color según nivel */}
+          {agotado ? (
+            <div className="flex items-center gap-1 font-semibold text-red-400">
+              <span>●</span>
+              <span>Agotado</span>
+            </div>
+          ) : stockBajo ? (
+            <div className="flex items-center gap-1 font-semibold text-amber-400">
+              <span>●</span>
+              <span>{producto.stock} Disponibles</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1 font-medium text-slate-400 dark:text-slate-500">
+              <span className="text-emerald-400">●</span>
+              <span>{producto.stock} Disponibles</span>
+            </div>
+          )}
         </div>
       </div>
 
