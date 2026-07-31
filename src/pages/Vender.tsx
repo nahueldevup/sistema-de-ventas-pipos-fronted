@@ -6,6 +6,8 @@ import { useCreateVenta } from '@/features/ventas/hooks/useVentas';
 import { useGetCajaAbierta } from '@/features/ventas/hooks/useCaja';
 import GrillaProductosVenta from '@/features/ventas/components/GrillaProductosVenta';
 import CarritoVenta from '@/features/ventas/components/CarritoVenta';
+import ModalPago from '@/features/ventas/components/ModalPago';
+import type { PagoData } from '@/features/ventas/components/ModalPago';
 import ModalAbrirCaja from '@/features/ventas/components/ModalAbrirCaja';
 import ModalCerrarCaja from '@/features/ventas/components/ModalCerrarCaja';
 import { MOCK_STORE_ID, MOCK_USER_ID } from '@/config/mock.config';
@@ -19,6 +21,7 @@ export default function Vender() {
   // Modales de caja
   const [modalAbrirOpen, setModalAbrirOpen] = useState(false);
   const [modalCerrarOpen, setModalCerrarOpen] = useState(false);
+  const [modalPagoOpen, setModalPagoOpen] = useState(false);
 
   // Toast de feedback
   const [toast, setToast] = useState<{ tipo: 'exito' | 'error'; mensaje: string } | null>(null);
@@ -32,13 +35,23 @@ export default function Vender() {
 
   const hayCajaAbierta = !!cajaAbierta;
 
+  // Abrir modal de pago (valida caja abierta primero)
+  const handleAbrirModalPago = useCallback(() => {
+    if (!cajaAbierta?.id) {
+      setModalAbrirOpen(true);
+      return;
+    }
+    if (carrito.items.length === 0) return;
+    setModalPagoOpen(true);
+  }, [cajaAbierta, carrito.items.length]);
+
+  // Confirmar venta desde el modal de pago
   const handleConfirmarVenta = useCallback(
-    async (montoPagado: number, metodoPago: string) => {
-      if (!cajaAbierta?.id) {
-        setModalAbrirOpen(true);
-        return;
-      }
+    async (pagos: PagoData[]) => {
+      if (!cajaAbierta?.id) return;
       if (carrito.items.length === 0) return;
+
+      const totalPagado = pagos.reduce((acc, p) => acc + p.amount, 0);
 
       try {
         await crearVenta.mutateAsync({
@@ -51,8 +64,8 @@ export default function Vender() {
           subtotal: carrito.subtotal,
           discountAmount: carrito.descuentoGlobal,
           total: carrito.total,
-          totalPaid: montoPagado,
-          change: Math.max(0, montoPagado - carrito.total),
+          totalPaid: totalPagado,
+          change: Math.max(0, totalPagado - carrito.total),
           pendingAmount: 0,
           note: carrito.nota || null,
           items: carrito.items.map((item) => ({
@@ -70,17 +83,16 @@ export default function Vender() {
             isCredited: false,
             isDeleted: false,
           })),
-          payments: [
-            {
-              method: metodoPago as 'CASH',
-              amount: montoPagado,
-              reference: null,
-              isDeleted: false,
-            },
-          ],
+          payments: pagos.map((p) => ({
+            method: p.method as 'CASH',
+            amount: p.amount,
+            reference: p.reference || null,
+            isDeleted: false,
+          })),
           isDeleted: false,
         });
 
+        setModalPagoOpen(false);
         carrito.vaciarCarrito();
         mostrarToast('exito', '¡Venta registrada con éxito!');
       } catch {
@@ -126,9 +138,8 @@ export default function Vender() {
             onActualizarCantidad={carrito.actualizarCantidad}
             onQuitarProducto={carrito.quitarProducto}
             onVaciarCarrito={carrito.vaciarCarrito}
-            onConfirmar={handleConfirmarVenta}
+            onAbrirModalPago={handleAbrirModalPago}
             onSetDescuentoGlobal={carrito.setDescuentoGlobal}
-            confirmando={crearVenta.isPending}
           />
         </div>
       </div>
@@ -147,6 +158,15 @@ export default function Vender() {
           cashRegisterId={cajaAbierta.id}
         />
       )}
+
+      {/* Modal de pago */}
+      <ModalPago
+        open={modalPagoOpen}
+        onOpenChange={setModalPagoOpen}
+        total={carrito.total}
+        onConfirmar={handleConfirmarVenta}
+        confirmando={crearVenta.isPending}
+      />
 
       {/* Toast de feedback */}
       {toast && (

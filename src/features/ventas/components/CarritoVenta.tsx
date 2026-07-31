@@ -39,9 +39,8 @@ interface CarritoVentaProps {
   onActualizarCantidad: (productId: string, cantidad: number) => void;
   onQuitarProducto: (productId: string) => void;
   onVaciarCarrito: () => void;
-  onConfirmar: (montoPagado: number, metodoPago: string) => void;
+  onAbrirModalPago: () => void;
   onSetDescuentoGlobal: (descuento: number) => void;
-  confirmando: boolean;
 }
 
 export default function CarritoVenta({
@@ -53,9 +52,8 @@ export default function CarritoVenta({
   onActualizarCantidad,
   onQuitarProducto,
   onVaciarCarrito,
-  onConfirmar,
+  onAbrirModalPago,
   onSetDescuentoGlobal,
-  confirmando,
 }: CarritoVentaProps) {
   const [confirmandoVaciar, setConfirmandoVaciar] = useState(false);
 
@@ -275,9 +273,8 @@ export default function CarritoVenta({
             descuentoGlobal={descuentoGlobal}
             total={total}
             cantidadItems={cantidadItems}
-            onConfirmar={onConfirmar}
+            onAbrirModalPago={onAbrirModalPago}
             onSetDescuentoGlobal={onSetDescuentoGlobal}
-            confirmando={confirmando}
           />
         </>
       )}

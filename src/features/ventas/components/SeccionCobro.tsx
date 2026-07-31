@@ -1,5 +1,5 @@
-import { useState, useMemo, useCallback } from 'react';
-import { Banknote, ArrowRightLeft, Smartphone, QrCode, CreditCard, ChevronDown, Percent, DollarSign } from 'lucide-react';
+import { useState, useCallback } from 'react';
+import { ChevronDown, Percent, DollarSign } from 'lucide-react';
 import { formatearPesos } from '@/lib/ventaUtils';
 import { cn } from '@/lib/utils';
 
@@ -8,51 +8,29 @@ interface SeccionCobroProps {
   descuentoGlobal: number;
   total: number;
   cantidadItems: number;
-  onConfirmar: (montoPagado: number, metodoPago: string) => void;
+  onAbrirModalPago: () => void;
   onSetDescuentoGlobal: (descuento: number) => void;
-  confirmando: boolean;
 }
-
-// Métodos de pago disponibles
-const METODOS_PAGO = [
-  { id: 'CASH', label: 'Efectivo', icon: Banknote, habilitado: true },
-  { id: 'TRANSFER', label: 'Transferencia', icon: ArrowRightLeft, habilitado: true },
-  { id: 'MERCADO_PAGO', label: 'Mercado Pago', icon: Smartphone, habilitado: true },
-  { id: 'QR', label: 'QR', icon: QrCode, habilitado: false },
-  { id: 'DEBIT', label: 'Débito', icon: CreditCard, habilitado: false },
-  { id: 'CREDIT', label: 'Crédito', icon: CreditCard, habilitado: false },
-] as const;
 
 export default function SeccionCobro({
   subtotal,
   descuentoGlobal,
   total,
   cantidadItems,
-  onConfirmar,
+  onAbrirModalPago,
   onSetDescuentoGlobal,
-  confirmando,
 }: SeccionCobroProps) {
-  const [metodoPago, setMetodoPago] = useState('CASH');
-  const [montoRecibido, setMontoRecibido] = useState('');
 
   // Estado del descuento colapsable
   const [descuentoAbierto, setDescuentoAbierto] = useState(false);
   const [tipoDescuento, setTipoDescuento] = useState<'fijo' | 'porcentaje'>('fijo');
   const [inputDescuento, setInputDescuento] = useState('');
 
-  const montoNumerico = useMemo(() => {
-    const parsed = parseFloat(montoRecibido);
-    return isNaN(parsed) ? 0 : parsed;
-  }, [montoRecibido]);
+  const puedeConfirmar = cantidadItems > 0;
 
-  const vuelto = useMemo(() => Math.max(0, montoNumerico - total), [montoNumerico, total]);
-  const cubreTotal = montoNumerico >= total;
-  const puedeConfirmar = cantidadItems > 0 && cubreTotal && !confirmando;
-
-  const handleConfirmar = () => {
+  const handleAbrirModal = () => {
     if (!puedeConfirmar) return;
-    onConfirmar(montoNumerico, metodoPago);
-    setMontoRecibido('');
+    onAbrirModalPago();
   };
 
   // Aplicar descuento cuando cambia el input
@@ -105,11 +83,7 @@ export default function SeccionCobro({
     setDescuentoAbierto((prev) => !prev);
   }, [descuentoAbierto, onSetDescuentoGlobal]);
 
-  // Separar métodos habilitados y deshabilitados
-  const metodosHabilitados = METODOS_PAGO.filter((m) => m.habilitado);
-  const metodosDeshabilitados = METODOS_PAGO.filter((m) => !m.habilitado);
-
-  return (
+return (
     <div className="border-t border-border bg-card">
       {/* Totales */}
       <div className="px-3 pt-3 pb-2 space-y-1">
@@ -172,7 +146,7 @@ export default function SeccionCobro({
                       w-full h-8 px-3 rounded-lg
                       bg-slate-50 dark:bg-dark-elevated border border-border
                       text-[13px] font-semibold text-slate-800 dark:text-white
-                      placeholder:text-slate-300 dark:placeholder:text-slate-600
+                      placeholder:text-slate-500 dark:placeholder:text-slate-600
                       outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20
                       transition-all duration-200
                       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
@@ -204,85 +178,11 @@ export default function SeccionCobro({
         </div>
       </div>
 
-      {/* Métodos de pago — grid de botones grandes */}
-      <div className="px-3 pb-2 space-y-1.5">
-        {/* Métodos habilitados */}
-        <div className="grid grid-cols-3 gap-2">
-          {metodosHabilitados.map((mp) => (
-            <button
-              key={mp.id}
-              type="button"
-              onClick={() => setMetodoPago(mp.id)}
-              className={cn(
-                'flex flex-col items-center justify-center gap-0.5 py-2 px-2 rounded-xl',
-                'text-[11px] font-semibold border transition-all duration-150 cursor-pointer',
-                metodoPago === mp.id
-                  ? 'bg-brand-600 text-white border-brand-600 shadow-sm'
-                  : 'bg-card text-slate-600 dark:text-slate-300 border-border hover:border-brand-400',
-              )}
-            >
-              <mp.icon className="w-4 h-4" />
-              <span className="leading-tight text-center">{mp.label}</span>
-            </button>
-          ))}
-        </div>
-
-        {/* Métodos deshabilitados — fila compacta */}
-        {metodosDeshabilitados.length > 0 && (
-          <div className="flex gap-1.5">
-            {metodosDeshabilitados.map((mp) => (
-              <button
-                key={mp.id}
-                type="button"
-                disabled
-                title="Próximamente"
-                className="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg text-[10px] font-medium border border-border text-slate-400 opacity-40 cursor-not-allowed"
-              >
-                <mp.icon className="w-3 h-3" />
-                {mp.label}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Input de monto y vuelto */}
-      <div className="px-3 pb-2 space-y-1.5">
-        <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[14px] font-bold text-slate-400">$</span>
-          <input
-            type="number"
-            value={montoRecibido}
-            onChange={(e) => setMontoRecibido(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && puedeConfirmar) handleConfirmar();
-            }}
-            placeholder={total.toLocaleString('es-AR')}
-            className="
-              w-full h-10 pl-7 pr-4 rounded-xl
-              bg-slate-50 dark:bg-dark-elevated border border-border
-              text-[16px] font-bold text-slate-800 dark:text-white
-              placeholder:text-slate-300 dark:placeholder:text-slate-600
-              outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20
-              transition-all duration-200
-              [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
-            "
-          />
-        </div>
-
-        {montoNumerico > 0 && (
-          <div className={`flex justify-between text-[14px] font-bold px-1 ${cubreTotal ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
-            <span>{cubreTotal ? 'Vuelto' : 'Falta'}</span>
-            <span>{cubreTotal ? formatearPesos(vuelto) : formatearPesos(total - montoNumerico)}</span>
-          </div>
-        )}
-      </div>
-
       {/* Botón confirmar */}
       <div className="px-3 pb-3">
         <button
           type="button"
-          onClick={handleConfirmar}
+          onClick={handleAbrirModal}
           disabled={!puedeConfirmar}
           className={`
             w-full h-10 rounded-xl text-[14px] font-bold
@@ -294,11 +194,7 @@ export default function SeccionCobro({
             }
           `}
         >
-          {confirmando ? (
-            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-          ) : (
-            <>Confirmar venta — {formatearPesos(total)}</>
-          )}
+          Confirmar venta — {formatearPesos(total)}
         </button>
       </div>
     </div>
