@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ProductService } from '../../../services/mock/product.service';
-import type { Product } from '../../../schemas/product.schema';
+import { ProductService } from '@/services/mock/product.service';
+import type { Product } from '@/schemas/product.schema';
 
 export const useGetProductos = () => {
   return useQuery({

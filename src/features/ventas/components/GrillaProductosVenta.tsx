@@ -5,7 +5,7 @@ import type { Product } from '@/schemas/product.schema';
 import type { CarritoItem } from '../hooks/useCarrito';
 import CardProductoVenta from './CardProductoVenta';
 import FilaProductoVenta from './FilaProductoVenta';
-import { BarraHerramientasVentas } from './barra-herramientas-ventas';
+import { BarraHerramientasVentas } from './BarraHerramientasVentas';
 
 interface GrillaProductosVentaProps {
   productos: Product[];

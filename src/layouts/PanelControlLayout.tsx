@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Outlet } from "react-router-dom"
-import { useTheme } from "@/hooks/useTheme"
+import { useTheme } from "@/contexts/theme"
 import Sidebar from "./Sidebar"
 export default function PanelControlLayout() {
   const { isDark } = useTheme()

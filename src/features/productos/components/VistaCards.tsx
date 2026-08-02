@@ -10,7 +10,7 @@ import {
   History,
 } from "lucide-react";
 import type { Product } from "@/schemas/product.schema";
-import { getCategoriaColor, formatearPesos } from "@/lib/productoUtils";
+import { getCategoriaColor, formatearPesos } from "@/utils/producto.utils";
 
 interface VistaCardsProps {
   productos: Product[];

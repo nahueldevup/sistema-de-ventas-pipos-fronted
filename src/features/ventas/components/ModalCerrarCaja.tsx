@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { Lock, ChevronRight, ChevronLeft, AlertTriangle } from 'lucide-react';
 import { ModalFormulario } from '@/components/ui/modal-wrappers';
 import { useGetResumenCaja, useCerrarCaja } from '../hooks/useCaja';
-import { formatearPesos } from '@/lib/ventaUtils';
+import { formatearPesos } from '@/utils/venta.utils';
 
 interface ModalCerrarCajaProps {
   open: boolean;

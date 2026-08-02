@@ -1,6 +1,6 @@
-import { formatearPesos } from './productoUtils';
+import { formatearPesos } from './producto.utils';
 
-// Re-exportar formatearPesos para que ventas no dependa directamente de productoUtils
+// Re-exportar formatearPesos para que ventas no dependa directamente de producto.utils
 export { formatearPesos };
 
 /**

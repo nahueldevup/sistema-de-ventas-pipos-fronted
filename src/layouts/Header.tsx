@@ -1,7 +1,7 @@
 import { Menu, Bell } from "lucide-react"
 import { memo, useMemo } from "react"
 import { useLocation } from "react-router-dom"
-import { useTheme } from "@/hooks/useTheme"
+import { useTheme } from "@/contexts/theme"
 
 interface HeaderProps {
   onMenuClick: () => void

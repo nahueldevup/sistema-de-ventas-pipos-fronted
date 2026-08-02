@@ -1,6 +1,6 @@
 import { AlertTriangle, ShoppingBag, Box, Users, Wallet, BarChart3, Settings } from "lucide-react"
-import TarjetaAccesoRapido from "@/components/TarjetaAccesoRapido"
-import TablaVentasRecientes from "@/components/TablaVentasRecientes"
+import TarjetaAccesoRapido from "@/features/panel/components/TarjetaAccesoRapido"
+import TablaVentasRecientes from "@/features/panel/components/TablaVentasRecientes"
 
 export default function PanelControl() {
   const accionesRapidas = [

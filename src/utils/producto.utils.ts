@@ -1,5 +1,4 @@
 // Importamos getCategoriaColor desde el archivo central de tema.
-// Ya no la duplicamos acá.
 export { getCategoriaColor } from "@/theme";
 
 // Formatea un número como precio en pesos argentinos.

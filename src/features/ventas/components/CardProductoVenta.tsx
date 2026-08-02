@@ -1,7 +1,7 @@
 import { useState, memo } from 'react';
 import { ImageOff } from 'lucide-react';
 import type { Product } from '@/schemas/product.schema';
-import { formatearPesos } from '@/lib/ventaUtils';
+import { formatearPesos } from '@/utils/venta.utils';
 import { cn } from '@/lib/utils';
 
 interface CardProductoVentaProps {

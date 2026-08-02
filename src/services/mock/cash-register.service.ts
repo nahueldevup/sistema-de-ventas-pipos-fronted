@@ -1,6 +1,6 @@
-import type { CashRegister, CashMovement } from '../../schemas/cash-register.schema';
-import { MOCK_STORE_ID, MOCK_USER_ID } from '../../config/mock.config';
-import { generateId } from '../../lib/utils';
+import type { CashRegister, CashMovement } from '@/schemas/cash-register.schema';
+import { MOCK_STORE_ID, MOCK_USER_ID } from '@/config/mock.config';
+import { generateId } from '@/utils/id.utils';
 
 // ─────────────────────────────────────────
 // Resumen de caja para el cierre

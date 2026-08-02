@@ -11,10 +11,10 @@ import {
   Bell,
 } from "lucide-react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
-import { useTheme } from "@/hooks/useTheme"
+import { useTheme } from "@/contexts/theme"
 import { NAV_SECTIONS } from "./navigation-data"
 import { SIDEBAR_TOKENS } from "./sidebar-tokens"
-import type { NavMenuItem, NavSubItem } from "@/types/navigation"
+import type { NavMenuItem, NavSubItem } from "@/types/navigation.types"
 
 // ── Props ───────────────────────────────────────────────────
 interface SidebarProps {

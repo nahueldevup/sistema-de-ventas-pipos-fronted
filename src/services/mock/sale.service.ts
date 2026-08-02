@@ -1,7 +1,7 @@
-import type { Sale } from '../../schemas/sale.schema';
+import type { Sale } from '@/schemas/sale.schema';
 import { ProductService } from './product.service';
 import { CashRegisterService } from './cash-register.service';
-import { generateId } from '../../lib/utils';
+import { generateId } from '@/utils/id.utils';
 
 // Mapeo de método de pago a tipo de movimiento de caja
 const PAYMENT_TO_MOVEMENT: Record<string, string> = {

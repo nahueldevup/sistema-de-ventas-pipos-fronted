@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import type { CarritoItem } from '../hooks/useCarrito';
-import { formatearPesos } from '@/lib/ventaUtils';
+import { formatearPesos } from '@/utils/venta.utils';
 
 interface ItemCarritoProps {
   item: CarritoItem;

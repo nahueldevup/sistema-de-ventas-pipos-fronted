@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { Banknote, ArrowRightLeft, Smartphone, X, Split, CreditCard, QrCode } from 'lucide-react';
-import { formatearPesos } from '@/lib/ventaUtils';
+import { formatearPesos } from '@/utils/venta.utils';
 import { cn } from '@/lib/utils';
 
 // ── Tipos públicos ──────────────────────────────────────────────────

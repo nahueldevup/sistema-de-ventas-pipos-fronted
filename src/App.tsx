@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
-import { ThemeProvider } from "@/hooks/ThemeContext"
+import { ThemeProvider } from "@/contexts/theme"
 import InicioSesion from "@/pages/InicioSesion"
 import PanelControlLayout from "@/layouts/PanelControlLayout"
 import PanelControl from "@/pages/PanelControl"

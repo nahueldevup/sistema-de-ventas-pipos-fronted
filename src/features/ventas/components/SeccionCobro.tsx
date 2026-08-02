@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { ChevronDown, Percent, DollarSign } from 'lucide-react';
-import { formatearPesos } from '@/lib/ventaUtils';
+import { formatearPesos } from '@/utils/venta.utils';
 import { cn } from '@/lib/utils';
 
 interface SeccionCobroProps {

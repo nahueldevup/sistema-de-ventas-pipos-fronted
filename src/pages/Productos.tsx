@@ -23,7 +23,7 @@ import TablaProductos from "@/features/productos/components/TablaProductos";
 import VistaCards from "@/features/productos/components/VistaCards";
 import ToggleVista, { type TipoVista } from "@/features/productos/components/ToggleVista";
 import FiltrosRapidos from '@/features/productos/components/FiltrosRapidos';
-import useFiltrosProductos from "@/hooks/useFiltrosProductos";
+import useFiltrosProductos from "@/features/productos/hooks/useFiltrosProductos";
 
 
 

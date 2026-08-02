@@ -1,7 +1,7 @@
 /**
  * Calcula el precio de venta sugerido basado en un precio de compra y un margen de ganancia.
  * Opcionalmente aplica redondeo comercial hacia arriba al múltiplo especificado.
- * 
+ *
  * @param compra - El precio de compra del producto.
  * @param porcentajeGanancia - El porcentaje de utilidad deseado (ej. 40).
  * @param redondeoActivo - Si se debe aplicar redondeo (default: true).

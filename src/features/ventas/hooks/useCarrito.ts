@@ -1,26 +1,9 @@
 import { useReducer, useMemo, useCallback } from 'react';
 import type { Product } from '@/schemas/product.schema';
+import type { CarritoItem, CarritoState } from '../types/carrito.types';
 
-// ─────────────────────────────────────────
-// TIPOS
-// ─────────────────────────────────────────
-export interface CarritoItem {
-  productId: string;
-  productName: string;
-  productBarcode: string | null;
-  productImage: string | null;
-  unitPrice: number;
-  costPrice: number;
-  quantity: number;
-  discountAmount: number;
-  maxStock: number; // Para validación visual
-}
-
-interface CarritoState {
-  items: CarritoItem[];
-  descuentoGlobal: number;
-  nota: string;
-}
+// Re-exportar para que los consumidores existentes no rompan
+export type { CarritoItem } from '../types/carrito.types';
 
 // ─────────────────────────────────────────
 // ACCIONES

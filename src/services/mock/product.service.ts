@@ -1,6 +1,6 @@
-import { type Product, ProductSchema } from '../../schemas/product.schema';
-import { PRODUCTOS_EJEMPLO } from '../../datos/productos.datos';
-import { generateId } from '../../lib/utils';
+import { type Product, ProductSchema } from '@/schemas/product.schema';
+import { PRODUCTOS_EJEMPLO } from '@/datos/productos.datos';
+import { generateId } from '@/utils/id.utils';
 
 export class ProductService {
   private static STORAGE_KEY = 'pipos_mock_products';

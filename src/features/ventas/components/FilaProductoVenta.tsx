@@ -1,7 +1,7 @@
 import { useState, useCallback, memo } from 'react';
 import { ImageOff, Plus, Loader2 } from 'lucide-react';
 import type { Product } from '@/schemas/product.schema';
-import { formatearPesos } from '@/lib/ventaUtils';
+import { formatearPesos } from '@/utils/venta.utils';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 

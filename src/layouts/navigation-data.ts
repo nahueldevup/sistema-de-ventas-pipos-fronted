@@ -9,7 +9,7 @@ import {
   CreditCard,
   FileText,
 } from "lucide-react"
-import type { NavSection } from "@/types/navigation"
+import type { NavSection } from "@/types/navigation.types"
 
 /**
  * Estructura de navegación del sidebar.

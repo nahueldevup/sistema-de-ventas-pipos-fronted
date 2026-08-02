@@ -2,7 +2,7 @@ import { Image as ImageIcon, Barcode, Check, ChevronDown, Plus, Minus, X as XIco
 import { useState, useEffect, useRef } from "react"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { calcularPrecioVenta } from "@/lib/precioUtils"
+import { calcularPrecioVenta } from "@/utils/precio.utils"
 import { ProductSchema, type Product } from "@/schemas/product.schema"
 import type { z } from "zod"
 import { useCreateProducto, useUpdateProducto } from "@/features/productos/hooks/useProductos"

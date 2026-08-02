@@ -33,7 +33,7 @@ import {
 import { cn } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/checkbox';
 import type { Product } from '@/schemas/product.schema';
-import { formatearPesos } from '@/lib/ventaUtils';
+import { formatearPesos } from '@/utils/venta.utils';
 
 // ── Configuración de visibilidad de botones ─────────────────────────────
 const TOOLBAR_CONFIG_KEY = 'pipos_toolbar_ventas_config';

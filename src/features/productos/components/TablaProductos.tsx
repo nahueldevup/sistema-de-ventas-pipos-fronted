@@ -8,7 +8,7 @@ import {
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { ImageOff, ArrowUpRight } from 'lucide-react';
 import type { Product } from '@/schemas/product.schema';
-import { getCategoriaColor, formatearPesos, getRowBg } from '@/lib/productoUtils';
+import { getCategoriaColor, formatearPesos, getRowBg } from '@/utils/producto.utils';
 import '@/types/table.types';
 import MenuOpcionesTabla from './MenuOpcionesTabla';
 
