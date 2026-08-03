@@ -30,9 +30,7 @@ export default function PanelControlLayout() {
         </button>
 
         <main
-          className={`flex-1 overflow-y-auto p-6 scroll-smooth hide-scrollbar ${
-            isDark ? "bg-[#181f1c]" : "bg-white"
-          }`}
+          className="flex-1 overflow-y-auto p-6 scroll-smooth hide-scrollbar bg-background"
         >
           <Outlet />
         </main>

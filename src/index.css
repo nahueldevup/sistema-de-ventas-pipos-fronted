@@ -39,7 +39,7 @@
   --brand-900: hsl(var(--brand-hue) 8%);
 
   /* ── FONDOS ────────────────────────────────────────── */
-  --background: #FAFBFC;
+  --background: #F5F5F5;
   /* fondo de página */
   --foreground: #1F2937;
   /* texto principal */
