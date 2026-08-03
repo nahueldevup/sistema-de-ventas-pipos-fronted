@@ -1,5 +1,11 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
-import { Banknote, ArrowRightLeft, Smartphone, X, Split, CreditCard, QrCode } from 'lucide-react';
+import { X, Split } from 'lucide-react';
+import iconEfectivo from '@/assets/icons/payment/efectivo.svg';
+import iconTarjetaCredito from '@/assets/icons/payment/tarjeta-credito.svg';
+import iconTarjetaDebito from '@/assets/icons/payment/tarjeta-debito.svg';
+import iconTransferencia from '@/assets/icons/payment/transferencia.svg';
+import iconMercadoPago from '@/assets/icons/payment/mercado-pago.svg';
+import iconQr from '@/assets/icons/payment/qr.svg';
 import { formatearPesos } from '@/utils/venta.utils';
 import { cn } from '@/lib/utils';
 
@@ -20,12 +26,12 @@ interface ModalPagoProps {
 
 // ── Métodos de pago (escalable: agregar nuevos acá) ─────────────────
 const METODOS_PAGO = [
-  { id: 'CASH', label: 'Efectivo', icon: Banknote },
-  { id: 'CREDIT_CARD', label: 'Tarjeta Crédito', icon: CreditCard },
-  { id: 'DEBIT_CARD', label: 'Tarjeta Débito', icon: CreditCard },
-  { id: 'TRANSFER', label: 'Transferencia', icon: ArrowRightLeft },
-  { id: 'MERCADO_PAGO', label: 'Mercado Pago', icon: Smartphone },
-  { id: 'QR', label: 'QR', icon: QrCode },
+  { id: 'CASH', label: 'Efectivo', icon: iconEfectivo, darkClass: '' },
+  { id: 'CREDIT_CARD', label: 'Tarjeta Crédito', icon: iconTarjetaCredito, darkClass: '' },
+  { id: 'DEBIT_CARD', label: 'Tarjeta Débito', icon: iconTarjetaDebito, darkClass: '' },
+  { id: 'TRANSFER', label: 'Transferencia', icon: iconTransferencia, darkClass: '' },
+  { id: 'MERCADO_PAGO', label: 'Mercado Pago', icon: iconMercadoPago, darkClass: '' },
+  { id: 'QR', label: 'QR', icon: iconQr, darkClass: '' },
 ] as const;
 
 type MetodoId = (typeof METODOS_PAGO)[number]['id'];
@@ -221,7 +227,7 @@ export default function ModalPago({
       <div
         ref={containerRef}
         className="
-          relative z-[61] w-[400px] max-w-[calc(100vw-2rem)]
+          relative z-[61] w-[460px] max-w-[calc(100vw-2rem)]
           bg-card border border-border
           rounded-xl shadow-float
           p-5 space-y-4
@@ -256,7 +262,7 @@ export default function ModalPago({
         {!esMixto && (
           <div className="space-y-3">
             {/* Selector de método de pago */}
-            <div className="grid grid-cols-3 gap-1.5">
+            <div className="grid grid-cols-3 gap-2">
               {METODOS_PAGO.map((mp) => {
                 const isActive = metodoSimple === mp.id;
                 return (
@@ -269,16 +275,24 @@ export default function ModalPago({
                       setTimeout(() => inputSimpleRef.current?.focus(), 50);
                     }}
                     className={cn(
-                      'flex-1 flex flex-col items-center gap-1 py-2 rounded-lg',
-                      'text-[11px] font-semibold transition-all duration-150 cursor-pointer',
-                      'border',
+                      'flex flex-col items-center justify-between px-2 pt-2 pb-2.5 rounded-xl h-[140px]',
+                      'text-[13px] font-medium transition-all duration-150 cursor-pointer border',
                       isActive
-                        ? 'bg-brand-50 dark:bg-brand-500/10 border-brand-500 text-brand-700 dark:text-brand-400 shadow-sm'
-                        : 'border-border text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800',
+                        ? 'border-brand-500 ring-2 ring-brand-500 text-brand-700 bg-brand-50/50 dark:bg-brand-900/20'
+                        : 'border-border text-slate-500 dark:text-slate-300 bg-slate-50 dark:bg-zinc-800/50 hover:bg-slate-100 dark:hover:bg-zinc-700/50',
                     )}
                   >
-                    <mp.icon className={cn('w-4 h-4', isActive && 'text-brand-600 dark:text-brand-400')} />
-                    {mp.label}
+                    <div className="flex-1 w-full flex items-center justify-center overflow-hidden">
+                      <img
+                        src={mp.icon}
+                        alt={mp.label}
+                        className={cn(
+                          'w-full h-[90px] object-contain scale-[1.35]',
+                          mp.darkClass
+                        )}
+                      />
+                    </div>
+                    <span className="leading-none">{mp.label}</span>
                   </button>
                 );
               })}
@@ -334,9 +348,16 @@ export default function ModalPago({
           <div className="space-y-2">
             {METODOS_PAGO.map((mp, idx) => (
               <div key={mp.id} className="flex items-center gap-2">
-                <div className="flex items-center gap-1.5 w-[115px] shrink-0">
-                  <mp.icon className="w-4 h-4 text-slate-400" />
-                  <span className="text-[12px] font-semibold text-slate-600 dark:text-slate-300 truncate">
+                <div className="flex items-center gap-2.5 w-[140px] shrink-0">
+                  <img
+                    src={mp.icon}
+                    alt={mp.label}
+                    className={cn(
+                      'w-7 h-5 object-contain',
+                      mp.darkClass
+                    )}
+                  />
+                  <span className="text-[13px] font-semibold text-slate-600 dark:text-slate-300 truncate">
                     {mp.label}
                   </span>
                 </div>
