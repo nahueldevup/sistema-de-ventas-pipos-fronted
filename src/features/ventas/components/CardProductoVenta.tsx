@@ -33,13 +33,14 @@ export default memo(function CardProductoVenta({ producto, onAgregar, enCarrito,
       disabled={agotado}
       title={agotado ? 'Sin stock disponible' : `Agregar ${producto.name} al carrito`}
       className={cn(
-        'relative flex flex-col bg-card border border-border rounded-lg overflow-hidden text-left cursor-pointer group',
-        'transition-all duration-100 ease-out shadow-sm',
+        'relative flex flex-col bg-card rounded-[6px] overflow-hidden text-left cursor-pointer group',
+        'transition-all duration-100 ease-out',
+        'border border-black/[0.09] dark:border-white/[0.08] shadow-sm',
         agotado
           ? 'opacity-50 cursor-not-allowed'
-          : 'hover:shadow-[0_4px_16px_rgba(0,0,0,0.10)] dark:hover:shadow-[0_4px_16px_rgba(0,0,0,0.35)] hover:-translate-y-px active:translate-y-0 active:shadow-sm hover:border-brand-300 dark:hover:border-brand-700',
+          : 'hover:shadow-[0_2px_16px_4px_rgba(0,0,0,0.14)] dark:hover:shadow-[0_2px_16px_4px_rgba(0,0,0,0.45)] hover:-translate-y-px active:translate-y-0 active:shadow-sm',
         animando && 'scale-[0.97] ring-2 ring-brand-400',
-        enCarrito && 'ring-1 ring-brand-400 border-brand-400 dark:ring-brand-600 dark:border-brand-600',
+        enCarrito && 'ring-1 ring-brand-400 dark:ring-brand-600',
       )}
     >
       {/* Zona de imagen — ratio 1:1 con imagen absoluta */}
@@ -74,7 +75,7 @@ export default memo(function CardProductoVenta({ producto, onAgregar, enCarrito,
             ? 'bg-red-500/90 text-white'
             : stockBajo
               ? 'bg-amber-400/90 text-amber-900'
-              : 'bg-teal-600/70 text-white',
+              : 'bg-sky-400/90 text-sky-900',
         )}>
           {agotado
             ? 'Agotado'

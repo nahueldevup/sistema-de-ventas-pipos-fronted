@@ -268,11 +268,11 @@ html.dark {
     &::-webkit-scrollbar {
       width: 6px;
     }
-    
+
     &::-webkit-scrollbar-track {
       background: transparent;
     }
-    
+
     &::-webkit-scrollbar-thumb {
       background-color: var(--border);
       border-radius: 9999px;
