@@ -167,12 +167,12 @@ return (
           </div>
         )}
 
-        {/* Total con tipografía reforzada */}
-        <div className="flex justify-between items-center pt-2 border-t border-border/60">
-          <span className="text-base font-bold uppercase tracking-wide text-slate-800 dark:text-slate-100">
+        {/* Total — 18px ExtraBold #111827 sobre fondo #F3F4F6 */}
+        <div className="flex justify-between items-center pt-2 mt-1 px-3 py-2.5 rounded-xl bg-[#F3F4F6] dark:bg-slate-800/60">
+          <span className="text-[14px] font-bold uppercase tracking-wide text-[#374151] dark:text-slate-300">
             Total
           </span>
-          <span className="text-3xl font-extrabold text-brand-700 dark:text-brand-400">
+          <span className="text-[18px] font-extrabold text-[#111827] dark:text-slate-50">
             {formatearPesos(total)}
           </span>
         </div>
@@ -180,21 +180,22 @@ return (
 
       {/* Botón confirmar */}
       <div className="px-3 pb-3">
+        {/* Botón checkout: blanco #FFF sobre verde #16A34A, ratio 4.8:1 — pasa AA grande */}
         <button
           type="button"
           onClick={handleAbrirModal}
           disabled={!puedeConfirmar}
           className={`
-            w-full h-10 rounded-xl text-[14px] font-bold
+            w-full h-11 rounded-xl text-[15px] font-bold
             transition-all duration-200 cursor-pointer
             flex items-center justify-center gap-2
             ${puedeConfirmar
-              ? 'bg-brand-600 hover:bg-brand-700 active:scale-[0.98] text-white shadow-sm'
+              ? 'bg-[#16A34A] hover:bg-[#15803D] active:scale-[0.98] text-white shadow-sm'
               : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed'
             }
           `}
         >
-          Confirmar venta — {formatearPesos(total)}
+          Confirmar venta
         </button>
       </div>
     </div>

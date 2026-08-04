@@ -33,14 +33,17 @@ export default memo(function CardProductoVenta({ producto, onAgregar, enCarrito,
       disabled={agotado}
       title={agotado ? 'Sin stock disponible' : `Agregar ${producto.name} al carrito`}
       className={cn(
-        'relative flex flex-col bg-card rounded-[6px] overflow-hidden text-left cursor-pointer group',
+        'relative flex flex-col rounded-[6px] overflow-hidden text-left cursor-pointer group',
         'transition-all duration-100 ease-out',
-        'border border-black/[0.09] dark:border-white/[0.08] shadow-sm',
+        'shadow-sm',
+        // Estado base
+        !enCarrito && 'bg-card border border-black/[0.09] dark:border-white/[0.08]',
+        // Estado seleccionado — borde azul 3px + fondo azul muy claro
+        enCarrito && 'bg-[#EFF6FF] border-[3px] border-[#2563EB] dark:bg-blue-950/30 dark:border-blue-500',
         agotado
           ? 'opacity-50 cursor-not-allowed'
           : 'hover:shadow-[0_2px_16px_4px_rgba(0,0,0,0.14)] dark:hover:shadow-[0_2px_16px_4px_rgba(0,0,0,0.45)] hover:-translate-y-px active:translate-y-0 active:shadow-sm',
-        animando && 'scale-[0.97] ring-2 ring-brand-400',
-        enCarrito && 'ring-1 ring-brand-400 dark:ring-brand-600',
+        animando && 'scale-[0.97]',
       )}
     >
       {/* Zona de imagen — ratio 1:1 con imagen absoluta */}
@@ -61,16 +64,20 @@ export default memo(function CardProductoVenta({ producto, onAgregar, enCarrito,
           )}
         </div>
 
-        {/* Badge cantidad en carrito */}
-        {enCarrito && !agotado && cantidadEnCarrito > 0 && (
-          <div className="absolute top-1.5 left-1.5 min-w-[1.5rem] h-6 px-1.5 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold shadow-sm z-10">
-            {cantidadEnCarrito}
+        {/* Badge check azul con cantidad — solo cuando está en carrito */}
+        {enCarrito && !agotado && (
+          <div className="absolute top-1.5 left-1.5 z-10 flex items-center gap-1 bg-[#2563EB] text-white rounded-full pl-1.5 pr-2 py-0.5 shadow-md">
+            {/* Check icon */}
+            <svg className="w-3 h-3 shrink-0" viewBox="0 0 12 12" fill="none">
+              <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <span className="text-[11px] font-bold leading-none">x{cantidadEnCarrito}</span>
           </div>
         )}
 
         {/* Badge stock — siempre visible, 3 estados */}
         <div className={cn(
-          'absolute top-1.5 right-1.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-sm z-10',
+          'absolute top-1.5 right-1.5 text-[10px] font-bold uppercase tracking-wide px-1 py-[3px] rounded-sm z-10',
           agotado
             ? 'bg-red-500/90 text-white'
             : stockBajo
@@ -80,7 +87,7 @@ export default memo(function CardProductoVenta({ producto, onAgregar, enCarrito,
           {agotado
             ? 'Agotado'
             : stockBajo
-              ? `${producto.stock} queda${producto.stock > 1 ? 'n' : ''}`
+              ? `${producto.stock} en stock`
               : `${producto.stock} en stock`
           }
         </div>
@@ -88,13 +95,15 @@ export default memo(function CardProductoVenta({ producto, onAgregar, enCarrito,
 
       {/* Info */}
       <div className="p-2 flex flex-col gap-1 flex-1">
+        {/* Nombre: 14px SemiBold #111827 — sentence case para legibilidad por forma */}
         <span
-          className="text-[12px] font-medium text-slate-700 dark:text-slate-200 leading-tight line-clamp-2 break-words min-h-[2.5rem]"
+          className="text-[14px] font-semibold text-[#111827] dark:text-slate-100 leading-snug line-clamp-2 break-words min-h-[2.5rem]"
           title={producto.name}
         >
-          {producto.name}
+          {producto.name.charAt(0).toUpperCase() + producto.name.slice(1).toLowerCase()}
         </span>
-        <span className="text-[14px] font-bold text-brand-700 dark:text-brand-400 leading-none mt-auto pt-0.5">
+        {/* Precio: 16px Bold #059669 — el que grita, eye-tracking va foto→precio→stock */}
+        <span className="text-[16px] font-bold text-[#059669] dark:text-emerald-400 leading-none mt-auto pt-0.5">
           {formatearPesos(producto.salePrice)}
         </span>
       </div>
