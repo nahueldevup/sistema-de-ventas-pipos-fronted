@@ -7,18 +7,26 @@ interface SeccionCobroProps {
   subtotal: number;
   descuentoGlobal: number;
   total: number;
+  totalFiado: number;
+  totalAPagar: number;
+  nombreClienteFiado?: string;
   cantidadItems: number;
   onAbrirModalPago: () => void;
   onSetDescuentoGlobal: (descuento: number) => void;
+  bloqueadoPorFiado?: boolean;
 }
 
 export default function SeccionCobro({
   subtotal,
   descuentoGlobal,
   total,
+  totalFiado,
+  totalAPagar,
+  nombreClienteFiado,
   cantidadItems,
   onAbrirModalPago,
   onSetDescuentoGlobal,
+  bloqueadoPorFiado = false,
 }: SeccionCobroProps) {
 
   // Estado del descuento colapsable
@@ -26,7 +34,7 @@ export default function SeccionCobro({
   const [tipoDescuento, setTipoDescuento] = useState<'fijo' | 'porcentaje'>('fijo');
   const [inputDescuento, setInputDescuento] = useState('');
 
-  const puedeConfirmar = cantidadItems > 0;
+  const puedeConfirmar = cantidadItems > 0 && !bloqueadoPorFiado;
 
   const handleAbrirModal = () => {
     if (!puedeConfirmar) return;
@@ -167,12 +175,28 @@ return (
           </div>
         )}
 
-        {/* Total — 18px ExtraBold #111827 sobre fondo #F3F4F6 */}
+        {/* ── Desglose fiado (solo si hay ítems fiados) ──────────── */}
+        {totalFiado > 0 && (
+          <div className="space-y-1 pt-1">
+            <div className="flex justify-between text-[13px] text-slate-600 dark:text-slate-300">
+              <span>A pagar ahora</span>
+              <span className="font-semibold">{formatearPesos(totalAPagar)}</span>
+            </div>
+            <div className="flex justify-between text-[13px] text-blue-600 dark:text-blue-400">
+              <span className="truncate mr-2">
+                Fiado{nombreClienteFiado ? ` — ${nombreClienteFiado}` : ''}
+              </span>
+              <span className="font-semibold shrink-0">{formatearPesos(totalFiado)}</span>
+            </div>
+          </div>
+        )}
+
+        {/* Total — 22px ExtraBold #111827 sobre fondo #F3F4F6 */}
         <div className="flex justify-between items-center pt-2 mt-1 px-3 py-2.5 rounded-xl bg-[#F3F4F6] dark:bg-slate-800/60">
           <span className="text-[14px] font-bold uppercase tracking-wide text-[#374151] dark:text-slate-300">
             Total
           </span>
-          <span className="text-[18px] font-extrabold text-[#111827] dark:text-slate-50">
+          <span className="text-[22px] font-extrabold text-[#111827] dark:text-slate-50">
             {formatearPesos(total)}
           </span>
         </div>
@@ -185,6 +209,7 @@ return (
           type="button"
           onClick={handleAbrirModal}
           disabled={!puedeConfirmar}
+          title={bloqueadoPorFiado ? 'Elegí un cliente para fiar productos' : undefined}
           className={`
             w-full h-11 rounded-xl text-[15px] font-bold
             transition-all duration-200 cursor-pointer
@@ -195,7 +220,7 @@ return (
             }
           `}
         >
-          Confirmar venta
+          {bloqueadoPorFiado ? 'Elegí un cliente para fiar' : 'Confirmar venta'}
         </button>
       </div>
     </div>

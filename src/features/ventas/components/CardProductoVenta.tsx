@@ -33,13 +33,13 @@ export default memo(function CardProductoVenta({ producto, onAgregar, enCarrito,
       disabled={agotado}
       title={agotado ? 'Sin stock disponible' : `Agregar ${producto.name} al carrito`}
       className={cn(
-        'relative flex flex-col rounded-[6px] overflow-hidden text-left cursor-pointer group',
+        'relative flex flex-col rounded-[6px] overflow-hidden text-left cursor-pointer group bg-card',
         'transition-all duration-100 ease-out',
         'shadow-sm',
         // Estado base
-        !enCarrito && 'bg-card border border-black/[0.09] dark:border-white/[0.08]',
-        // Estado seleccionado — borde azul 3px + fondo azul muy claro
-        enCarrito && 'bg-[#EFF6FF] border-[2px] border-[#2563EB] dark:bg-blue-950/30 dark:border-blue-500',
+        !enCarrito && 'border border-black/[0.09] dark:border-white/[0.08]',
+        // Estado seleccionado — borde azul
+        enCarrito && 'border-[2px] border-[#2563EB] dark:border-blue-500',
         agotado
           ? 'opacity-50 cursor-not-allowed'
           : 'hover:shadow-[0_2px_16px_4px_rgba(0,0,0,0.14)] dark:hover:shadow-[0_2px_16px_4px_rgba(0,0,0,0.45)] hover:-translate-y-px active:translate-y-0 active:shadow-sm',
@@ -48,7 +48,12 @@ export default memo(function CardProductoVenta({ producto, onAgregar, enCarrito,
     >
       {/* Zona de imagen — ratio 1:1 con imagen absoluta */}
       <div className="relative w-full" style={{ paddingTop: '100%' }}>
-        <div className="absolute inset-0 bg-white dark:bg-slate-900">
+        {/* Fondo + imagen/fallback: el filtro de agotado se aplica acá
+            (NO en el wrapper externo) para que los badges hermanos queden intactos */}
+        <div
+          className="absolute inset-0 bg-white dark:bg-slate-900"
+          style={agotado ? { filter: 'grayscale(1) brightness(0.85)' } : undefined}
+        >
           {imagenSrc ? (
             <img
               src={imagenSrc}
@@ -62,6 +67,12 @@ export default memo(function CardProductoVenta({ producto, onAgregar, enCarrito,
               <ImageOff className="w-8 h-8 text-slate-300 dark:text-slate-600" />
             </div>
           )}
+          {/* Overlay de sombra interior — solo dark mode, encima de la imagen.
+              z-[1] > imagen (auto), < badges (z-10). pointer-events-none para no bloquear clicks. */}
+          <div
+            className="absolute inset-0 hidden dark:block pointer-events-none z-[1]"
+            style={{ boxShadow: 'inset 0 0 12px 4px rgba(15, 23, 42, 0.6)' }}
+          />
         </div>
 
         {/* Badge check — esquina superior izquierda, azul oscuro #1E40AF
@@ -89,8 +100,11 @@ export default memo(function CardProductoVenta({ producto, onAgregar, enCarrito,
         </div>
       </div>
 
-      {/* Info */}
-      <div className="p-2 flex flex-col gap-1 flex-1">
+      {/* Info — mismo filtro que la imagen cuando agotado */}
+      <div
+        className="p-2 flex flex-col gap-1 flex-1"
+        style={agotado ? { filter: 'grayscale(1) brightness(0.85)' } : undefined}
+      >
         {/* Nombre */}
         <span
           className="text-[14px] font-semibold text-[#111827] dark:text-slate-100 leading-snug line-clamp-2 break-words min-h-[2.5rem]"

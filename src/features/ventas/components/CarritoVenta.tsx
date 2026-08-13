@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
 // ── Datos de clientes mock (se reemplazará por hook real) ───────────
-const CLIENTES_MOCK = [
+export const CLIENTES_MOCK = [
   { id: 'consumidor-final', nombre: 'Consumidor Final', cuit: null },
   { id: 'cliente-1', nombre: 'María González', cuit: '20-34567890-1' },
   { id: 'cliente-2', nombre: 'Juan Pérez', cuit: '23-12345678-9' },
@@ -35,12 +35,19 @@ interface CarritoVentaProps {
   subtotal: number;
   descuentoGlobal: number;
   total: number;
+  totalFiado: number;
+  totalAPagar: number;
   cantidadItems: number;
   onActualizarCantidad: (productId: string, cantidad: number) => void;
   onQuitarProducto: (productId: string) => void;
+  onToggleFiado: (productId: string) => void;
+  onSetAllFiado: (fiado: boolean) => void;
   onVaciarCarrito: () => void;
   onAbrirModalPago: () => void;
   onSetDescuentoGlobal: (descuento: number) => void;
+  // Cliente elevado a Vender.tsx
+  clienteSeleccionado: string;
+  onClienteChange: (id: string) => void;
 }
 
 export default function CarritoVenta({
@@ -48,21 +55,32 @@ export default function CarritoVenta({
   subtotal,
   descuentoGlobal,
   total,
+  totalFiado,
+  totalAPagar,
   cantidadItems,
   onActualizarCantidad,
   onQuitarProducto,
+  onToggleFiado,
+  onSetAllFiado,
   onVaciarCarrito,
   onAbrirModalPago,
   onSetDescuentoGlobal,
+  clienteSeleccionado,
+  onClienteChange,
 }: CarritoVentaProps) {
   const [confirmandoVaciar, setConfirmandoVaciar] = useState(false);
 
   // Estado de los popovers
-  const [clienteSeleccionado, setClienteSeleccionado] = useState('consumidor-final');
   const [comprobanteSeleccionado, setComprobanteSeleccionado] = useState('factura-c');
   const [busquedaCliente, setBusquedaCliente] = useState('');
   const [clientePopoverOpen, setClientePopoverOpen] = useState(false);
   const [comprobantePopoverOpen, setComprobantePopoverOpen] = useState(false);
+
+  // ── Derivados de fiado ───────────────────────────────────────────
+  const hayItemsFiados = items.some((i) => i.fiado);
+  const todosFiados = items.length > 0 && items.every((i) => i.fiado);
+  const clienteEsConsumidorFinal = clienteSeleccionado === 'consumidor-final';
+  const faltaClienteParaFiar = hayItemsFiados && clienteEsConsumidorFinal;
 
   const handleVaciar = () => {
     if (confirmandoVaciar) {
@@ -74,9 +92,18 @@ export default function CarritoVenta({
     }
   };
 
+  const handleToggleAllFiado = () => {
+    onSetAllFiado(!todosFiados);
+  };
+
   // Cliente seleccionado para mostrar en el trigger
   const clienteActual = CLIENTES_MOCK.find((c) => c.id === clienteSeleccionado);
   const comprobanteActual = TIPOS_COMPROBANTE.find((c) => c.id === comprobanteSeleccionado);
+
+  // Nombre del cliente real seleccionado (para mostrar en totales fiados)
+  const nombreClienteFiado = clienteActual && !clienteEsConsumidorFinal
+    ? clienteActual.nombre
+    : undefined;
 
   // Filtrar clientes por búsqueda
   const clientesFiltrados = CLIENTES_MOCK.filter((c) =>
@@ -98,21 +125,34 @@ export default function CarritoVenta({
         </h2>
 
         {items.length > 0 && (
-          <button
-            type="button"
-            onClick={handleVaciar}
-            className={`
-              flex items-center gap-1.5 px-3 py-1.5 rounded-lg
-              text-[12px] font-semibold transition-colors duration-150 cursor-pointer
-              ${confirmandoVaciar
-                ? 'bg-red-600 text-white'
-                : 'text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20'
-              }
-            `}
-          >
-            <Trash2 className="w-3.5 h-3.5" />
-            {confirmandoVaciar ? '¿Confirmar?' : 'Limpiar todo'}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleToggleAllFiado}
+              className="
+                px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-colors duration-150 cursor-pointer
+                text-blue-500 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20
+              "
+            >
+              {todosFiados ? 'Quitar fiado' : 'Fiar todo'}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleVaciar}
+              className={`
+                flex items-center gap-1.5 px-3 py-1.5 rounded-lg
+                text-[12px] font-semibold transition-colors duration-150 cursor-pointer
+                ${confirmandoVaciar
+                  ? 'bg-red-600 text-white'
+                  : 'text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20'
+                }
+              `}
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              {confirmandoVaciar ? '¿Confirmar?' : 'Limpiar todo'}
+            </button>
+          </div>
         )}
       </div>
 
@@ -129,13 +169,18 @@ export default function CarritoVenta({
               type="button"
               className={cn(
                 'flex items-center justify-between gap-1 flex-1 min-w-0',
-                'h-7 px-2 rounded-lg border border-input bg-transparent',
+                'h-7 px-2 rounded-lg border border-brand-600/40',
                 'text-[11px] whitespace-nowrap transition-colors outline-none select-none cursor-pointer',
-                'hover:bg-accent dark:bg-input/30 dark:hover:bg-input/50',
+                'bg-transparent hover:bg-brand-50 dark:bg-brand-900/20 dark:hover:bg-brand-900/30',
+                'focus-visible:ring-2 focus-visible:ring-brand-500/40',
+                // Resaltar en rojo si falta cliente para fiar
+                faltaClienteParaFiar && 'border-red-400 dark:border-red-500/60 ring-1 ring-red-400/30',
                 'group',
               )}
             >
-              <span className="truncate">{clienteActual?.nombre || 'Cliente'}</span>
+              <span className={cn('truncate', faltaClienteParaFiar && 'text-red-500 dark:text-red-400')}>
+                {clienteActual?.nombre || 'Cliente'}
+              </span>
               <ChevronDown className="h-3.5 w-3.5 opacity-50 shrink-0 transition-transform duration-150 ease-linear group-data-[state=open]:rotate-180" />
             </button>
           </PopoverTrigger>
@@ -163,18 +208,25 @@ export default function CarritoVenta({
                 ) : (
                   clientesFiltrados.map((cliente) => {
                     const isSelected = clienteSeleccionado === cliente.id;
+                    const esConsumidorFinal = cliente.id === 'consumidor-final';
+                    const deshabilitado = esConsumidorFinal && hayItemsFiados;
+
                     return (
                       <div
                         key={cliente.id}
                         onClick={() => {
-                          setClienteSeleccionado(cliente.id);
+                          if (deshabilitado) return;
+                          onClienteChange(cliente.id);
                           setClientePopoverOpen(false);
                           setBusquedaCliente('');
                         }}
+                        title={deshabilitado ? 'No se puede fiar a Consumidor Final' : undefined}
                         className={cn(
-                          'flex items-center gap-2 w-full text-xs px-2 py-1.5 rounded-md cursor-pointer transition-colors duration-150',
-                          'hover:bg-slate-100 dark:hover:bg-slate-800',
-                          isSelected && 'bg-slate-100/60 dark:bg-slate-800/60 font-medium',
+                          'flex items-center gap-2 w-full text-xs px-2 py-1.5 rounded-md transition-colors duration-150',
+                          deshabilitado
+                            ? 'opacity-40 cursor-not-allowed'
+                            : 'cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800',
+                          isSelected && !deshabilitado && 'bg-slate-100/60 dark:bg-slate-800/60 font-medium',
                         )}
                       >
                         <Check className={cn('h-3.5 w-3.5 shrink-0', isSelected ? 'opacity-100 text-brand-600' : 'opacity-0')} />
@@ -214,9 +266,10 @@ export default function CarritoVenta({
               type="button"
               className={cn(
                 'flex items-center justify-between gap-1 flex-1 min-w-0',
-                'h-7 px-2 rounded-lg border border-input bg-transparent',
+                'h-7 px-2 rounded-lg border border-brand-600/40',
                 'text-[11px] whitespace-nowrap transition-colors outline-none select-none cursor-pointer',
-                'hover:bg-accent dark:bg-input/30 dark:hover:bg-input/50',
+                'bg-transparent hover:bg-brand-50 dark:bg-brand-900/20 dark:hover:bg-brand-900/30',
+                'focus-visible:ring-2 focus-visible:ring-brand-500/40',
                 'group',
               )}
             >
@@ -263,6 +316,7 @@ export default function CarritoVenta({
                 item={item}
                 onActualizarCantidad={onActualizarCantidad}
                 onQuitar={onQuitarProducto}
+                onToggleFiado={onToggleFiado}
               />
             ))}
           </div>
@@ -272,9 +326,13 @@ export default function CarritoVenta({
             subtotal={subtotal}
             descuentoGlobal={descuentoGlobal}
             total={total}
+            totalFiado={totalFiado}
+            totalAPagar={totalAPagar}
+            nombreClienteFiado={nombreClienteFiado}
             cantidadItems={cantidadItems}
             onAbrirModalPago={onAbrirModalPago}
             onSetDescuentoGlobal={onSetDescuentoGlobal}
+            bloqueadoPorFiado={faltaClienteParaFiar}
           />
         </>
       )}

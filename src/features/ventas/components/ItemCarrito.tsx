@@ -1,15 +1,17 @@
 import { memo } from 'react';
-import { Minus, Plus, Trash2 } from 'lucide-react';
+import { Minus, Plus, Trash2, Check } from 'lucide-react';
 import type { CarritoItem } from '../hooks/useCarrito';
 import { formatearPesos } from '@/utils/venta.utils';
+import { cn } from '@/lib/utils';
 
 interface ItemCarritoProps {
   item: CarritoItem;
   onActualizarCantidad: (productId: string, cantidad: number) => void;
   onQuitar: (productId: string) => void;
+  onToggleFiado: (productId: string) => void;
 }
 
-export default memo(function ItemCarrito({ item, onActualizarCantidad, onQuitar }: ItemCarritoProps) {
+export default memo(function ItemCarrito({ item, onActualizarCantidad, onQuitar, onToggleFiado }: ItemCarritoProps) {
   const subtotal = item.unitPrice * item.quantity - item.discountAmount;
   const superaStock = item.quantity > item.maxStock;
 
@@ -19,20 +21,28 @@ export default memo(function ItemCarrito({ item, onActualizarCantidad, onQuitar 
       transition-colors duration-150 hover:bg-slate-50/50 dark:hover:bg-slate-800/30
       ${superaStock ? 'bg-amber-50/50 dark:bg-amber-900/10' : ''}
     `}>
-      {/* Fila superior: Nombre y Subtotal */}
+      {/* Fila superior: Nombre + tag fiado + Subtotal */}
       <div className="flex items-start justify-between gap-3">
+        {/* Nombre */}
         <p
           className="text-[14px] font-semibold text-[#111827] dark:text-slate-50 leading-tight uppercase truncate flex-1"
           title={item.productName}
         >
           {item.productName}
         </p>
-        <span className="text-[14px] font-bold text-[#111827] dark:text-slate-50 shrink-0 text-right">
+
+        {/* Subtotal */}
+        <span className={cn(
+          'text-[14px] font-bold shrink-0 text-right',
+          item.fiado
+            ? 'text-slate-400 dark:text-slate-500 line-through'
+            : 'text-[#111827] dark:text-slate-50',
+        )}>
           {formatearPesos(subtotal)}
         </span>
       </div>
 
-      {/* Fila inferior: Precio unitario y Controles */}
+      {/* Fila inferior: Precio unitario + Controles (Fiar → Eliminar → Cantidad) */}
       <div className="flex items-center justify-between gap-2">
         {/* Lado izquierdo: precio unitario */}
         <div className="flex items-center gap-2">
@@ -47,9 +57,26 @@ export default memo(function ItemCarrito({ item, onActualizarCantidad, onQuitar 
           )}
         </div>
 
-        {/* Lado derecho: Controles. gap-4 (16px) entre tacho y stepper para evitar borrados accidentales */}
-        <div className="flex items-center gap-4">
-          {/* Botón de Eliminar directo: 32x32px, border 1.5px — alineado con el stepper */}
+        {/* Lado derecho: Fiar → Eliminar → Cantidad */}
+        <div className="flex items-center gap-3">
+          {/* Botón Fiar / Fiado */}
+          <button
+            type="button"
+            onClick={() => onToggleFiado(item.productId)}
+            title={item.fiado ? 'Quitar de fiado' : 'Marcar como fiado'}
+            className={cn(
+              'h-8 px-2.5 flex items-center justify-center gap-1.5 rounded-lg',
+              'text-[11px] transition-all duration-150 cursor-pointer border-[1.5px]',
+              item.fiado
+                ? 'bg-blue-600 dark:bg-blue-600 border-blue-600 dark:border-blue-500 text-white font-bold shadow-xs'
+                : 'border-[#D1D5DB] bg-[#F3F4F6] dark:bg-slate-800 dark:border-slate-600 text-[#111827] dark:text-slate-100 font-semibold hover:bg-slate-200 dark:hover:bg-slate-700',
+            )}
+          >
+            {item.fiado && <Check className="w-3.5 h-3.5 stroke-[2.5] shrink-0 text-white" />}
+            {item.fiado ? 'FIADO' : 'FIAR'}
+          </button>
+
+          {/* Botón de Eliminar directo: 32x32px, border 1.5px */}
           <button
             type="button"
             onClick={() => onQuitar(item.productId)}
@@ -59,7 +86,7 @@ export default memo(function ItemCarrito({ item, onActualizarCantidad, onQuitar 
             <Trash2 className="w-4 h-4" />
           </button>
 
-          {/* Stepper: botones 32x32px (radius 8px, fondo #F3F4F6, borde #D1D5DB) e input central (radius 4px, fondo #FFFFFF, borde 1px #9CA3AF, focus ring azul #3B82F6) */}
+          {/* Stepper de cantidad */}
           <div className="flex items-center gap-2">
             <button
               type="button"

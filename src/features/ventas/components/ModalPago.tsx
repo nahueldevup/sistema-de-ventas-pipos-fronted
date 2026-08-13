@@ -20,6 +20,10 @@ interface ModalPagoProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   total: number;
+  /** Monto de ítems fiados (no incluido en `total`). Si > 0, muestra aviso. */
+  montoFiado?: number;
+  /** Nombre del cliente al que se le fía. */
+  nombreClienteFiado?: string;
   onConfirmar: (pagos: PagoData[]) => void;
   confirmando: boolean;
 }
@@ -41,6 +45,8 @@ export default function ModalPago({
   open,
   onOpenChange,
   total,
+  montoFiado = 0,
+  nombreClienteFiado,
   onConfirmar,
   confirmando,
 }: ModalPagoProps) {
@@ -247,6 +253,19 @@ export default function ModalPago({
             <X className="w-4 h-4" />
           </button>
         </div>
+
+        {/* Aviso de monto fiado (no incluido en el cobro) */}
+        {montoFiado > 0 && (
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200/50 dark:border-blue-900/40">
+            <span className="text-[12px] text-slate-500 dark:text-slate-400">
+              No incluye{' '}
+              <span className="font-semibold text-blue-600 dark:text-blue-400">
+                {formatearPesos(montoFiado)}
+              </span>
+              {' '}fiado{nombreClienteFiado ? ` a ${nombreClienteFiado}` : ''}
+            </span>
+          </div>
+        )}
 
         {/* Total a pagar */}
         <div className="flex items-center justify-between px-3 py-2.5 rounded-lg bg-slate-50 dark:bg-dark-elevated border border-border">

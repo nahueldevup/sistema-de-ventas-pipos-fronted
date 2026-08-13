@@ -14,6 +14,8 @@ type CarritoAction =
   | { type: 'ACTUALIZAR_CANTIDAD'; payload: { productId: string; cantidad: number } }
   | { type: 'SET_DESCUENTO_GLOBAL'; payload: number }
   | { type: 'SET_NOTA'; payload: string }
+  | { type: 'TOGGLE_FIADO'; payload: string }
+  | { type: 'SET_ALL_FIADO'; payload: boolean }
   | { type: 'VACIAR_CARRITO' };
 
 // ─────────────────────────────────────────
@@ -57,6 +59,7 @@ function carritoReducer(state: CarritoState, action: CarritoAction): CarritoStat
         quantity: 1,
         discountAmount: 0,
         maxStock: producto.stock,
+        fiado: false,
       };
 
       return { ...state, items: [...state.items, nuevoItem] };
@@ -93,6 +96,25 @@ function carritoReducer(state: CarritoState, action: CarritoAction): CarritoStat
     case 'SET_NOTA':
       return { ...state, nota: action.payload };
 
+    case 'TOGGLE_FIADO':
+      return {
+        ...state,
+        items: state.items.map((item) =>
+          item.productId === action.payload
+            ? { ...item, fiado: !item.fiado }
+            : item
+        ),
+      };
+
+    case 'SET_ALL_FIADO':
+      return {
+        ...state,
+        items: state.items.map((item) => ({
+          ...item,
+          fiado: action.payload,
+        })),
+      };
+
     case 'VACIAR_CARRITO':
       return estadoInicial;
 
@@ -128,6 +150,20 @@ export function useCarrito() {
     [state.items]
   );
 
+  // ── Fiado: montos partidos ────────────────────────
+  const totalFiado = useMemo(
+    () => state.items
+      .filter((i) => i.fiado)
+      .reduce((acc, i) => acc + (i.unitPrice * i.quantity - i.discountAmount), 0),
+    [state.items]
+  );
+
+  // Monto a pagar ahora = total general menos lo fiado
+  const totalAPagar = useMemo(
+    () => Math.max(0, total - totalFiado),
+    [total, totalFiado]
+  );
+
   // Acciones memorizadas
   const agregarProducto = useCallback(
     (producto: Product) => dispatch({ type: 'AGREGAR_PRODUCTO', payload: producto }),
@@ -157,6 +193,16 @@ export function useCarrito() {
 
   const vaciarCarrito = useCallback(() => dispatch({ type: 'VACIAR_CARRITO' }), []);
 
+  const toggleFiado = useCallback(
+    (productId: string) => dispatch({ type: 'TOGGLE_FIADO', payload: productId }),
+    []
+  );
+
+  const setAllFiado = useCallback(
+    (fiado: boolean) => dispatch({ type: 'SET_ALL_FIADO', payload: fiado }),
+    []
+  );
+
   return {
     // Estado
     items: state.items,
@@ -168,6 +214,8 @@ export function useCarrito() {
     totalDescuentos,
     total,
     cantidadItems,
+    totalFiado,
+    totalAPagar,
 
     // Acciones
     agregarProducto,
@@ -176,5 +224,7 @@ export function useCarrito() {
     setDescuentoGlobal,
     setNota,
     vaciarCarrito,
+    toggleFiado,
+    setAllFiado,
   };
 }

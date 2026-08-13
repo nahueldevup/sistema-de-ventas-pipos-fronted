@@ -13,6 +13,8 @@ export interface CarritoItem {
   discountAmount: number;
   /** Para validación visual de stock disponible */
   maxStock: number;
+  /** true = este ítem va a cuenta corriente del cliente (fiado) */
+  fiado: boolean;
 }
 
 /** Estado completo del carrito */

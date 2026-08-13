@@ -1,11 +1,11 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useMemo } from 'react';
 import { CheckCircle2, XCircle } from 'lucide-react';
 import { useGetProductos } from '@/features/productos/hooks/useProductos';
 import { useCarrito } from '@/features/ventas/hooks/useCarrito';
 import { useCreateVenta } from '@/features/ventas/hooks/useVentas';
 import { useGetCajaAbierta } from '@/features/ventas/hooks/useCaja';
 import GrillaProductosVenta from '@/features/ventas/components/GrillaProductosVenta';
-import CarritoVenta from '@/features/ventas/components/CarritoVenta';
+import CarritoVenta, { CLIENTES_MOCK } from '@/features/ventas/components/CarritoVenta';
 import ModalPago from '@/features/ventas/components/ModalPago';
 import type { PagoData } from '@/features/ventas/components/ModalPago';
 import ModalAbrirCaja from '@/features/ventas/components/ModalAbrirCaja';
@@ -22,6 +22,18 @@ export default function Vender() {
   const [modalAbrirOpen, setModalAbrirOpen] = useState(false);
   const [modalCerrarOpen, setModalCerrarOpen] = useState(false);
   const [modalPagoOpen, setModalPagoOpen] = useState(false);
+
+  // ── Cliente elevado desde CarritoVenta ─────────────────────────────
+  const [clienteSeleccionado, setClienteSeleccionado] = useState('consumidor-final');
+
+  const clienteActual = useMemo(
+    () => CLIENTES_MOCK.find((c) => c.id === clienteSeleccionado),
+    [clienteSeleccionado]
+  );
+  const clienteEsConsumidorFinal = clienteSeleccionado === 'consumidor-final';
+  const nombreClienteFiado = clienteActual && !clienteEsConsumidorFinal
+    ? clienteActual.nombre
+    : undefined;
 
   // Toast de feedback
   const [toast, setToast] = useState<{ tipo: 'exito' | 'error'; mensaje: string } | null>(null);
@@ -53,20 +65,53 @@ export default function Vender() {
 
       const totalPagado = pagos.reduce((acc, p) => acc + p.amount, 0);
 
+      // Separar ítems pagados de ítems fiados
+      const itemsPagados = carrito.items.filter((i) => !i.fiado);
+      const itemsFiados = carrito.items.filter((i) => i.fiado);
+
+      // TODO: [CUENTA CORRIENTE] Integración con backend pendiente.
+      // Cuando el backend de cuenta corriente esté listo, enviar los ítems fiados
+      // en una llamada separada (o como parte del payload de la venta):
+      //
+      //   {
+      //     clienteId: clienteSeleccionado,
+      //     clienteNombre: clienteActual?.nombre,
+      //     items: itemsFiados.map(item => ({
+      //       productId: item.productId,
+      //       productName: item.productName,
+      //       unitPrice: item.unitPrice,
+      //       quantity: item.quantity,
+      //       subtotal: item.unitPrice * item.quantity - item.discountAmount,
+      //     })),
+      //     total: carrito.totalFiado,
+      //     fecha: new Date().toISOString(),
+      //   }
+      //
+      // Por ahora los ítems fiados se omiten del payload de la venta.
+      // El stock SÍ se descuenta igualmente (el backend de ventas ya lo hace
+      // para todos los ítems, pero cuando se separe habrá que manejarlo).
+
+      if (itemsFiados.length > 0) {
+        console.info(
+          '[FIADO] Ítems fiados pendientes de enviar a cuenta corriente:',
+          { cliente: clienteActual?.nombre, items: itemsFiados, total: carrito.totalFiado }
+        );
+      }
+
       try {
         await crearVenta.mutateAsync({
           storeId: MOCK_STORE_ID,
           cashRegisterId: cajaAbierta.id,
           userId: MOCK_USER_ID,
-          customerId: null,
+          customerId: clienteEsConsumidorFinal ? null : clienteSeleccionado,
           status: 'COMPLETED',
-          paymentStatus: 'PAID',
+          paymentStatus: itemsFiados.length > 0 ? 'PARTIAL' : 'PAID',
           subtotal: carrito.subtotal,
           discountAmount: carrito.descuentoGlobal,
           total: carrito.total,
           totalPaid: totalPagado,
-          change: Math.max(0, totalPagado - carrito.total),
-          pendingAmount: 0,
+          change: Math.max(0, totalPagado - carrito.totalAPagar),
+          pendingAmount: carrito.totalFiado,
           note: carrito.nota || null,
           items: carrito.items.map((item) => ({
             productId: item.productId,
@@ -80,7 +125,7 @@ export default function Vender() {
             discountAmount: item.discountAmount,
             subtotal: item.unitPrice * item.quantity - item.discountAmount,
             status: 'SOLD' as const,
-            isCredited: false,
+            isCredited: item.fiado,
             isDeleted: false,
           })),
           payments: pagos.map((p) => ({
@@ -94,12 +139,17 @@ export default function Vender() {
 
         setModalPagoOpen(false);
         carrito.vaciarCarrito();
-        mostrarToast('exito', '¡Venta registrada con éxito!');
+        setClienteSeleccionado('consumidor-final');
+
+        const mensajeFiado = itemsFiados.length > 0
+          ? ` (${itemsFiados.length} fiado${itemsFiados.length > 1 ? 's' : ''})`
+          : '';
+        mostrarToast('exito', `¡Venta registrada con éxito!${mensajeFiado}`);
       } catch {
         mostrarToast('error', 'Error al registrar la venta. Intentá de nuevo.');
       }
     },
-    [carrito, crearVenta, mostrarToast, cajaAbierta]
+    [carrito, crearVenta, mostrarToast, cajaAbierta, clienteSeleccionado, clienteActual, clienteEsConsumidorFinal]
   );
 
   // Loading inicial
@@ -134,12 +184,18 @@ export default function Vender() {
             subtotal={carrito.subtotal}
             descuentoGlobal={carrito.descuentoGlobal}
             total={carrito.total}
+            totalFiado={carrito.totalFiado}
+            totalAPagar={carrito.totalAPagar}
             cantidadItems={carrito.cantidadItems}
             onActualizarCantidad={carrito.actualizarCantidad}
             onQuitarProducto={carrito.quitarProducto}
+            onToggleFiado={carrito.toggleFiado}
+            onSetAllFiado={carrito.setAllFiado}
             onVaciarCarrito={carrito.vaciarCarrito}
             onAbrirModalPago={handleAbrirModalPago}
             onSetDescuentoGlobal={carrito.setDescuentoGlobal}
+            clienteSeleccionado={clienteSeleccionado}
+            onClienteChange={setClienteSeleccionado}
           />
         </div>
       </div>
@@ -159,11 +215,13 @@ export default function Vender() {
         />
       )}
 
-      {/* Modal de pago */}
+      {/* Modal de pago — recibe totalAPagar (sin lo fiado) */}
       <ModalPago
         open={modalPagoOpen}
         onOpenChange={setModalPagoOpen}
-        total={carrito.total}
+        total={carrito.totalAPagar}
+        montoFiado={carrito.totalFiado}
+        nombreClienteFiado={nombreClienteFiado}
         onConfirmar={handleConfirmarVenta}
         confirmando={crearVenta.isPending}
       />
