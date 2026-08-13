@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect, memo } from "react";
 import {
   ImageOff,
   ArrowUpRight,
@@ -349,7 +349,7 @@ function CardProducto({ producto, onEditar, onBorrar, onImprimir, menuAbierto, o
   );
 }
 
-export default function VistaCards({ productos, onEditar, onBorrar, onImprimir }: VistaCardsProps) {
+export default memo(function VistaCards({ productos, onEditar, onBorrar, onImprimir }: VistaCardsProps) {
   const [openMenuProductId, setOpenMenuProductId] = useState<string | null>(null);
 
   if (productos.length === 0) {
@@ -392,4 +392,4 @@ export default function VistaCards({ productos, onEditar, onBorrar, onImprimir }
       ))}
     </div>
   );
-}
+});
