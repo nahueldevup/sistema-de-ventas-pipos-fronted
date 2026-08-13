@@ -1,5 +1,5 @@
 import { Image as ImageIcon, Barcode, Check, ChevronDown, Plus, Minus, X as XIcon } from "lucide-react"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, memo } from "react"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { calcularPrecioVenta } from "@/utils/precio.utils"
@@ -82,7 +82,7 @@ interface ModalRegistroProductoProps {
 /** Tipo input del formulario (antes del refine de Zod) */
 type ProductFormInput = z.input<typeof ProductSchema>;
 
-export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar, margenGananciaGlobal }: ModalRegistroProductoProps) {
+export default memo(function ModalRegistroProducto({ isOpen, onClose, productoAEditar, margenGananciaGlobal }: ModalRegistroProductoProps) {
   const { register, handleSubmit, control, watch, setValue, formState: { errors }, reset } = useForm<ProductFormInput>({
     resolver: zodResolver(ProductSchema),
     defaultValues: {
@@ -537,4 +537,4 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
         </div>
     </ModalFormulario>
   )
-}
+});

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, memo } from "react";
+import { useState, useEffect, memo } from "react";
 import {
   ImageOff,
   ArrowUpRight,
