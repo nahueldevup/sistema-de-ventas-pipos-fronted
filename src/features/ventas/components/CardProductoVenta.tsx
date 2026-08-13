@@ -34,7 +34,7 @@ export default memo(function CardProductoVenta({ producto, onAgregar, enCarrito,
       title={agotado ? 'Sin stock disponible' : `Agregar ${producto.name} al carrito`}
       className={cn(
         'relative flex flex-col rounded-[6px] overflow-hidden text-left cursor-pointer group bg-card',
-        'transition-all duration-100 ease-out',
+        'transition-[box-shadow,transform,border-color,opacity] duration-100 ease-out',
         'shadow-sm',
         // Estado base
         !enCarrito && 'border border-black/[0.09] dark:border-white/[0.08]',
