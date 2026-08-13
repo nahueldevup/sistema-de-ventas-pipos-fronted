@@ -42,9 +42,17 @@ export default memo(function FilaProductoVenta({ producto, onAgregar, enCarrito,
 
   return (
     <div
+      role="button"
+      tabIndex={agotado ? -1 : 0}
       onClick={handleAgregar}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleAgregar();
+        }
+      }}
       className={cn(
-        "group flex items-center gap-4 bg-card border border-border p-3 rounded-xl shadow-sm transition-all duration-150",
+        "group flex items-center gap-4 bg-card border border-border p-3 rounded-xl shadow-sm transition-[border-color,box-shadow,transform] duration-150 outline-none focus-visible:ring-2 focus-visible:ring-brand-500",
         agotado ? "opacity-50 cursor-not-allowed" : "hover:border-brand-400 hover:shadow-sm cursor-pointer",
         animando ? "scale-[0.99]" : "",
         enCarrito ? "ring-1 ring-brand-300 dark:ring-brand-600 bg-brand-50/10" : ""
@@ -117,7 +125,7 @@ export default memo(function FilaProductoVenta({ producto, onAgregar, enCarrito,
           variant="default"
           size="icon"
           className={cn(
-            "h-10 w-10 shrink-0 rounded-xl transition-all bg-primary text-primary-foreground shadow-sm hover:bg-primary/90",
+            "h-10 w-10 shrink-0 rounded-xl transition-[background-color,transform] bg-primary text-primary-foreground shadow-sm hover:bg-primary/90",
             animando ? "scale-90" : "scale-100"
           )}
         >
