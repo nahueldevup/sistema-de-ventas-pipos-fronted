@@ -23,7 +23,7 @@ export default function TarjetaAccesoRapido({ titulo, descripcion, Icono, temaCo
   return (
     <button 
       onClick={onClick}
-      className="cursor-pointer group bg-white dark:bg-dark-card p-6 rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft hover:shadow-float hover:-translate-y-1 transition-all duration-300 text-left relative overflow-hidden"
+      className="cursor-pointer group bg-white dark:bg-dark-card p-6 rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft hover:shadow-float hover:-translate-y-1 transition-[box-shadow,transform] duration-300 text-left relative overflow-hidden"
     >
       <div className={`absolute top-0 right-0 w-24 h-24 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110 ${colores.fondoClaro}`}></div>
       <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 relative z-10 transition-colors group-hover:text-white ${colores.fondoIcono} ${colores.textoIcono} ${colores.hoverFondo}`}>

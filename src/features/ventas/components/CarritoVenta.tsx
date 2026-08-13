@@ -212,7 +212,8 @@ export default function CarritoVenta({
                     const deshabilitado = esConsumidorFinal && hayItemsFiados;
 
                     return (
-                      <div
+                      <button
+                        type="button"
                         key={cliente.id}
                         onClick={() => {
                           if (deshabilitado) return;
@@ -222,7 +223,7 @@ export default function CarritoVenta({
                         }}
                         title={deshabilitado ? 'No se puede fiar a Consumidor Final' : undefined}
                         className={cn(
-                          'flex items-center gap-2 w-full text-xs px-2 py-1.5 rounded-md transition-colors duration-150',
+                          'flex items-center gap-2 w-full text-xs px-2 py-1.5 rounded-md transition-colors duration-150 text-left outline-none focus-visible:ring-2 focus-visible:ring-brand-500',
                           deshabilitado
                             ? 'opacity-40 cursor-not-allowed'
                             : 'cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800',
@@ -236,7 +237,7 @@ export default function CarritoVenta({
                             <span className="text-[10px] text-muted-foreground">{cliente.cuit}</span>
                           )}
                         </div>
-                      </div>
+                      </button>
                     );
                   })
                 )}
@@ -282,21 +283,22 @@ export default function CarritoVenta({
               {TIPOS_COMPROBANTE.map((comp) => {
                 const isSelected = comprobanteSeleccionado === comp.id;
                 return (
-                  <div
+                  <button
+                    type="button"
                     key={comp.id}
                     onClick={() => {
                       setComprobanteSeleccionado(comp.id);
                       setComprobantePopoverOpen(false);
                     }}
                     className={cn(
-                      'flex items-center gap-2 w-full text-xs px-2 py-1.5 rounded-md cursor-pointer transition-colors duration-150',
+                      'flex items-center gap-2 w-full text-xs px-2 py-1.5 rounded-md cursor-pointer transition-colors duration-150 text-left outline-none focus-visible:ring-2 focus-visible:ring-brand-500',
                       'hover:bg-slate-100 dark:hover:bg-slate-800',
                       isSelected && 'bg-slate-100/60 dark:bg-slate-800/60 font-medium',
                     )}
                   >
                     <Check className={cn('h-3.5 w-3.5 shrink-0', isSelected ? 'opacity-100 text-brand-600' : 'opacity-0')} />
                     <span>{comp.label}</span>
-                  </div>
+                  </button>
                 );
               })}
             </div>

@@ -92,7 +92,7 @@ export default function TablaProductos({ productos, onEditar, onBorrar, onImprim
                   defaultValue={stock}
                   onClick={(e) => e.stopPropagation()}
                   onChange={(e) => e.stopPropagation()}
-                  className={`w-14 h-9 text-center font-semibold outline-none text-sm rounded-lg border transition-all bg-white dark:bg-dark-card cursor-text hover:bg-[#F3F4F6] dark:hover:bg-slate-800 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${inputClasses}`}
+                  className={`w-14 h-9 text-center font-semibold outline-none text-sm rounded-lg border transition-[border-color,background-color,box-shadow] bg-white dark:bg-dark-card cursor-text hover:bg-[#F3F4F6] dark:hover:bg-slate-800 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${inputClasses}`}
                 />
                 <div
                   className={`absolute -right-2 -top-2 w-3.5 h-3.5 rounded-full border-2 border-white dark:border-dark-card shadow-sm z-10 ${dotColor}`}
@@ -122,7 +122,7 @@ export default function TablaProductos({ productos, onEditar, onBorrar, onImprim
             defaultValue={formatearPesos(info.getValue())}
             onClick={(e) => e.stopPropagation()}
             onChange={(e) => e.stopPropagation()}
-            className="w-[105px] h-9 text-center px-1.5 font-semibold outline-none text-[14px] rounded-lg border transition-all bg-white dark:bg-dark-card cursor-text hover:bg-[#F3F4F6] dark:hover:bg-slate-800 border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border dark:hover:border-slate-500 text-[#1F2937] dark:text-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+            className="w-[105px] h-9 text-center px-1.5 font-semibold outline-none text-[14px] rounded-lg border transition-[border-color,background-color,box-shadow] bg-white dark:bg-dark-card cursor-text hover:bg-[#F3F4F6] dark:hover:bg-slate-800 border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border dark:hover:border-slate-500 text-[#1F2937] dark:text-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
           />
         ),
         meta: { className: 'py-2 px-2 text-center', headerClassName: 'py-4 px-2 text-center' },
@@ -138,7 +138,7 @@ export default function TablaProductos({ productos, onEditar, onBorrar, onImprim
             defaultValue={formatearPesos(info.getValue())}
             onClick={(e) => e.stopPropagation()}
             onChange={(e) => e.stopPropagation()}
-            className="w-[105px] h-9 text-center px-1.5 font-semibold outline-none text-[14px] rounded-lg border transition-all bg-white dark:bg-dark-card cursor-text hover:bg-[#F3F4F6] dark:hover:bg-slate-800 border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border dark:hover:border-slate-500 text-[#1F2937] dark:text-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+            className="w-[105px] h-9 text-center px-1.5 font-semibold outline-none text-[14px] rounded-lg border transition-[border-color,background-color,box-shadow] bg-white dark:bg-dark-card cursor-text hover:bg-[#F3F4F6] dark:hover:bg-slate-800 border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border dark:hover:border-slate-500 text-[#1F2937] dark:text-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
           />
         ),
         meta: { className: 'py-2 px-2 text-center', headerClassName: 'py-4 px-2 text-center' },
@@ -289,9 +289,16 @@ export default function TablaProductos({ productos, onEditar, onBorrar, onImprim
                   <tr
                     key={row.id}
                     data-index={virtualRow.index}
-                    className={`${getRowBg(virtualRow.index)} hover-fila transition-colors duration-150 group cursor-pointer overflow-hidden`}
+                    tabIndex={0}
+                    className={`${getRowBg(virtualRow.index)} hover-fila transition-colors duration-150 group cursor-pointer overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:-outline-offset-2`}
                     style={{ height: `${ROW_HEIGHT}px`, minHeight: `${ROW_HEIGHT}px`, maxHeight: `${ROW_HEIGHT}px` }}
                     onClick={() => onEditar?.(p)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        onEditar?.(p);
+                      }
+                    }}
                   >
                     {row.getVisibleCells().map((cell) => {
                       const cellMeta = cell.column.columnDef.meta?.className;

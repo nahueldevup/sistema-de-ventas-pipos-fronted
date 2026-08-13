@@ -54,30 +54,32 @@ export default function InicioSesion() {
 
           <form onSubmit={simularIngreso} className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Correo electrónico</label>
+              <label htmlFor="emailInput" className="block text-sm font-semibold text-slate-700 mb-2">Correo electrónico</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="h-5 w-5 text-slate-400" />
                 </div>
                 <input 
+                  id="emailInput"
                   type="email" 
                   required
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl leading-5 bg-gray-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 sm:text-sm transition-all shadow-sm" 
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl leading-5 bg-gray-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 sm:text-sm transition-[border-color,background-color,box-shadow] shadow-sm" 
                   placeholder="tu@correo.com" 
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Contraseña</label>
+              <label htmlFor="passwordInput" className="block text-sm font-semibold text-slate-700 mb-2">Contraseña</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="h-5 w-5 text-slate-400" />
                 </div>
                 <input 
+                  id="passwordInput"
                   type="password" 
                   required
-                  className="block w-full pl-10 pr-10 py-3 border border-gray-200 rounded-xl leading-5 bg-gray-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 sm:text-sm transition-all shadow-sm" 
+                  className="block w-full pl-10 pr-10 py-3 border border-gray-200 rounded-xl leading-5 bg-gray-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 sm:text-sm transition-[border-color,background-color,box-shadow] shadow-sm" 
                   placeholder="••••••••" 
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer">
@@ -91,7 +93,7 @@ export default function InicioSesion() {
 
             <button 
               type="submit" 
-              className="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 transition-all transform hover:-translate-y-0.5 cursor-pointer"
+              className="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 transition-[background-color,transform,box-shadow] transform hover:-translate-y-0.5 cursor-pointer"
             >
               ENTRAR
             </button>

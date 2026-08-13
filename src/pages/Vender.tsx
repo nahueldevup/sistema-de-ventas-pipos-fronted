@@ -65,8 +65,7 @@ export default function Vender() {
 
       const totalPagado = pagos.reduce((acc, p) => acc + p.amount, 0);
 
-      // Separar ítems pagados de ítems fiados
-      const itemsPagados = carrito.items.filter((i) => !i.fiado);
+      // Separar ítems fiados
       const itemsFiados = carrito.items.filter((i) => i.fiado);
 
       // TODO: [CUENTA CORRIENTE] Integración con backend pendiente.
@@ -105,7 +104,7 @@ export default function Vender() {
           userId: MOCK_USER_ID,
           customerId: clienteEsConsumidorFinal ? null : clienteSeleccionado,
           status: 'COMPLETED',
-          paymentStatus: itemsFiados.length > 0 ? 'PARTIAL' : 'PAID',
+          paymentStatus: itemsFiados.length > 0 ? 'PARTIALLY_PAID' : 'PAID',
           subtotal: carrito.subtotal,
           discountAmount: carrito.descuentoGlobal,
           total: carrito.total,

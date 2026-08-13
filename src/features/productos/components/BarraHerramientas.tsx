@@ -58,7 +58,7 @@ export default function BarraHerramientas({
   }, [filtrosAbierto]);
 
   const chipsActivos = useMemo(() => {
-    const chips: { label: React.ReactNode; onRemove: () => void }[] = [];
+    const chips: { id: string; label: React.ReactNode; onRemove: () => void }[] = [];
 
     if (ordenamiento !== "relevancia") {
       const labels: Record<string, string> = {
@@ -66,6 +66,7 @@ export default function BarraHerramientas({
       };
 
       chips.push({
+        id: 'orden',
         label: (
           <span className="flex items-center gap-1 font-medium">
             <span className="text-slate-500 dark:text-slate-400">Orden:</span>
@@ -78,6 +79,7 @@ export default function BarraHerramientas({
 
     if (filtros.filtroConStock) {
       chips.push({
+        id: 'conStock',
         label: (
           <span className="flex items-center gap-1 font-medium text-slate-800 dark:text-slate-100">
             En stock
@@ -89,6 +91,7 @@ export default function BarraHerramientas({
 
     if (filtros.filtroStockBajo) {
       chips.push({
+        id: 'stockBajo',
         label: (
           <span className="flex items-center gap-1 font-medium text-amber-700 dark:text-amber-400">
             Stock bajo
@@ -100,6 +103,7 @@ export default function BarraHerramientas({
 
     if (filtros.filtroAgotados) {
       chips.push({
+        id: 'agotados',
         label: (
           <span className="flex items-center gap-1 font-medium text-red-600 dark:text-red-400">
             Agotados
@@ -111,6 +115,7 @@ export default function BarraHerramientas({
 
     if (filtros.filtroSinImagen) {
       chips.push({
+        id: 'sinImagen',
         label: (
           <span className="flex items-center gap-1 font-medium text-slate-800 dark:text-slate-100">
             Sin imagen
@@ -129,6 +134,7 @@ export default function BarraHerramientas({
             : `${filtros.categorias.length} seleccionadas`;
 
       chips.push({
+        id: 'categorias',
         label: (
           <span className="flex items-center gap-1 font-medium">
             <span className="text-slate-500 dark:text-slate-400">Categorías:</span>
@@ -148,6 +154,7 @@ export default function BarraHerramientas({
             : `${filtros.proveedores.length} seleccionados`;
 
       chips.push({
+        id: 'proveedores',
         label: (
           <span className="flex items-center gap-1 font-medium">
             <span className="text-slate-500 dark:text-slate-400">Proveedores:</span>
@@ -160,6 +167,7 @@ export default function BarraHerramientas({
 
     if (filtros.precioMin) {
       chips.push({
+        id: 'precioMin',
         label: (
           <span className="flex items-center gap-1 font-medium text-slate-700 dark:text-slate-300">
             Precio ≥ <strong className="font-semibold">${filtros.precioMin}</strong>
@@ -171,6 +179,7 @@ export default function BarraHerramientas({
 
     if (filtros.precioMax) {
       chips.push({
+        id: 'precioMax',
         label: (
           <span className="flex items-center gap-1 font-medium text-slate-700 dark:text-slate-300">
             Precio ≤ <strong className="font-semibold">${filtros.precioMax}</strong>
@@ -182,6 +191,7 @@ export default function BarraHerramientas({
 
     if (filtros.fechaDesde || filtros.fechaHasta) {
       chips.push({
+        id: 'fechas',
         label: (
           <span className="flex items-center gap-1 font-medium text-slate-700 dark:text-slate-300">
             Fecha: <strong className="font-semibold">{filtros.fechaDesde || "..."} → {filtros.fechaHasta || "..."}</strong>
@@ -215,12 +225,13 @@ export default function BarraHerramientas({
   return (
     <div className="bg-card p-4 rounded-2xl border border-border shadow-soft">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center flex-1 min-w-[240px] border border-border rounded-xl bg-background focus-within:border-brand-500 focus-within:ring-1 focus-within:ring-brand-100 dark:focus-within:ring-brand-900 transition-all p-1.5 shadow-sm">
+        <div className="flex items-center flex-1 min-w-[240px] border border-border rounded-xl bg-background focus-within:border-brand-500 focus-within:ring-1 focus-within:ring-brand-100 dark:focus-within:ring-brand-900 transition-[border-color,box-shadow] p-1.5 shadow-sm">
           <div className="pl-2.5 text-slate-400 dark:text-slate-500 flex items-center pr-2">
             <Search className="w-5 h-5" />
           </div>
           <input
             type="text"
+            aria-label="Buscar por producto o código"
             placeholder="Buscar por producto, código..."
             value={filtros.busqueda}
             onChange={(e) => setFiltros({ ...filtros, busqueda: e.target.value })}
@@ -232,7 +243,7 @@ export default function BarraHerramientas({
               onClick={() => setFiltrosAbierto(!filtrosAbierto)}
               aria-expanded={filtrosAbierto}
               aria-haspopup="dialog"
-              className={`px-3 py-1.5 border rounded-lg text-sm font-medium flex items-center gap-1.5 cursor-pointer transition-all shadow-sm active:scale-95 ${
+              className={`px-3 py-1.5 border rounded-lg text-sm font-medium flex items-center gap-1.5 cursor-pointer transition-[border-color,background-color,color,transform] shadow-sm active:scale-95 ${
                 filtrosAbierto
                   ? 'border-brand-300 bg-brand-50 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300'
                   : 'border-slate-200 hover:border-slate-300 dark:border-dark-border text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-dark-elevated dark:hover:bg-slate-700'
@@ -272,6 +283,7 @@ export default function BarraHerramientas({
               <div className="relative h-[24px] flex items-center justify-center">
                 <input
                   type="text"
+                  aria-label="Margen de ganancia global (%)"
                   value={margenGananciaGlobal}
                   onChange={(e) => {
                     if (gananciaAutoActiva) {
@@ -321,7 +333,7 @@ export default function BarraHerramientas({
 
           <button
             type="button"
-            className="px-3 h-[38px] border border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border rounded-lg text-[#1F2937] dark:text-slate-200 text-sm font-semibold flex items-center gap-2 bg-white hover:bg-[#F3F4F6] dark:bg-dark-elevated dark:hover:bg-slate-700 cursor-pointer transition-all active:scale-95"
+            className="px-3 h-[38px] border border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border rounded-lg text-[#1F2937] dark:text-slate-200 text-sm font-semibold flex items-center gap-2 bg-white hover:bg-[#F3F4F6] dark:bg-dark-elevated dark:hover:bg-slate-700 cursor-pointer transition-[border-color,background-color,transform] active:scale-95"
           >
             <ArrowRightLeft size={18} />
             <span className="hidden sm:inline">Importar / Exportar</span>
@@ -329,21 +341,21 @@ export default function BarraHerramientas({
 
           <button
             onClick={onAbrirActualizarPrecios}
-            className="px-3 h-[38px] border border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border rounded-lg text-[#1F2937] dark:text-slate-200 text-sm font-semibold flex items-center gap-2 bg-white hover:bg-[#F3F4F6] dark:bg-dark-elevated dark:hover:bg-slate-700 cursor-pointer transition-all active:scale-95"
+            className="px-3 h-[38px] border border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border rounded-lg text-[#1F2937] dark:text-slate-200 text-sm font-semibold flex items-center gap-2 bg-white hover:bg-[#F3F4F6] dark:bg-dark-elevated dark:hover:bg-slate-700 cursor-pointer transition-[border-color,background-color,transform] active:scale-95"
           >
             <ListTodo size={18} /> <span className="hidden sm:inline">Ajustar precios</span>
           </button>
 
           <button
             onClick={onAbrirCategorias}
-            className="px-3 h-[38px] border border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border rounded-lg text-[#1F2937] dark:text-slate-200 text-sm font-semibold flex items-center gap-2 bg-white hover:bg-[#F3F4F6] dark:bg-dark-elevated dark:hover:bg-slate-700 cursor-pointer transition-all active:scale-95"
+            className="px-3 h-[38px] border border-[#E5E7EB] hover:border-gray-300 dark:border-dark-border rounded-lg text-[#1F2937] dark:text-slate-200 text-sm font-semibold flex items-center gap-2 bg-white hover:bg-[#F3F4F6] dark:bg-dark-elevated dark:hover:bg-slate-700 cursor-pointer transition-[border-color,background-color,transform] active:scale-95"
           >
             <LayoutGrid size={18} strokeWidth={2} /> <span className="hidden sm:inline">Categorías</span>
           </button>
 
           <button
             onClick={onAbrirImprimirEtiquetas}
-            className="px-3 h-[38px] rounded-lg text-sm font-semibold flex items-center gap-2 transition-all bg-brand-600 text-white hover:bg-brand-700 cursor-pointer active:scale-95"
+            className="px-3 h-[38px] rounded-lg text-sm font-semibold flex items-center gap-2 transition-[background-color,transform] bg-brand-600 text-white hover:bg-brand-700 cursor-pointer active:scale-95"
           >
             <Printer size={18} />
             <span className="hidden sm:inline">Imprimir etiquetas</span>
@@ -363,10 +375,10 @@ export default function BarraHerramientas({
           <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mr-1">
             Filtros Activos
           </span>
-          {chipsActivos.map((chip, i) => (
+          {chipsActivos.map((chip) => (
             <span
-              key={i}
-              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white shadow-sm text-xs transition-all dark:bg-dark-elevated dark:border-dark-border"
+              key={chip.id}
+              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white shadow-sm text-xs transition-colors dark:bg-dark-elevated dark:border-dark-border"
             >
               {chip.label}
               <button

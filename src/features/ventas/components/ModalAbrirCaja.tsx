@@ -13,11 +13,14 @@ export default function ModalAbrirCaja({ open, onOpenChange }: ModalAbrirCajaPro
   const [nota, setNota] = useState('');
   const [mostrarNota, setMostrarNota] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const abrirCaja = useAbrirCaja();
   const montoNumerico = parseFloat(fondoInicial) || 0;
 
   const handleAbrir = async () => {
+    if (isSubmitting || abrirCaja.isPending) return;
+    setIsSubmitting(true);
     setError(null);
     try {
       await abrirCaja.mutateAsync({
@@ -33,6 +36,8 @@ export default function ModalAbrirCaja({ open, onOpenChange }: ModalAbrirCajaPro
       const mensaje = err instanceof Error ? err.message : 'Error desconocido al abrir la caja.';
       setError(mensaje);
       console.error('Error al abrir caja:', err);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -69,7 +74,7 @@ export default function ModalAbrirCaja({ open, onOpenChange }: ModalAbrirCajaPro
           <div className="p-6 space-y-5">
             {/* Input Efectivo Inicial */}
             <div className="space-y-1.5">
-              <label className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">
+              <label htmlFor="fondoInicialInput" className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">
                 Efectivo inicial
               </label>
               <div className="relative">
@@ -77,6 +82,7 @@ export default function ModalAbrirCaja({ open, onOpenChange }: ModalAbrirCajaPro
                   $
                 </span>
                 <input
+                  id="fondoInicialInput"
                   type="number"
                   value={fondoInicial}
                   onChange={(e) => setFondoInicial(e.target.value)}
@@ -84,14 +90,15 @@ export default function ModalAbrirCaja({ open, onOpenChange }: ModalAbrirCajaPro
                     if (e.key === 'Enter') handleAbrir();
                   }}
                   placeholder="0"
-                  autoFocus
+                  // eslint-disable-next-line jsx-a11y/no-autofocus
+                  autoFocus // Intencional: Se espera que el usuario tipee el monto inmediatamente
                   className="
                     w-full h-12 pl-8 pr-4 rounded-xl
                     bg-slate-50 dark:bg-dark-elevated border border-border
                     text-[18px] font-bold text-slate-800 dark:text-white
                     placeholder:text-slate-300 dark:placeholder:text-slate-600
                     outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20
-                    transition-all duration-200
+                    transition-[border-color,box-shadow] duration-200
                     [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
                   "
                 />
@@ -156,7 +163,7 @@ export default function ModalAbrirCaja({ open, onOpenChange }: ModalAbrirCajaPro
               disabled={abrirCaja.isPending}
               className={`
                 w-full h-12 rounded-xl flex items-center justify-center gap-2
-                text-[15px] font-bold text-white transition-all duration-200
+                text-[15px] font-bold text-white transition-[background-color,transform] duration-200
                 ${abrirCaja.isPending 
                   ? 'bg-emerald-400 cursor-not-allowed' 
                   : 'bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98]'

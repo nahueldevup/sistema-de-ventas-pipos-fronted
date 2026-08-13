@@ -166,6 +166,7 @@ export default function ModalCerrarCaja({ open, onOpenChange, cashRegisterId }: 
                         <span className="text-slate-300 dark:text-slate-600">×</span>
                         <input
                           type="number"
+                          aria-label={`Cantidad de billetes de $${d.valor}`}
                           value={conteo[d.valor] || ''}
                           onChange={(e) => handleConteoChange(d.valor, e.target.value)}
                           placeholder="0"
@@ -264,10 +265,11 @@ export default function ModalCerrarCaja({ open, onOpenChange, cashRegisterId }: 
 
                 {/* Nota de cierre */}
                 <div className="space-y-2">
-                  <label className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">
+                  <label htmlFor="notaCierreInput" className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">
                     Nota de cierre <span className="text-slate-400 font-normal">(opcional)</span>
                   </label>
                   <input
+                    id="notaCierreInput"
                     type="text"
                     value={nota}
                     onChange={(e) => setNota(e.target.value)}
@@ -279,7 +281,7 @@ export default function ModalCerrarCaja({ open, onOpenChange, cashRegisterId }: 
                       text-[14px] text-slate-700 dark:text-slate-200
                       placeholder:text-slate-300 dark:placeholder:text-slate-600
                       outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20
-                      transition-all duration-200
+                      transition-[border-color,box-shadow] duration-200
                     "
                   />
                 </div>

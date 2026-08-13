@@ -36,7 +36,7 @@ function CustomSelect({ id, value, onChange, options }: CustomSelectProps) {
         type="button"
         id={id}
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full flex items-center justify-between border ${isOpen ? 'border-brand-500 ring-2 ring-brand-500/20' : 'border-[#E5E7EB] dark:border-dark-border'} rounded-lg pl-3 pr-2 py-2 text-sm outline-none transition-all bg-white dark:bg-dark-elevated cursor-pointer`}
+        className={`w-full flex items-center justify-between border ${isOpen ? 'border-brand-500 ring-2 ring-brand-500/20' : 'border-[#E5E7EB] dark:border-dark-border'} rounded-lg pl-3 pr-2 py-2 text-sm outline-none transition-[border-color,box-shadow] bg-white dark:bg-dark-elevated cursor-pointer`}
       >
         <span className="font-semibold text-[#1F2937] dark:text-slate-300 truncate pr-2">
           {value || "Seleccionar..."}
@@ -286,24 +286,17 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
                   </div>
                 </div>
               ) : (
-                <div
-                  role="button"
-                  tabIndex={0}
+                <button
+                  type="button"
                   aria-label="Subir imagen del producto"
                   title="Subir imagen del producto"
                   onClick={() => fileInputRef.current?.click()}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      fileInputRef.current?.click();
-                    }
-                  }}
-                  className="w-full aspect-square rounded-xl border-2 border-dashed border-[#E5E7EB] dark:border-dark-border bg-[#F6F7F8] dark:bg-dark-elevated flex flex-col items-center justify-center text-[#6B7280] dark:text-slate-500 hover:border-brand-500 hover:bg-brand-50 dark:hover:bg-brand-900/20 hover:text-brand-600 dark:hover:text-brand-400 transition-all cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/50"
+                  className="w-full aspect-square rounded-xl border-2 border-dashed border-[#E5E7EB] dark:border-dark-border bg-[#F6F7F8] dark:bg-dark-elevated flex flex-col items-center justify-center text-[#6B7280] dark:text-slate-500 hover:border-brand-500 hover:bg-brand-50 dark:hover:bg-brand-900/20 hover:text-brand-600 dark:hover:text-brand-400 transition-[border-color,background-color,color,box-shadow] cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/50"
                 >
                   <ImageIcon className="w-10 h-10 mb-2 group-hover:scale-110 transition-transform" />
                   <span className="text-xs font-semibold text-center px-2">Subir imagen</span>
                   <span className="text-[10px] text-slate-400 mt-1">PNG, JPG (máx 2MB)</span>
-                </div>
+                </button>
               )}
             </div>
 
@@ -320,7 +313,7 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
                     type="text"
                     {...register("barcode")}
                     placeholder="Escanea o escribe"
-                    className="flex-1 border border-[#E5E7EB] dark:border-dark-border rounded-lg px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all font-medium text-[#1F2937] dark:text-slate-200 bg-white dark:bg-dark-elevated"
+                    className="flex-1 border border-[#E5E7EB] dark:border-dark-border rounded-lg px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-[border-color,box-shadow] font-medium text-[#1F2937] dark:text-slate-200 bg-white dark:bg-dark-elevated"
                   />
                   <button
                     type="button"
@@ -396,7 +389,7 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
                   {...register("name")}
                   rows={2}
                   placeholder="Escribe el nombre del producto"
-                  className="w-full border border-[#E5E7EB] dark:border-dark-border rounded-lg px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all resize-none font-medium text-[#1F2937] dark:text-slate-200 bg-white dark:bg-dark-elevated"
+                  className="w-full border border-[#E5E7EB] dark:border-dark-border rounded-lg px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-[border-color,box-shadow] resize-none font-medium text-[#1F2937] dark:text-slate-200 bg-white dark:bg-dark-elevated"
                 ></textarea>
                 {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
               </div>
@@ -426,7 +419,7 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
                     {...register("costPrice")}
                     onFocus={() => setLastEdited("costPrice")}
                     placeholder="0"
-                    className="w-full border border-[#E5E7EB] dark:border-dark-border rounded-lg pl-7 pr-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all font-semibold text-[#1F2937] dark:text-slate-100 bg-white dark:bg-dark-card"
+                    className="w-full border border-[#E5E7EB] dark:border-dark-border rounded-lg pl-7 pr-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-[border-color,box-shadow] font-semibold text-[#1F2937] dark:text-slate-100 bg-white dark:bg-dark-card"
                   />
                 </div>
                 {errors.costPrice && <p className="text-xs text-red-500 mt-1">{errors.costPrice.message}</p>}
@@ -495,7 +488,7 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
                     {...register("salePrice")}
                     onFocus={() => setLastEdited("salePrice")}
                     placeholder="0"
-                    className="w-full border border-[#E5E7EB] dark:border-dark-border rounded-lg pl-7 pr-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all font-semibold text-[#1F2937] dark:text-slate-100 bg-white dark:bg-dark-card"
+                    className="w-full border border-[#E5E7EB] dark:border-dark-border rounded-lg pl-7 pr-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-[border-color,box-shadow] font-semibold text-[#1F2937] dark:text-slate-100 bg-white dark:bg-dark-card"
                   />
                 </div>
                 {errors.salePrice && <p className="text-xs text-red-500 mt-1">{errors.salePrice.message}</p>}
@@ -516,7 +509,7 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
                         e.target.value = val;
                       }
                     })}
-                    className="w-full h-[36px] border border-[#E5E7EB] dark:border-dark-border rounded-lg px-2 text-[14px] outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all font-semibold text-[#1F2937] dark:text-white bg-white dark:bg-dark-elevated text-center"
+                    className="w-full h-[36px] border border-[#E5E7EB] dark:border-dark-border rounded-lg px-2 text-[14px] outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-[border-color,box-shadow] font-semibold text-[#1F2937] dark:text-white bg-white dark:bg-dark-elevated text-center"
                   />
                   {errors.stock && <p className="text-xs text-red-500 mt-1">{errors.stock.message}</p>}
                 </div>
@@ -533,7 +526,7 @@ export default function ModalRegistroProducto({ isOpen, onClose, productoAEditar
                         e.target.value = val;
                       }
                     })}
-                    className="w-full h-[36px] border border-[#E5E7EB] dark:border-dark-border rounded-lg px-2 text-[14px] outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all font-semibold text-[#1F2937] dark:text-white bg-white dark:bg-dark-elevated text-center"
+                    className="w-full h-[36px] border border-[#E5E7EB] dark:border-dark-border rounded-lg px-2 text-[14px] outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-[border-color,box-shadow] font-semibold text-[#1F2937] dark:text-white bg-white dark:bg-dark-elevated text-center"
                     title="Cantidad mínima para alerta de stock bajo"
                   />
                   {errors.minStock && <p className="text-xs text-red-500 mt-1">{errors.minStock.message}</p>}

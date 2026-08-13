@@ -1,17 +1,12 @@
 import type { Product } from '@/schemas/product.schema';
 import { MOCK_STORE_ID } from '@/config/mock.config';
 
-// Importa todas las imágenes de productos como URLs resueltas por Vite
-const imageModules: Record<string, string> = import.meta.glob(
-  '@/assets/productsImage/*.{jpg,jpeg,png,webp,avif,gif}',
-  { eager: true, import: 'default', query: '?url' },
-) as Record<string, string>;
-const imageUrls: string[] = Object.values(imageModules);
+import { genericImages } from '@/assets/productsImage';
 
 /** Asigna una imagen rotativa del pool de assets al producto por índice */
 function getImageForIndex(index: number): string | null {
-  if (imageUrls.length === 0) return null;
-  return imageUrls[index % imageUrls.length];
+  // Asignación cíclica de placeholders — reemplazar cuando haya fotos reales por producto
+  return genericImages[index % genericImages.length];
 }
 
 /**

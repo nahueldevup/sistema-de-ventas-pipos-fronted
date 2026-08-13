@@ -447,7 +447,7 @@ export default function ModalActualizarPrecios({
 
               <Button
                 onClick={ejecutarActualizacion}
-                className="px-6 py-2.5 h-auto bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-semibold cursor-pointer transition-all active:scale-95 flex items-center justify-center gap-2"
+                className="px-6 py-2.5 h-auto bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-semibold cursor-pointer transition-[background-color,transform] active:scale-95 flex items-center justify-center gap-2"
               >
                 <Check className="w-4 h-4" />
                 CONFIRMAR CAMBIOS
@@ -482,11 +482,13 @@ export default function ModalActualizarPrecios({
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   type="text"
+                  aria-label="Buscar producto por nombre o código"
                   placeholder="Buscar por nombre o código..."
                   value={busqueda}
                   onChange={(e) => setBusqueda(e.target.value)}
-                  className="w-full border border-[#E5E7EB] dark:border-dark-border rounded-lg pl-9 pr-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all font-medium text-[#1F2937] dark:text-slate-200 bg-white dark:bg-dark-elevated"
-                  autoFocus
+                  className="w-full border border-[#E5E7EB] dark:border-dark-border rounded-lg pl-9 pr-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-[border-color,box-shadow] font-medium text-[#1F2937] dark:text-slate-200 bg-white dark:bg-dark-elevated"
+                  // eslint-disable-next-line jsx-a11y/no-autofocus
+                  autoFocus // Intencional: Input principal de búsqueda al abrir modal
                 />
               </div>
 
@@ -544,7 +546,7 @@ export default function ModalActualizarPrecios({
                     <button
                       key={prod.id}
                       onClick={() => toggleSeleccion(prod.id)}
-                      className={`w-full flex items-center p-2.5 rounded-lg border text-left transition-all group/item ${isSelected
+                      className={`w-full flex items-center p-2.5 rounded-lg border text-left transition-[border-color,background-color,box-shadow] group/item ${isSelected
                         ? "border-brand-500 bg-brand-50 dark:bg-brand-900/20 ring-1 ring-brand-500"
                         : "border-[#E5E7EB] dark:border-dark-border hover:border-gray-300 dark:hover:border-slate-600 bg-white dark:bg-dark-card"
                         }`}
@@ -617,7 +619,7 @@ export default function ModalActualizarPrecios({
                   <div className="grid grid-cols-3 gap-2">
                     <button
                       onClick={() => setModoAjuste("porcentaje")}
-                      className={`py-2 px-1 border-2 rounded-lg text-center transition-all flex flex-col items-center justify-center ${modoAjuste === "porcentaje"
+                      className={`py-2 px-1 border-2 rounded-lg text-center transition-[border-color,background-color,color,box-shadow] flex flex-col items-center justify-center ${modoAjuste === "porcentaje"
                         ? "border-[#1F2937] dark:border-slate-200 bg-[#1F2937] dark:bg-slate-200 text-white dark:text-[#1F2937] shadow-md"
                         : "border-[#D1D5DB] dark:border-slate-600 hover:border-[#9CA3AF] dark:hover:border-slate-400 text-[#6B7280] dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-dark-elevated"
                         }`}
@@ -630,7 +632,7 @@ export default function ModalActualizarPrecios({
 
                     <button
                       onClick={() => setModoAjuste("monto")}
-                      className={`py-2 px-1 border-2 rounded-lg text-center transition-all flex flex-col items-center justify-center ${modoAjuste === "monto"
+                      className={`py-2 px-1 border-2 rounded-lg text-center transition-[border-color,background-color,color,box-shadow] flex flex-col items-center justify-center ${modoAjuste === "monto"
                         ? "border-[#1F2937] dark:border-slate-200 bg-[#1F2937] dark:bg-slate-200 text-white dark:text-[#1F2937] shadow-md"
                         : "border-[#D1D5DB] dark:border-slate-600 hover:border-[#9CA3AF] dark:hover:border-slate-400 text-[#6B7280] dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-dark-elevated"
                         }`}
@@ -643,7 +645,7 @@ export default function ModalActualizarPrecios({
 
                     <button
                       onClick={() => setModoAjuste("margen")}
-                      className={`py-2 px-1 border-2 rounded-lg text-center transition-all flex flex-col items-center justify-center ${modoAjuste === "margen"
+                      className={`py-2 px-1 border-2 rounded-lg text-center transition-[border-color,background-color,color,box-shadow] flex flex-col items-center justify-center ${modoAjuste === "margen"
                         ? "border-[#1F2937] dark:border-slate-200 bg-[#1F2937] dark:bg-slate-200 text-white dark:text-[#1F2937] shadow-md"
                         : "border-[#D1D5DB] dark:border-slate-600 hover:border-[#9CA3AF] dark:hover:border-slate-400 text-[#6B7280] dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-dark-elevated"
                         }`}
@@ -665,7 +667,7 @@ export default function ModalActualizarPrecios({
                     <div className="grid grid-cols-2 gap-2">
                       <button
                         onClick={() => setEsAumento(true)}
-                        className={`py-2.5 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-all border-2 ${esAumento
+                        className={`py-2.5 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-[border-color,background-color,color,box-shadow] border-2 ${esAumento
                           ? "border-emerald-600 bg-emerald-600 text-white shadow-md"
                           : "border-[#D1D5DB] dark:border-slate-600 text-[#6B7280] dark:text-slate-400 hover:border-[#9CA3AF] hover:bg-gray-50 dark:hover:bg-dark-elevated"
                           }`}
@@ -676,7 +678,7 @@ export default function ModalActualizarPrecios({
 
                       <button
                         onClick={() => setEsAumento(false)}
-                        className={`py-2.5 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-all border-2 ${!esAumento
+                        className={`py-2.5 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-[border-color,background-color,color,box-shadow] border-2 ${!esAumento
                           ? "border-rose-600 bg-rose-600 text-white shadow-md"
                           : "border-[#D1D5DB] dark:border-slate-600 text-[#6B7280] dark:text-slate-400 hover:border-[#9CA3AF] hover:bg-gray-50 dark:hover:bg-dark-elevated"
                           }`}
@@ -697,7 +699,7 @@ export default function ModalActualizarPrecios({
                     <div className="grid grid-cols-2 gap-2">
                       <button
                         onClick={() => setAplicarSobre("precio")}
-                        className={`py-2.5 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-all border-2 ${aplicarSobre === "precio"
+                        className={`py-2.5 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-[border-color,background-color,color,box-shadow] border-2 ${aplicarSobre === "precio"
                           ? "border-[#1F2937] dark:border-slate-200 bg-[#1F2937] dark:bg-slate-200 text-white dark:text-[#1F2937] shadow-md"
                           : "border-[#D1D5DB] dark:border-slate-600 text-[#6B7280] dark:text-slate-400 hover:border-[#9CA3AF] hover:bg-gray-50 dark:hover:bg-dark-elevated"
                           }`}
@@ -708,7 +710,7 @@ export default function ModalActualizarPrecios({
 
                       <button
                         onClick={() => setAplicarSobre("costo")}
-                        className={`py-2.5 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-all border-2 ${aplicarSobre === "costo"
+                        className={`py-2.5 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-[border-color,background-color,color,box-shadow] border-2 ${aplicarSobre === "costo"
                           ? "border-[#1F2937] dark:border-slate-200 bg-[#1F2937] dark:bg-slate-200 text-white dark:text-[#1F2937] shadow-md"
                           : "border-[#D1D5DB] dark:border-slate-600 text-[#6B7280] dark:text-slate-400 hover:border-[#9CA3AF] hover:bg-gray-50 dark:hover:bg-dark-elevated"
                           }`}
@@ -745,7 +747,7 @@ export default function ModalActualizarPrecios({
                       value={valorAjuste}
                       onChange={(e) => setValorAjuste(e.target.value)}
                       placeholder={getPlaceholderValor()}
-                      className="w-full pl-11 pr-4 py-3 text-lg font-semibold border border-[#E5E7EB] dark:border-dark-border rounded-lg outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all bg-[#F9FAFB] dark:bg-dark-elevated text-[#1F2937] dark:text-slate-200"
+                      className="w-full pl-11 pr-4 py-3 text-lg font-semibold border border-[#E5E7EB] dark:border-dark-border rounded-lg outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-[border-color,box-shadow] bg-[#F9FAFB] dark:bg-dark-elevated text-[#1F2937] dark:text-slate-200"
                     />
                   </div>
                 </div>

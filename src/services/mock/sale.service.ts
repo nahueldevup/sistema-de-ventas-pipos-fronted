@@ -101,35 +101,39 @@ export class SaleService {
     sales.push(newSale);
     this.setStorage(sales);
 
-    // Descontar stock de cada producto
-    for (const item of newSale.items) {
-      try {
-        const product = await ProductService.getById(item.productId);
-        if (product) {
-          await ProductService.update(item.productId, {
-            stock: Math.max(0, product.stock - item.quantity),
-          });
+    // Descontar stock de cada producto (en paralelo)
+    await Promise.all(
+      newSale.items.map(async (item) => {
+        try {
+          const product = await ProductService.getById(item.productId);
+          if (product) {
+            await ProductService.update(item.productId, {
+              stock: Math.max(0, product.stock - item.quantity),
+            });
+          }
+        } catch (error) {
+          console.error(`Error al descontar stock del producto ${item.productId}:`, error);
         }
-      } catch (error) {
-        console.error(`Error al descontar stock del producto ${item.productId}:`, error);
-      }
-    }
+      })
+    );
 
-    // Registrar movimientos de caja por cada pago
-    for (const payment of newSale.payments) {
-      const movementType = PAYMENT_TO_MOVEMENT[payment.method] || 'SALE_CASH';
-      await CashRegisterService.addMovement({
-        cashRegisterId: data.cashRegisterId,
-        userId: data.userId,
-        type: movementType as 'SALE_CASH',
-        amount: payment.amount > newSale.total ? newSale.total : payment.amount,
-        paymentMethod: payment.method,
-        referenceId: newSale.id,
-        referenceType: 'sale',
-        note: null,
-        isDeleted: false,
-      });
-    }
+    // Registrar movimientos de caja por cada pago (en paralelo)
+    await Promise.all(
+      newSale.payments.map(async (payment) => {
+        const movementType = PAYMENT_TO_MOVEMENT[payment.method] || 'SALE_CASH';
+        await CashRegisterService.addMovement({
+          cashRegisterId: data.cashRegisterId,
+          userId: data.userId,
+          type: movementType as 'SALE_CASH',
+          amount: payment.amount > newSale.total ? newSale.total : payment.amount,
+          paymentMethod: payment.method,
+          referenceId: newSale.id,
+          referenceType: 'sale',
+          note: null,
+          isDeleted: false,
+        });
+      })
+    );
 
     // Si hay vuelto, registrar movimiento CHANGE (solo aplica a efectivo)
     if (newSale.change > 0) {
@@ -163,19 +167,21 @@ export class SaleService {
 
     const sale = sales[index];
 
-    // Devolver stock de cada producto
-    for (const item of sale.items) {
-      try {
-        const product = await ProductService.getById(item.productId);
-        if (product) {
-          await ProductService.update(item.productId, {
-            stock: product.stock + item.quantity,
-          });
+    // Devolver stock de cada producto (en paralelo)
+    await Promise.all(
+      sale.items.map(async (item) => {
+        try {
+          const product = await ProductService.getById(item.productId);
+          if (product) {
+            await ProductService.update(item.productId, {
+              stock: product.stock + item.quantity,
+            });
+          }
+        } catch (error) {
+          console.error(`Error al devolver stock del producto ${item.productId}:`, error);
         }
-      } catch (error) {
-        console.error(`Error al devolver stock del producto ${item.productId}:`, error);
-      }
-    }
+      })
+    );
 
     sales[index] = {
       ...sale,

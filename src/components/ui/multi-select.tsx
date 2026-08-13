@@ -85,19 +85,19 @@ export function MultiSelect({
 
   const dropdownBase =
     `absolute top-full left-0 mt-1 bg-white dark:bg-dark-card border border-slate-200 dark:border-dark-border rounded-xl shadow-xl z-[60] min-w-full py-1 max-h-64 overflow-y-auto
-     transition-all duration-150 ease-out origin-top`;
+     transition-[opacity,transform] duration-150 ease-out origin-top`;
 
   const dropdownState = abierto
     ? "opacity-100 scale-100 translate-y-0 pointer-events-auto"
     : "opacity-0 scale-95 -translate-y-1 pointer-events-none";
 
   const optionBase =
-    "w-full text-left text-sm flex items-center gap-2.5 transition-all duration-150 cursor-pointer focus:outline-none";
+    "w-full text-left text-sm flex items-center gap-2.5 transition-colors duration-150 cursor-pointer focus:outline-none";
 
   const checkboxBase =
-    "w-4 h-4 shrink-0 rounded-md border flex items-center justify-center transition-all duration-150";
+    "w-4 h-4 shrink-0 rounded-md border flex items-center justify-center transition-[background-color,border-color,color] duration-150";
 
-  const checkIconClass = "w-3 h-3 transition-all duration-150 scale-100";
+  const checkIconClass = "w-3 h-3 transition-transform duration-150 scale-100";
 
   // ─── Variante "field" ──────────────────────────────────────────────────────
   if (variant === "field") {
@@ -109,7 +109,7 @@ export function MultiSelect({
           onClick={() => setAbierto((v) => !v)}
           aria-haspopup="listbox"
           aria-expanded={abierto}
-          className={`w-full inline-flex items-center cursor-pointer transition-all duration-150 rounded-xl border text-sm outline-none focus-visible:ring-2 focus-visible:ring-brand-500/25 focus-visible:border-brand-500 ${
+          className={`w-full inline-flex items-center cursor-pointer transition-[border-color,background-color,color,box-shadow] duration-150 rounded-xl border text-sm outline-none focus-visible:ring-2 focus-visible:ring-brand-500/25 focus-visible:border-brand-500 ${
             seleccionadas.length > 0
               ? "bg-white dark:bg-dark-elevated border-brand-300 dark:border-brand-700 text-brand-700 dark:text-brand-300 shadow-sm"
               : "bg-white dark:bg-dark-elevated border-slate-200 dark:border-dark-border text-slate-600 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600"
@@ -223,7 +223,7 @@ export function MultiSelect({
         aria-haspopup="listbox"
         aria-expanded={abierto}
         className={`
-          w-full inline-flex items-center cursor-pointer transition-all duration-150 border outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20
+          w-full inline-flex items-center cursor-pointer transition-[border-color,background-color,color,box-shadow] duration-150 border outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20
           ${isSmall ? "rounded-lg text-xs font-semibold shadow-sm" : "rounded-xl text-sm font-medium"}
           ${
             pillActive
@@ -259,7 +259,7 @@ export function MultiSelect({
         )}
 
         <ChevronDown
-          className={`mr-3 w-3.5 h-3.5 shrink-0 transition-all duration-200 ${
+          className={`mr-3 w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${
             abierto ? "rotate-180 text-slate-600 dark:text-slate-300" : pillActive ? "text-slate-600 dark:text-slate-300" : "text-slate-400 dark:text-slate-500"
           }`}
         />
@@ -379,7 +379,7 @@ export function SingleSelect({
 
   const dropdownBase =
     `absolute top-full left-0 mt-1 bg-white dark:bg-dark-card border border-slate-200 dark:border-dark-border rounded-xl shadow-lg z-50 min-w-[220px] py-1 max-h-64 overflow-y-auto
-     transition-all duration-150 ease-out origin-top`;
+     transition-[opacity,transform] duration-150 ease-out origin-top`;
 
   const dropdownState = abierto
     ? "opacity-100 scale-100 translate-y-0 pointer-events-auto"
@@ -394,7 +394,7 @@ export function SingleSelect({
         aria-haspopup="listbox"
         aria-expanded={abierto}
         className={`
-          w-full inline-flex items-center cursor-pointer transition-all duration-150 border outline-none focus-visible:ring-2 focus-visible:ring-brand-500/25 focus-visible:border-brand-500
+          w-full inline-flex items-center cursor-pointer transition-[border-color,background-color,color,box-shadow] duration-150 border outline-none focus-visible:ring-2 focus-visible:ring-brand-500/25 focus-visible:border-brand-500
           ${isSmall ? "rounded-lg text-xs font-semibold shadow-sm" : "rounded-xl text-sm font-medium"}
           ${
             tieneSeleccion
@@ -418,14 +418,14 @@ export function SingleSelect({
         <button
           type="button"
           onClick={() => handleSelect("all")}
-          className={`w-full text-left px-3 py-2.5 text-sm flex items-center gap-2.5 transition-all duration-150 cursor-pointer focus:outline-none ${
+          className={`w-full text-left px-3 py-2.5 text-sm flex items-center gap-2.5 transition-colors duration-150 cursor-pointer focus:outline-none ${
             !tieneSeleccion
               ? "bg-brand-50/70 dark:bg-brand-900/20 text-brand-700 dark:text-brand-300 font-semibold"
               : "text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/80"
           }`}
         >
           <span
-            className={`w-4 h-4 shrink-0 flex items-center justify-center rounded-full border transition-all duration-150 ${
+            className={`w-4 h-4 shrink-0 flex items-center justify-center rounded-full border transition-[background-color,border-color,color] duration-150 ${
               !tieneSeleccion
                 ? "bg-brand-600 border-brand-600 text-white shadow-sm"
                 : "border-slate-300 dark:border-slate-600 bg-white dark:bg-transparent"
@@ -444,14 +444,14 @@ export function SingleSelect({
               key={opcion}
               type="button"
               onClick={() => handleSelect(opcion)}
-              className={`w-full text-left px-3 py-2.5 text-sm flex items-center gap-2.5 transition-all duration-150 cursor-pointer focus:outline-none ${
+              className={`w-full text-left px-3 py-2.5 text-sm flex items-center gap-2.5 transition-colors duration-150 cursor-pointer focus:outline-none ${
                 sel
                   ? "bg-brand-50/70 dark:bg-brand-900/20 text-brand-700 dark:text-brand-300 font-semibold"
                   : "text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/80"
               }`}
             >
               <span
-                className={`w-4 h-4 shrink-0 flex items-center justify-center rounded-full border transition-all duration-150 ${
+                className={`w-4 h-4 shrink-0 flex items-center justify-center rounded-full border transition-[background-color,border-color,color] duration-150 ${
                   sel
                     ? "bg-brand-600 border-brand-600 text-white shadow-sm"
                     : "border-slate-300 dark:border-slate-600 bg-white dark:bg-transparent"

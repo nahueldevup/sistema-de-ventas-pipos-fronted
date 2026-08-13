@@ -272,11 +272,15 @@ export const BarraHerramientasVentas: React.FC<BarraHerramientasVentasProps> = (
 
   // Auto-enfocar el input de consulta de precio al abrirse
   useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
     if (isConsultarPrecioOpen) {
-      setTimeout(() => {
+      timeoutId = setTimeout(() => {
         consultaPrecioRef.current?.focus();
       }, 100);
     }
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, [isConsultarPrecioOpen]);
 
   // Filtrar la lista de categorías en el dropdown según el input de búsqueda interno
@@ -322,6 +326,7 @@ export const BarraHerramientasVentas: React.FC<BarraHerramientasVentasProps> = (
           <Input
             ref={buscadorRef}
             type="text"
+            aria-label="Buscar producto para agregar al carrito"
             placeholder="Buscar producto... (Presione 'F')"
             value={busqueda}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => onBusquedaChange(e.target.value)}
@@ -353,6 +358,7 @@ export const BarraHerramientasVentas: React.FC<BarraHerramientasVentasProps> = (
             <div className="flex flex-col gap-2">
               <Input
                 type="text"
+                aria-label="Buscar categoría"
                 placeholder="Buscar categoría..."
                 value={busquedaCategoria}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBusquedaCategoria(e.target.value)}
@@ -367,11 +373,12 @@ export const BarraHerramientasVentas: React.FC<BarraHerramientasVentasProps> = (
                   categoriasFiltradas.map((cat) => {
                     const isSelected = categoriasSeleccionadas.includes(cat.id);
                     return (
-                      <div
+                      <button
+                        type="button"
                         key={cat.id}
                         onClick={() => onToggleCategoria(cat.id)}
                         className={cn(
-                          "flex items-center gap-2.5 w-full text-sm px-2 py-1.5 rounded-md cursor-pointer transition-colors duration-150 hover:bg-slate-100 dark:hover:bg-slate-800",
+                          "flex items-center gap-2.5 w-full text-sm px-2 py-1.5 rounded-md cursor-pointer transition-colors duration-150 hover:bg-slate-100 dark:hover:bg-slate-800 text-left outline-none focus-visible:ring-2 focus-visible:ring-brand-500",
                           isSelected && "bg-slate-100/60 dark:bg-slate-800/60 font-medium"
                         )}
                       >
@@ -381,7 +388,7 @@ export const BarraHerramientasVentas: React.FC<BarraHerramientasVentasProps> = (
                           className="pointer-events-none"
                         />
                         <span>{cat.nombre}</span>
-                      </div>
+                      </button>
                     );
                   })
                 )}
@@ -623,6 +630,7 @@ export const BarraHerramientasVentas: React.FC<BarraHerramientasVentasProps> = (
                 <Input
                   ref={consultaPrecioRef}
                   type="text"
+                  aria-label="Escanee código o escriba nombre para consultar precio"
                   placeholder="Escanee código o escriba nombre..."
                   value={codigoConsulta}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {

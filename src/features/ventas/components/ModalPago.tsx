@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
+import { useReducer, useCallback, useEffect, useRef, useMemo } from 'react';
 import { X, Split } from 'lucide-react';
 import iconEfectivo from '@/assets/icons/payment/efectivo.svg';
 import iconTarjetaCredito from '@/assets/icons/payment/tarjeta-credito.svg';
@@ -40,6 +40,88 @@ const METODOS_PAGO = [
 
 type MetodoId = (typeof METODOS_PAGO)[number]['id'];
 
+// ── Estado y Reducer ────────────────────────────────────────────────
+type PagoState = {
+  esMixto: boolean;
+  metodoSimple: MetodoId;
+  montoSimple: string;
+  montosMixtos: Record<string, string>;
+  error: string | null;
+};
+
+type PagoAction = 
+  | { type: 'TOGGLE_MIXTO'; total: number }
+  | { type: 'SET_METODO_SIMPLE'; payload: MetodoId }
+  | { type: 'SET_MONTO_SIMPLE'; payload: string }
+  | { type: 'SET_MONTO_MIXTO'; methodId: string; valor: string; total: number; metodos: typeof METODOS_PAGO }
+  | { type: 'SET_ERROR'; payload: string | null }
+  | { type: 'RESET'; total: number };
+
+function pagoReducer(state: PagoState, action: PagoAction): PagoState {
+  switch (action.type) {
+    case 'TOGGLE_MIXTO': {
+      const nuevoEsMixto = !state.esMixto;
+      if (nuevoEsMixto) {
+        return {
+          ...state,
+          esMixto: true,
+          error: null,
+          montosMixtos: { [state.metodoSimple]: action.total.toFixed(2) }
+        };
+      }
+      return {
+        ...state,
+        esMixto: false,
+        error: null,
+        montoSimple: action.total.toFixed(2),
+        montosMixtos: {}
+      };
+    }
+    case 'SET_METODO_SIMPLE':
+      return { ...state, metodoSimple: action.payload, error: null };
+    case 'SET_MONTO_SIMPLE':
+      return { ...state, montoSimple: action.payload, error: null };
+    case 'SET_MONTO_MIXTO': {
+      const sanitized = action.valor.replace(/[^0-9.]/g, '');
+      const next = { ...state.montosMixtos, [action.methodId]: sanitized };
+      let sumaOtros = 0;
+      action.metodos.forEach((m) => {
+        if (m.id !== action.methodId) {
+          const parsed = parseFloat(next[m.id] || '');
+          sumaOtros += isNaN(parsed) || parsed <= 0 ? 0 : parsed;
+        }
+      });
+      const ingresado = parseFloat(sanitized);
+      const ingresadoFinal = isNaN(ingresado) || ingresado <= 0 ? 0 : ingresado;
+
+      const metodosRestantes = action.metodos.filter((m) => m.id !== action.methodId);
+      const metodoVacio = metodosRestantes.find(
+        (m) => !next[m.id] || (parseFloat(next[m.id]) || 0) === 0,
+      );
+
+      if (metodoVacio && ingresadoFinal > 0 && action.total > 0) {
+        const necesario = Math.max(0, action.total - sumaOtros - ingresadoFinal);
+        if (necesario > 0) {
+          next[metodoVacio.id] = necesario.toFixed(2);
+        }
+      }
+      return { ...state, montosMixtos: next, error: null };
+    }
+    case 'SET_ERROR':
+      return { ...state, error: action.payload };
+    case 'RESET':
+      return {
+        esMixto: false,
+        metodoSimple: 'CASH',
+        montoSimple: action.total.toFixed(2),
+        montosMixtos: {},
+        error: null
+      };
+    default:
+      return state;
+  }
+}
+
 // ── Componente ──────────────────────────────────────────────────────
 export default function ModalPago({
   open,
@@ -50,17 +132,15 @@ export default function ModalPago({
   onConfirmar,
   confirmando,
 }: ModalPagoProps) {
-  // Modo: simple (un solo método) o mixto (varios métodos)
-  const [esMixto, setEsMixto] = useState(false);
+  const [state, dispatch] = useReducer(pagoReducer, {
+    esMixto: false,
+    metodoSimple: 'CASH',
+    montoSimple: '',
+    montosMixtos: {},
+    error: null,
+  });
 
-  // Modo simple: método seleccionado + monto ingresado
-  const [metodoSimple, setMetodoSimple] = useState<MetodoId>('CASH');
-  const [montoSimple, setMontoSimple] = useState('');
-
-  // Modo mixto: montos por método
-  const [montosMixtos, setMontosMixtos] = useState<Record<string, string>>({});
-
-  const [error, setError] = useState<string | null>(null);
+  const { esMixto, metodoSimple, montoSimple, montosMixtos, error } = state;
 
   const containerRef = useRef<HTMLDivElement>(null);
   const inputSimpleRef = useRef<HTMLInputElement>(null);
@@ -98,14 +178,14 @@ export default function ModalPago({
 
   // ── Reset al abrir ──────────────────────────────────────────────
   useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
     if (open) {
-      setEsMixto(false);
-      setMetodoSimple('CASH');
-      setMontoSimple(total.toFixed(2));
-      setMontosMixtos({});
-      setError(null);
-      setTimeout(() => inputSimpleRef.current?.focus(), 100);
+      dispatch({ type: 'RESET', total });
+      timeoutId = setTimeout(() => inputSimpleRef.current?.focus(), 100);
     }
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, [open, total]);
 
   // ── Cerrar con click fuera ──────────────────────────────────────
@@ -132,58 +212,18 @@ export default function ModalPago({
 
   // ── Toggle modo mixto ───────────────────────────────────────────
   const handleToggleMixto = useCallback(() => {
-    setError(null);
-    setEsMixto((prev) => {
-      if (!prev) {
-        // Al activar mixto: pre-llenar el método simple actual con el total
-        setMontosMixtos({ [metodoSimple]: total.toFixed(2) });
-        setTimeout(() => primerInputMixtoRef.current?.focus(), 100);
-      } else {
-        // Al volver a simple: reset
-        setMontoSimple(total.toFixed(2));
-        setMontosMixtos({});
-        setTimeout(() => inputSimpleRef.current?.focus(), 100);
-      }
-      return !prev;
-    });
-  }, [metodoSimple, total]);
+    dispatch({ type: 'TOGGLE_MIXTO', total });
+    
+    if (!esMixto) {
+      setTimeout(() => primerInputMixtoRef.current?.focus(), 100);
+    } else {
+      setTimeout(() => inputSimpleRef.current?.focus(), 100);
+    }
+  }, [esMixto, total]);
 
-  // ── Cambio de monto en modo mixto (con auto-cálculo) ────────────
   const handleMontoMixtoChange = useCallback(
     (methodId: string, valor: string) => {
-      setError(null);
-      const sanitized = valor.replace(/[^0-9.]/g, '');
-
-      setMontosMixtos((prev) => {
-        const next = { ...prev, [methodId]: sanitized };
-
-        // Sumar todo excepto el método actual que se está editando
-        let sumaOtros = 0;
-        METODOS_PAGO.forEach((m) => {
-          if (m.id !== methodId) {
-            const parsed = parseFloat(next[m.id] || '');
-            sumaOtros += isNaN(parsed) || parsed <= 0 ? 0 : parsed;
-          }
-        });
-
-        const ingresado = parseFloat(sanitized);
-        const ingresadoFinal = isNaN(ingresado) || ingresado <= 0 ? 0 : ingresado;
-
-        // Auto-rellenar: buscar el primer método vacío que no sea el actual
-        const metodosRestantes = METODOS_PAGO.filter((m) => m.id !== methodId);
-        const metodoVacio = metodosRestantes.find(
-          (m) => !next[m.id] || (parseFloat(next[m.id]) || 0) === 0,
-        );
-
-        if (metodoVacio && ingresadoFinal > 0 && total > 0) {
-          const necesario = Math.max(0, total - sumaOtros - ingresadoFinal);
-          if (necesario > 0) {
-            next[metodoVacio.id] = necesario.toFixed(2);
-          }
-        }
-
-        return next;
-      });
+      dispatch({ type: 'SET_MONTO_MIXTO', methodId, valor, total, metodos: METODOS_PAGO });
     },
     [total],
   );
@@ -211,7 +251,7 @@ export default function ModalPago({
     }
 
     if (pagos.length === 0) {
-      setError('Ingresá al menos un monto para continuar');
+      dispatch({ type: 'SET_ERROR', payload: 'Ingresá al menos un monto para continuar' });
       return;
     }
 
@@ -225,8 +265,17 @@ export default function ModalPago({
     <div className="fixed inset-0 z-[60] flex items-center justify-center">
       {/* Overlay */}
       <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200"
+        role="button"
+        tabIndex={0}
+        aria-label="Cerrar modal"
+        className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200 outline-none"
         onClick={() => onOpenChange(false)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
+            e.preventDefault();
+            onOpenChange(false);
+          }
+        }}
       />
 
       {/* Panel */}
@@ -289,13 +338,12 @@ export default function ModalPago({
                     key={mp.id}
                     type="button"
                     onClick={() => {
-                      setMetodoSimple(mp.id);
-                      setError(null);
+                      dispatch({ type: 'SET_METODO_SIMPLE', payload: mp.id });
                       setTimeout(() => inputSimpleRef.current?.focus(), 50);
                     }}
                     className={cn(
                       'flex flex-col items-center justify-between px-2 pt-2 pb-2.5 rounded-xl h-[140px]',
-                      'text-[13px] font-medium transition-all duration-150 cursor-pointer border',
+                      'text-[13px] font-medium transition-[border-color,background-color,color,box-shadow] duration-150 cursor-pointer border',
                       isActive
                         ? 'border-brand-500 ring-2 ring-brand-500 text-brand-700 bg-brand-50/50 dark:bg-brand-900/20'
                         : 'border-border text-slate-500 dark:text-slate-300 bg-slate-50 dark:bg-zinc-800/50 hover:bg-slate-100 dark:hover:bg-zinc-700/50',
@@ -325,10 +373,10 @@ export default function ModalPago({
               <input
                 ref={inputSimpleRef}
                 type="number"
+                aria-label="Monto a pagar"
                 value={montoSimple}
                 onChange={(e) => {
-                  setError(null);
-                  setMontoSimple(e.target.value.replace(/[^0-9.]/g, ''));
+                  dispatch({ type: 'SET_MONTO_SIMPLE', payload: e.target.value.replace(/[^0-9.]/g, '') });
                 }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') handleConfirmar();
@@ -342,7 +390,7 @@ export default function ModalPago({
                   text-[18px] font-bold text-slate-800 dark:text-white
                   placeholder:text-slate-300 dark:placeholder:text-slate-600
                   outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20
-                  transition-all duration-200
+                  transition-[border-color,box-shadow] duration-200
                   [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
                 "
               />
@@ -387,6 +435,7 @@ export default function ModalPago({
                   <input
                     ref={idx === 0 ? primerInputMixtoRef : undefined}
                     type="number"
+                    aria-label={`Monto pagado con ${mp.label}`}
                     value={montosMixtos[mp.id] || ''}
                     onChange={(e) => handleMontoMixtoChange(mp.id, e.target.value)}
                     onKeyDown={(e) => {
@@ -401,7 +450,7 @@ export default function ModalPago({
                       text-[14px] font-bold text-slate-800 dark:text-white
                       placeholder:text-slate-300 dark:placeholder:text-slate-600
                       outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20
-                      transition-all duration-200
+                      transition-[border-color,box-shadow] duration-200
                       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
                     "
                   />
@@ -468,7 +517,7 @@ export default function ModalPago({
             onClick={handleConfirmar}
             disabled={!puedeConfirmar}
             className={cn(
-              'flex-1 h-9 rounded-lg text-[13px] font-bold transition-all duration-200 cursor-pointer flex items-center justify-center gap-2',
+              'flex-1 h-9 rounded-lg text-[13px] font-bold transition-[background-color,transform,opacity] duration-200 cursor-pointer flex items-center justify-center gap-2',
               puedeConfirmar
                 ? 'bg-brand-600 text-white hover:bg-brand-700 active:scale-[0.98]'
                 : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed',

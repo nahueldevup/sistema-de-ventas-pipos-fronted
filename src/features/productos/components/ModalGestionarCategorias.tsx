@@ -150,7 +150,7 @@ export default function ModalGestionCategorias({
                   </button>
                   <button
                     onClick={ejecutarConfirmacion}
-                    className={`flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 ${confirmacion.tipo === "borrar"
+                    className={`flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-[background-color,transform] hover:-translate-y-0.5 active:translate-y-0 ${confirmacion.tipo === "borrar"
                       ? "bg-rose-600 hover:bg-rose-700"
                       : "bg-brand-600 hover:bg-brand-700"
                       }`}
@@ -166,41 +166,43 @@ export default function ModalGestionCategorias({
           <div className="p-5 flex flex-col md:flex-row gap-4 border-b border-[#E5E7EB] dark:border-dark-border bg-white dark:bg-dark-card z-10">
             {/* Buscador */}
             <div className="flex-1">
-              <label className="block text-xs font-semibold text-[#6B7280] dark:text-slate-400 mb-1.5 uppercase tracking-wide">
+              <label htmlFor="busquedaCategoria" className="block text-xs font-semibold text-[#6B7280] dark:text-slate-400 mb-1.5 uppercase tracking-wide">
                 Buscar categoría
               </label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
+                  id="busquedaCategoria"
                   type="text"
                   placeholder="Filtrar por nombre..."
                   value={busqueda}
                   onChange={(e) => setBusqueda(e.target.value)}
-                  className="w-full border border-[#E5E7EB] dark:border-dark-border rounded-lg pl-9 pr-3 py-2.5 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all font-medium text-[#1F2937] dark:text-slate-200 bg-white dark:bg-dark-elevated"
+                  className="w-full border border-[#E5E7EB] dark:border-dark-border rounded-lg pl-9 pr-3 py-2.5 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-[border-color,box-shadow] font-medium text-[#1F2937] dark:text-slate-200 bg-white dark:bg-dark-elevated"
                 />
               </div>
             </div>
 
             {/* Nueva Categoría */}
             <div className="flex-1">
-              <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wide">
+              <label htmlFor="nuevaCategoriaInput" className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wide">
                 Añadir categoría
               </label>
               <div className="flex gap-2">
                 <div className="relative flex-1">
                   <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                   <input
+                    id="nuevaCategoriaInput"
                     type="text"
                     placeholder="Nombre nuevo..."
                     value={nuevaCategoria}
                     onChange={(e) => setNuevaCategoria(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleAgregar()}
-                    className="w-full border border-[#E5E7EB] dark:border-dark-border rounded-lg pl-9 pr-3 py-2.5 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all font-medium text-[#1F2937] dark:text-slate-200 bg-white dark:bg-dark-elevated"
+                    className="w-full border border-[#E5E7EB] dark:border-dark-border rounded-lg pl-9 pr-3 py-2.5 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-[border-color,box-shadow] font-medium text-[#1F2937] dark:text-slate-200 bg-white dark:bg-dark-elevated"
                   />
                 </div>
                 <button
                   onClick={handleAgregar}
-                  className="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-semibold transition-all flex items-center gap-1.5 hover:-translate-y-0.5 active:translate-y-0"
+                  className="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-semibold transition-[background-color,transform] flex items-center gap-1.5 hover:-translate-y-0.5 active:translate-y-0"
                 >
                   <Plus className="w-4 h-4" />
                   <span className="hidden sm:inline">Crear</span>
@@ -230,14 +232,16 @@ export default function ModalGestionCategorias({
                         <div className="flex items-center gap-2 flex-1">
                           <input
                             type="text"
-                            autoFocus
+                            aria-label="Editar nombre de categoría"
+                            // eslint-disable-next-line jsx-a11y/no-autofocus
+                            autoFocus // Intencional: Para editar el nombre rápidamente al abrir el modo edición
                             value={nombreTemporal}
                             onChange={(e) => setNombreTemporal(e.target.value)}
                             onKeyDown={(e) => {
                               if (e.key === "Enter") solicitarEdicion(cat.nombre);
                               if (e.key === "Escape") setEditandoNombre(null);
                             }}
-                            className="flex-1 border border-[#E5E7EB] dark:border-dark-border rounded-lg px-3 py-1.5 text-sm font-bold text-[#1F2937] dark:text-slate-200 bg-white dark:bg-dark-elevated outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
+                            className="flex-1 border border-[#E5E7EB] dark:border-dark-border rounded-lg px-3 py-1.5 text-sm font-bold text-[#1F2937] dark:text-slate-200 bg-white dark:bg-dark-elevated outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-[border-color,box-shadow]"
                           />
                           <button
                             onClick={() => solicitarEdicion(cat.nombre)}
@@ -260,7 +264,7 @@ export default function ModalGestionCategorias({
                             </p>
                             <button
                               onClick={() => iniciarEdicion(cat.nombre)}
-                              className="opacity-0 group-hover:opacity-100 p-1.5 text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50 dark:hover:bg-brand-900/20 rounded-lg transition-all"
+                              className="opacity-0 group-hover:opacity-100 p-1.5 text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50 dark:hover:bg-brand-900/20 rounded-lg transition-[opacity,color,background-color]"
                               title="Editar nombre"
                             >
                               <Edit2 className="w-3.5 h-3.5" />
@@ -278,7 +282,7 @@ export default function ModalGestionCategorias({
                     <div className="flex items-center gap-2 pl-3 border-l border-[#E5E7EB] dark:border-dark-border ml-2 shrink-0">
                       <button
                         onClick={() => onVerCategoria(cat.nombre)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-600 hover:bg-brand-700 rounded-lg text-xs font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-600 hover:bg-brand-700 rounded-lg text-xs font-semibold text-white transition-[background-color,transform] hover:-translate-y-0.5 active:translate-y-0"
                       >
                         <Eye className="w-3.5 h-3.5" />
                         <span className="hidden sm:inline">Ver</span>
@@ -287,7 +291,7 @@ export default function ModalGestionCategorias({
                       {!confirmacion || confirmacion.nombre !== cat.nombre ? (
                         <button
                           onClick={() => solicitarBorrado(cat.nombre)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#F3F4F6] hover:bg-rose-50 dark:bg-slate-800 dark:hover:bg-rose-900/20 text-[#6B7280] hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 rounded-lg text-xs font-semibold transition-all border border-transparent hover:border-rose-200 dark:hover:border-rose-800"
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#F3F4F6] hover:bg-rose-50 dark:bg-slate-800 dark:hover:bg-rose-900/20 text-[#6B7280] hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 rounded-lg text-xs font-semibold transition-[background-color,color,border-color] border border-transparent hover:border-rose-200 dark:hover:border-rose-800"
                           title="Eliminar categoría"
                         >
                           <Trash2 className="w-3.5 h-3.5" />

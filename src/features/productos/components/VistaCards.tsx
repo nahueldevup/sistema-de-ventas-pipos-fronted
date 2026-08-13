@@ -80,6 +80,8 @@ function CardProducto({ producto, onEditar, onBorrar, onImprimir, menuAbierto, o
 
   return (
     <article
+      tabIndex={0}
+      role="button"
       className="
         group relative flex flex-col
         bg-white dark:bg-dark-card
@@ -89,10 +91,16 @@ function CardProducto({ producto, onEditar, onBorrar, onImprimir, menuAbierto, o
         hover:shadow-[0_8px_24px_rgba(0,0,0,0.10)]
         dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.35)]
         hover:-translate-y-0.5
-        transition-all duration-200 ease-out
-        cursor-pointer
+        transition-[box-shadow,transform,border-color] duration-200 ease-out
+        cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:border-brand-500
       "
       onClick={() => onEditar(producto)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onEditar(producto);
+        }
+      }}
       onMouseEnter={onMouseEnter}
     >
       {/* ── Imagen ─────────────────────────────────────────── */}
@@ -104,7 +112,7 @@ function CardProducto({ producto, onEditar, onBorrar, onImprimir, menuAbierto, o
             loading="lazy"
             onLoad={() => setImgLoaded(true)}
             onError={() => setImgError(true)}
-            className={`w-full h-full object-contain p-2 group-hover:scale-105 transition-all duration-300 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
+            className={`w-full h-full object-contain p-2 group-hover:scale-105 transition-[transform,opacity] duration-300 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
@@ -268,10 +276,20 @@ function CardProducto({ producto, onEditar, onBorrar, onImprimir, menuAbierto, o
             <>
               {/* Backdrop para cerrar */}
               <div
-                className="fixed inset-0 z-40"
+                role="button"
+                tabIndex={0}
+                aria-label="Cerrar menú"
+                className="fixed inset-0 z-40 outline-none"
                 onClick={(e) => {
                   e.stopPropagation();
                   onMenuToggle(false);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onMenuToggle(false);
+                  }
                 }}
               />
               <div className="absolute bottom-full right-0 mb-2 z-50 w-48 bg-white dark:bg-dark-card border border-[#E5E7EB] dark:border-dark-border rounded-xl shadow-lg overflow-hidden py-1 animate-in fade-in slide-in-from-bottom-2 duration-150">

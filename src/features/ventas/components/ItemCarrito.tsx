@@ -66,7 +66,7 @@ export default memo(function ItemCarrito({ item, onActualizarCantidad, onQuitar,
             title={item.fiado ? 'Quitar de fiado' : 'Marcar como fiado'}
             className={cn(
               'h-8 px-2.5 flex items-center justify-center gap-1.5 rounded-lg',
-              'text-[11px] transition-all duration-150 cursor-pointer border-[1.5px]',
+              'text-[11px] transition-[background-color,border-color,color] duration-150 cursor-pointer border-[1.5px]',
               item.fiado
                 ? 'bg-blue-600 dark:bg-blue-600 border-blue-600 dark:border-blue-500 text-white font-bold shadow-xs'
                 : 'border-[#D1D5DB] bg-[#F3F4F6] dark:bg-slate-800 dark:border-slate-600 text-[#111827] dark:text-slate-100 font-semibold hover:bg-slate-200 dark:hover:bg-slate-700',
@@ -80,7 +80,7 @@ export default memo(function ItemCarrito({ item, onActualizarCantidad, onQuitar,
           <button
             type="button"
             onClick={() => onQuitar(item.productId)}
-            className="w-8 h-8 flex items-center justify-center rounded-lg border-[1.5px] border-red-200 dark:border-red-900/40 text-red-500 hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all cursor-pointer"
+            className="w-8 h-8 flex items-center justify-center rounded-lg border-[1.5px] border-red-200 dark:border-red-900/40 text-red-500 hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-[border-color,background-color] cursor-pointer"
             title="Eliminar del carrito"
           >
             <Trash2 className="w-4 h-4" />
@@ -99,15 +99,14 @@ export default memo(function ItemCarrito({ item, onActualizarCantidad, onQuitar,
             </button>
             <input
               type="number"
+              aria-label={`Cantidad de ${item.productName}`}
               value={item.quantity}
               onChange={(e) => {
-                const val = parseInt(e.target.value);
-                if (!isNaN(val) && val >= 1) {
-                  onActualizarCantidad(item.productId, val);
-                }
+                const val = parseInt(e.target.value, 10);
+                onActualizarCantidad(item.productId, isNaN(val) || val < 1 ? 1 : val);
               }}
               onClick={(e) => (e.target as HTMLInputElement).select()}
-              className="w-8 h-8 text-center text-[14px] font-bold rounded-[4px] border-[1px] border-[#9CA3AF] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#111827] dark:text-white outline-none focus:outline-none focus:ring-1 focus:ring-[#3B82F6] focus:border-[#3B82F6] transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none cursor-text"
+              className="w-8 h-8 text-center text-[14px] font-bold rounded-[4px] border-[1px] border-[#9CA3AF] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#111827] dark:text-white outline-none focus:outline-none focus:ring-1 focus:ring-[#3B82F6] focus:border-[#3B82F6] transition-[border-color,box-shadow] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none cursor-text"
               min={1}
             />
             <button

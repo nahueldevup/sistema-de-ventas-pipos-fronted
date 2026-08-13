@@ -156,7 +156,7 @@ return (
                       text-[13px] font-semibold text-slate-800 dark:text-white
                       placeholder:text-slate-500 dark:placeholder:text-slate-600
                       outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20
-                      transition-all duration-200
+                       transition-[border-color,box-shadow] duration-200
                       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
                     "
                     min={0}
@@ -212,7 +212,7 @@ return (
           title={bloqueadoPorFiado ? 'Elegí un cliente para fiar productos' : undefined}
           className={`
             w-full h-11 rounded-xl text-[15px] font-bold
-            transition-all duration-200 cursor-pointer
+             transition-[background-color,transform] duration-200 cursor-pointer
             flex items-center justify-center gap-2
             ${puedeConfirmar
               ? 'bg-[#16A34A] hover:bg-[#15803D] active:scale-[0.98] text-white shadow-sm'

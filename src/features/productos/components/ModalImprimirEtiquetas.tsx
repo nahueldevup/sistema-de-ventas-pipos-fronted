@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { X, Printer, Search, Package } from "lucide-react";
 import Fuse from "fuse.js";
+import DOMPurify from "dompurify";
 import type { PersistedProduct } from "@/schemas/product.schema";
 import { ModalAccion } from "@/components/ui/modal-wrappers";
 import EtiquetaPreview from "./EtiquetaPreview";
@@ -154,8 +155,8 @@ export default function ModalImprimirEtiquetas({
           </style>
         </head>
         <body>
-          <div class="grid">
-            ${etiquetasHTML}
+          <div class="hoja">
+            ${DOMPurify.sanitize(etiquetasHTML)}
           </div>
           <script>
             // Genero los códigos de barras con JsBarcode después de que el DOM esté listo
@@ -226,17 +227,19 @@ export default function ModalImprimirEtiquetas({
               
               {/* Buscador */}
               <div className="px-5 pt-4 pb-3">
-                <div className="flex items-center border border-[#E5E7EB] dark:border-dark-border rounded-lg bg-white dark:bg-dark-elevated focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-500/20 transition-all">
+                <div className="flex items-center border border-[#E5E7EB] dark:border-dark-border rounded-lg bg-white dark:bg-dark-elevated focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-500/20 transition-[border-color,box-shadow]">
                   <div className="pl-3 text-slate-400 dark:text-slate-500 flex items-center">
                     <Search className="w-5 h-5" />
                   </div>
                   <input
                     type="text"
+                    aria-label="Buscar producto por nombre o código"
                     placeholder="Buscá por nombre o código de barras..."
                     value={busqueda}
                     onChange={(e) => setBusqueda(e.target.value)}
                     className="flex-1 px-3 py-3 text-sm font-medium outline-none text-[#1F2937] dark:text-slate-200 placeholder-[#6B7280] dark:placeholder-slate-500 bg-transparent"
-                    autoFocus
+                    // eslint-disable-next-line jsx-a11y/no-autofocus
+                    autoFocus // Intencional: Principal campo de búsqueda
                   />
                   {busqueda && (
                     <button
@@ -279,7 +282,7 @@ export default function ModalImprimirEtiquetas({
                         <button
                           key={producto.id}
                           onClick={() => toggleSeleccion(producto.id)}
-                          className={`relative text-left cursor-pointer rounded-xl border transition-all group/item ${
+                          className={`relative text-left cursor-pointer rounded-xl border transition-[border-color,background-color,box-shadow] group/item ${
                             isSelected
                               ? "border-brand-500 bg-brand-50 dark:bg-brand-900/20 ring-1 ring-brand-500"
                               : "border-[#E5E7EB] dark:border-dark-border hover:border-gray-300 dark:hover:border-slate-500"
@@ -287,7 +290,7 @@ export default function ModalImprimirEtiquetas({
                         >
                           {/* Checkbox en esquina superior izquierda como badge */}
                           <div
-                            className={`absolute -top-2 -left-2 z-10 w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-all shadow-sm ${
+                            className={`absolute -top-2 -left-2 z-10 w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-[background-color,border-color,color] shadow-sm ${
                               isSelected
                                 ? "bg-brand-500 border-brand-500 text-white"
                                 : "bg-white dark:bg-dark-card border-gray-300 dark:border-slate-600 group-hover:border-brand-300"
@@ -352,7 +355,7 @@ export default function ModalImprimirEtiquetas({
                         {/* Click en la etiqueta = toggle (deseleccionar) */}
                         <button
                           onClick={() => quitarSeleccionado(producto.id)}
-                          className="text-left w-full cursor-pointer rounded-xl border border-brand-500 ring-1 ring-brand-500 bg-brand-50 dark:bg-brand-900/20 transition-all hover:bg-brand-50/80 dark:hover:bg-brand-900/30"
+                          className="text-left w-full cursor-pointer rounded-xl border border-brand-500 ring-1 ring-brand-500 bg-brand-50 dark:bg-brand-900/20 transition-colors hover:bg-brand-50/80 dark:hover:bg-brand-900/30"
                         >
                           <EtiquetaPreview producto={producto} />
                         </button>
@@ -362,7 +365,7 @@ export default function ModalImprimirEtiquetas({
                             e.stopPropagation();
                             quitarSeleccionado(producto.id);
                           }}
-                          className="absolute -top-2 -right-2 w-6 h-6 bg-rose-500/90 hover:bg-rose-600 text-white rounded-full flex items-center justify-center shadow-sm transition-all cursor-pointer z-10 hover:scale-110 opacity-0 group-hover:opacity-100"
+                          className="absolute -top-2 -right-2 w-6 h-6 bg-rose-500/90 hover:bg-rose-600 text-white rounded-full flex items-center justify-center shadow-sm transition-[background-color,transform,opacity] cursor-pointer z-10 hover:scale-110 opacity-0 group-hover:opacity-100"
                           aria-label="Quitar producto"
                         >
                           <X className="w-3.5 h-3.5" />
