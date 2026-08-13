@@ -93,7 +93,7 @@ export default function BarraFiltros({
 
   return (
     <div
-      className={`absolute top-[calc(100%+8px)] right-0 z-50 w-[420px] max-w-[92vw] overflow-visible rounded-2xl border border-slate-200 bg-white shadow-xl transition-all duration-150 origin-top-right dark:border-dark-border dark:bg-dark-card ${
+      className={`absolute top-[calc(100%+8px)] right-0 z-50 w-[420px] max-w-[92vw] overflow-visible rounded-2xl border border-slate-200 bg-white shadow-xl transition-[opacity,transform] duration-150 origin-top-right dark:border-dark-border dark:bg-dark-card ${
         isOpen
           ? "pointer-events-auto opacity-100 scale-100 translate-y-0"
           : "pointer-events-none opacity-0 scale-95 -translate-y-1"

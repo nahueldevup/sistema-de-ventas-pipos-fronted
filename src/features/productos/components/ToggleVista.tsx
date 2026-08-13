@@ -18,7 +18,7 @@ export default function ToggleVista({ vista, onChange }: ToggleVistaProps) {
         aria-pressed={vista === "tabla"}
         className={`
           flex items-center justify-center w-8 h-full rounded-lg
-          transition-all duration-150 cursor-pointer
+          transition-[background-color,color,box-shadow] duration-150 cursor-pointer
           ${
             vista === "tabla"
               ? "bg-brand-600 text-white shadow-sm"
@@ -37,7 +37,7 @@ export default function ToggleVista({ vista, onChange }: ToggleVistaProps) {
         aria-pressed={vista === "cards"}
         className={`
           flex items-center justify-center w-8 h-full rounded-lg
-          transition-all duration-150 cursor-pointer
+          transition-[background-color,color,box-shadow] duration-150 cursor-pointer
           ${
             vista === "cards"
               ? "bg-brand-600 text-white shadow-sm"
