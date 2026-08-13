@@ -152,6 +152,28 @@ export default function Productos() {
     }
   }, []);
 
+  const handleNuevoProducto = useCallback(() => setIsModalOpen(true), []);
+  const handleAbrirCategorias = useCallback(() => setModalActivo("categorias"), []);
+  const handleAbrirActualizarPrecios = useCallback(() => setModalActivo("actualizarPrecios"), []);
+  const handleAbrirImprimirEtiquetas = useCallback(() => {
+    setProductoAImprimirId(null);
+    setModalActivo("etiquetas");
+  }, []);
+
+  const handleCloseModalRegistro = useCallback(() => {
+    setIsModalOpen(false);
+    setProductoEditando(null);
+  }, []);
+
+  const handleCloseModalImprimir = useCallback(() => {
+    setModalActivo(null);
+    setProductoAImprimirId(null);
+  }, []);
+
+  const handleCloseModalActivo = useCallback(() => setModalActivo(null), []);
+
+  const handleCloseModalConfirmarBorrado = useCallback(() => setProductoABorrar(null), []);
+
   // ── Estado: Carga inicial ──────────────────────────────────
   if (isLoading) {
     return (
@@ -216,13 +238,10 @@ export default function Productos() {
           setMargenGananciaGlobal={setMargenGananciaGlobal}
           gananciaAutoActiva={gananciaAutoActiva}
           setGananciaAutoActiva={setGananciaAutoActiva}
-          onNuevoProducto={() => setIsModalOpen(true)}
-          onAbrirCategorias={() => setModalActivo("categorias")}
-          onAbrirActualizarPrecios={() => setModalActivo("actualizarPrecios")}
-          onAbrirImprimirEtiquetas={() => {
-            setProductoAImprimirId(null);
-            setModalActivo("etiquetas");
-          }}
+          onNuevoProducto={handleNuevoProducto}
+          onAbrirCategorias={handleAbrirCategorias}
+          onAbrirActualizarPrecios={handleAbrirActualizarPrecios}
+          onAbrirImprimirEtiquetas={handleAbrirImprimirEtiquetas}
         />
 
         {/* Toggle de vista y Filtros Rápidos */}
@@ -270,10 +289,7 @@ export default function Productos() {
       <Suspense fallback={null}>
         <ModalRegistroProducto
           isOpen={isModalOpen}
-          onClose={() => {
-            setIsModalOpen(false);
-            setProductoEditando(null);
-          }}
+          onClose={handleCloseModalRegistro}
           productoAEditar={productoEditando}
           margenGananciaGlobal={40}
         />
@@ -282,10 +298,7 @@ export default function Productos() {
       <Suspense fallback={null}>
         <ModalImprimirEtiquetas
           isOpen={modalActivo === "etiquetas"}
-          onClose={() => {
-            setModalActivo(null);
-            setProductoAImprimirId(null);
-          }}
+          onClose={handleCloseModalImprimir}
           todosLosProductos={productosConId}
           productoPreseleccionadoId={productoAImprimirId}
         />
@@ -294,7 +307,7 @@ export default function Productos() {
       <Suspense fallback={null}>
         <ModalGestionCategorias
           isOpen={modalActivo === "categorias"}
-          onClose={() => setModalActivo(null)}
+          onClose={handleCloseModalActivo}
           categorias={categoriasConConteo}
           onVerCategoria={handleVerCategoria}
           onAgregarCategoria={handleAgregarCategoria}
@@ -306,7 +319,7 @@ export default function Productos() {
       <Suspense fallback={null}>
         <ModalActualizarPrecios
           isOpen={modalActivo === "actualizarPrecios"}
-          onClose={() => setModalActivo(null)}
+          onClose={handleCloseModalActivo}
           todosLosProductos={productosConId}
           onActualizarPrecios={handleActualizarPreciosMasivos}
         />
@@ -315,7 +328,7 @@ export default function Productos() {
       <Suspense fallback={null}>
         <ModalConfirmarBorrado
           isOpen={!!productoABorrar}
-          onClose={() => setProductoABorrar(null)}
+          onClose={handleCloseModalConfirmarBorrado}
           onConfirmar={handleConfirmarBorrado}
           nombreProducto={productoABorrar?.name || ''}
           isPending={deleteProducto.isPending}
