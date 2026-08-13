@@ -223,8 +223,17 @@ export default memo(function Sidebar({
       {/* Overlay mobile */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/40 z-20 md:hidden backdrop-blur-[2px]"
+          role="button"
+          tabIndex={0}
+          aria-label="Cerrar menú lateral"
+          className="fixed inset-0 bg-black/40 z-20 md:hidden backdrop-blur-[2px] outline-none"
           onClick={onClose}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
+              e.preventDefault();
+              onClose();
+            }
+          }}
         />
       )}
 
@@ -294,7 +303,7 @@ export default memo(function Sidebar({
             className={`
               flex items-center gap-2 font-semibold shadow-sm
               ${tk.composeBg} ${tk.composeTxt}
-              transition-all duration-150 cursor-pointer active:scale-[0.97]
+              transition-[background-color,color,transform] duration-150 cursor-pointer active:scale-[0.97]
               ${isExpanded
                 ? "w-full px-4 py-2.5 rounded-2xl text-[14px] justify-start"
                 : "w-10 h-10 rounded-xl justify-center"
