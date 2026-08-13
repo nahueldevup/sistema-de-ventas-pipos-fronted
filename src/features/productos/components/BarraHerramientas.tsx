@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
+import { useState, useMemo, useCallback, useRef, useEffect, memo } from 'react';
 import BarraFiltros from './BarraFiltros';
 import type { FiltrosAvanzados, Ordenamiento } from '@/types/filtros.types';
 import {
@@ -26,7 +26,7 @@ interface BarraHerramientasProps {
   onAbrirImprimirEtiquetas: () => void;
 }
 
-export default function BarraHerramientas({
+export default memo(function BarraHerramientas({
   filtros,
   setFiltros,
   ordenamiento,
@@ -401,4 +401,4 @@ export default function BarraHerramientas({
       )}
     </div>
   );
-}
+});
