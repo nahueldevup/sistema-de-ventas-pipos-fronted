@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useCallback } from 'react';
+import { useState, useMemo, useRef, useCallback, memo } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -24,7 +24,7 @@ const columnHelper = createColumnHelper<Product>();
 
 const ROW_HEIGHT = 76;
 
-export default function TablaProductos({ productos, onEditar, onBorrar, onImprimir }: TablaProductosProps) {
+export default memo(function TablaProductos({ productos, onEditar, onBorrar, onImprimir }: TablaProductosProps) {
   const [menuAbiertoId, setMenuAbiertoId] = useState<string | null>(null);
 
   const handleCerrarMenu = useCallback(() => setMenuAbiertoId(null), []);
@@ -341,4 +341,4 @@ export default function TablaProductos({ productos, onEditar, onBorrar, onImprim
       )}
     </div>
   );
-}
+});
