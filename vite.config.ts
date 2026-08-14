@@ -27,6 +27,9 @@ export default defineConfig({
             if (id.includes('lucide-react')) return 'icons';
             if (id.includes('fuse.js')) return 'fuse';
             if (id.includes('@radix-ui')) return 'radix-vendor';
+            if (id.includes('@tanstack')) return 'tanstack-vendor';
+            if (id.includes('react-hook-form') || id.includes('@hookform')) return 'hookform-vendor';
+            if (id.includes('zod')) return 'zod-vendor';
           }
         }
       }
