@@ -4,35 +4,46 @@ import sharp from 'sharp';
 
 async function main() {
   const dir = 'src/assets/productsImage';
+  const TARGET_SIZE = 400; // 2x el tamaño máximo real en pantalla (~200px grilla)
   const files = await fs.readdir(dir);
   const webpFiles = files.filter(f => f.endsWith('.webp'));
-  
-  // Priorizar el orden pedido para loguear lindo
-  const priorities = ['producto-generico-06', 'producto-generico-10', 'producto-generico-12', 'producto-generico-09', 'producto-generico-11', 'producto-generico-02'];
-  
-  webpFiles.sort((a, b) => {
-    const aP = priorities.findIndex(p => a.includes(p));
-    const bP = priorities.findIndex(p => b.includes(p));
-    if (aP !== -1 && bP !== -1) return aP - bP;
-    if (aP !== -1) return -1;
-    if (bP !== -1) return 1;
-    return 0;
-  });
-  
+
+  if (webpFiles.length === 0) {
+    console.log('No se encontraron archivos .webp');
+    return;
+  }
+
+  let totalAntes = 0;
+  let totalDespues = 0;
+
   for (const file of webpFiles) {
     const filePath = path.join(dir, file);
-    
+
     // Leer en memoria
     const buffer = await fs.readFile(filePath);
     const metadata = await sharp(buffer).metadata();
-    
-    console.log(`Procesando ${file} (${metadata.width}x${metadata.height})...`);
-    await sharp(buffer)
-      .resize({ width: 800, height: 800, fit: 'inside', withoutEnlargement: true })
+    const pesoAntes = buffer.length;
+    totalAntes += pesoAntes;
+
+    // Redimensionar a 400x400 y recomprimir
+    const outputBuffer = await sharp(buffer)
+      .resize({ width: TARGET_SIZE, height: TARGET_SIZE, fit: 'inside', withoutEnlargement: true })
       .webp({ quality: 80 })
-      .toFile(filePath);
+      .toBuffer();
+
+    await fs.writeFile(filePath, outputBuffer);
+    const pesoDespues = outputBuffer.length;
+    totalDespues += pesoDespues;
+
+    const ahorro = (100 - (pesoDespues / pesoAntes) * 100).toFixed(1);
+    console.log(
+      `${file}  ${metadata.width}x${metadata.height} → ${TARGET_SIZE}x${TARGET_SIZE}  ` +
+      `(${(pesoAntes / 1024).toFixed(0)} KB → ${(pesoDespues / 1024).toFixed(0)} KB, -${ahorro}%)`
+    );
   }
-  console.log('¡Imágenes redimensionadas y comprimidas!');
+
+  console.log(`\nTotal: ${(totalAntes / 1024).toFixed(0)} KB → ${(totalDespues / 1024).toFixed(0)} KB`);
+  console.log(`Ahorro: ${((totalAntes - totalDespues) / 1024).toFixed(0)} KB (-${(100 - (totalDespues / totalAntes) * 100).toFixed(1)}%)`);
 }
 
 main().catch(console.error);

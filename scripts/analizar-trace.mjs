@@ -84,20 +84,61 @@ async function analizar() {
     }
   }
 
+  // ── Verificar estado real del codebase antes de generar interpretación ──
+  let transitionAllCount = 0;
+  try {
+    const { execSync } = await import('child_process');
+    const grepResult = execSync('grep -r "transition-all" src/ --include="*.tsx" --include="*.ts" --include="*.css" -c 2>/dev/null || echo "0"', { encoding: 'utf8' });
+    // grep -c devuelve "archivo:N" por archivo, sumamos todos
+    transitionAllCount = grepResult.trim().split('\n')
+      .reduce((sum, line) => {
+        const parts = line.split(':');
+        const n = parseInt(parts[parts.length - 1], 10);
+        return sum + (isNaN(n) ? 0 : n);
+      }, 0);
+  } catch {
+    transitionAllCount = 0;
+  }
+
   md += `\n## Interpretación\n`;
-  if (timeByCategory['RecalculateStyle'] > timeByCategory['Layout']) {
-    md += `El tiempo de **RecalculateStyle** es significativamente alto comparado con Layout. Esto corrobora que hay propiedades complejas recalcuándose en el DOM (como \`transition-all\` masivos o selectores pesados) durante las interacciones (hover y modales). Las long tasks también revelan cuellos de botella en la ejecución del script y el estilo.`;
-  } else if (timeByCategory['Layout'] > timeByCategory['RecalculateStyle']) {
-    md += `El **Layout** consume la mayor cantidad de tiempo, probablemente debido a recalcular el tamaño y posición de muchos elementos de la grilla simultáneamente (reflows).`;
+
+  const recalc = timeByCategory['RecalculateStyle'];
+  const layout = timeByCategory['Layout'];
+  const paint = timeByCategory['Paint'];
+
+  if (recalc > layout && recalc > paint) {
+    md += `El mayor consumidor de tiempo de renderizado es **RecalculateStyle** (${recalc.toFixed(2)}ms, ${((recalc / totalTime) * 100).toFixed(0)}% del trace). `;
+    if (transitionAllCount > 0) {
+      md += `Se encontraron **${transitionAllCount} instancias de \`transition-all\`** en el código fuente, lo cual es una causa probable de recálculos de estilo costosos durante hovers e interacciones. `;
+    } else {
+      md += `No se encontraron instancias de \`transition-all\` en el código fuente. El costo de RecalculateStyle puede deberse a:\n`;
+      md += `- Selectores CSS complejos o con alta especificidad\n`;
+      md += `- Animaciones CSS activas durante las interacciones (fade-in, zoom-in, slide-in)\n`;
+      md += `- Cantidad de nodos DOM afectados por cambios de clase/estado\n`;
+      md += `- Transiciones granulares que, en conjunto, siguen generando recálculos en muchos nodos\n`;
+    }
+  } else if (layout > recalc) {
+    md += `El **Layout** (${layout.toFixed(2)}ms) consume la mayor cantidad de tiempo. Esto sugiere reflows frecuentes, probablemente por recalcular tamaño/posición de muchos elementos de la grilla simultáneamente.`;
   } else {
     md += `El tiempo está distribuido sin grandes picos entre categorías de renderizado. No hay una dominante abrumadora que señale un único culpable de rendimiento.`;
   }
 
   md += `\n\n## Recomendación\n`;
-  if (timeByCategory['RecalculateStyle'] > timeByCategory['Layout']) {
-    md += `Se recomienda firmemente continuar con la **Fase 1.1 del refactor**, eliminando los \`transition-all\` globales o en componentes pesados, reemplazándolos por transiciones granulares (como \`transition-colors\` o \`transition-opacity\`).\n`;
+
+  if (recalc > layout && recalc > paint) {
+    if (transitionAllCount > 0) {
+      md += `Reemplazar las ${transitionAllCount} instancias de \`transition-all\` por transiciones granulares (\`transition-colors\`, \`transition-opacity\`, etc.) para reducir el costo de RecalculateStyle.\n`;
+    } else {
+      md += `Con 0 instancias de \`transition-all\`, el próximo paso es investigar:\n`;
+      md += `1. Si las animaciones de entrada/salida de modales (Radix Dialog) contribuyen significativamente\n`;
+      md += `2. Si la cantidad de nodos DOM en la grilla de productos es excesiva (considerar virtualización)\n`;
+      md += `3. Si hay selectores CSS con alta complejidad que se puedan simplificar\n`;
+      md += `\nPara un diagnóstico preciso, usar el Performance tab de Chrome DevTools con "Recalculate Style" detallado para ver qué reglas CSS disparan los recálculos.\n`;
+    }
+  } else if (layout > recalc) {
+    md += `Optimizar los reflows: considerar virtualización si hay muchas tarjetas renderizándose, y evitar lecturas de layout (offsetHeight, getBoundingClientRect) dentro de loops de actualización.\n`;
   } else {
-    md += `Aún con la distribución actual, es buena práctica optimizar los selectores y evitar renderizados innecesarios. Se sugiere avanzar con la limpieza de estilos de la fase actual o priorizar la virtualización si hay muchas tarjetas renderizándose.\n`;
+    md += `No hay un cuello de botella dominante. Se puede seguir con optimizaciones generales: virtualización de listas largas y reducción de nodos DOM innecesarios.\n`;
   }
 
   await fs.writeFile('informe-performance.md', md);
@@ -105,3 +146,4 @@ async function analizar() {
 }
 
 analizar().catch(console.error);
+
