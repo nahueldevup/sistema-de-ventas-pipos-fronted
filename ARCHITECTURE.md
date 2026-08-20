@@ -14,7 +14,7 @@ PIPOS es un sistema POS (Point of Sale) para Argentina construido con:
 - **shadcn/ui** como base de componentes UI
 
 Actualmente es **frontend únicamente**. La capa de datos es mock (localStorage).
-Más adelante se integrará un backend **Laravel**.
+Más adelante se integrará un backend **nextjs**.
 
 ---
 
