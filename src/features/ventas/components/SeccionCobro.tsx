@@ -14,6 +14,7 @@ interface SeccionCobroProps {
   onAbrirModalPago: () => void;
   onSetDescuentoGlobal: (descuento: number) => void;
   bloqueadoPorFiado?: boolean;
+  faltaClienteParaFiar?: boolean;
 }
 
 export default function SeccionCobro({
@@ -26,7 +27,7 @@ export default function SeccionCobro({
   cantidadItems,
   onAbrirModalPago,
   onSetDescuentoGlobal,
-  bloqueadoPorFiado = false,
+  faltaClienteParaFiar = false,
 }: SeccionCobroProps) {
 
   // Estado del descuento colapsable
@@ -34,10 +35,17 @@ export default function SeccionCobro({
   const [tipoDescuento, setTipoDescuento] = useState<'fijo' | 'porcentaje'>('fijo');
   const [inputDescuento, setInputDescuento] = useState('');
 
-  const puedeConfirmar = cantidadItems > 0 && !bloqueadoPorFiado;
+  // El botón siempre es visible; su label y color cambian según el estado
+  const sinItems = cantidadItems === 0;
+
+  const labelBoton = sinItems
+    ? 'Agregá productos al carrito'
+    : faltaClienteParaFiar
+      ? 'Elegí un cliente para continuar'
+      : 'Confirmar venta';
 
   const handleAbrirModal = () => {
-    if (!puedeConfirmar) return;
+    // Siempre propaga: el parent decide si abrir el modal o resaltar el selector
     onAbrirModalPago();
   };
 
@@ -202,25 +210,25 @@ return (
         </div>
       </div>
 
-      {/* Botón confirmar */}
+      {/* Botón confirmar — siempre visible */}
       <div className="px-3 pb-3">
-        {/* Botón checkout: blanco #FFF sobre verde #16A34A, ratio 4.8:1 — pasa AA grande */}
         <button
           type="button"
           onClick={handleAbrirModal}
-          disabled={!puedeConfirmar}
-          title={bloqueadoPorFiado ? 'Elegí un cliente para fiar productos' : undefined}
-          className={`
-            w-full h-11 rounded-xl text-[15px] font-bold
-             transition-[background-color,transform] duration-200 cursor-pointer
-            flex items-center justify-center gap-2
-            ${puedeConfirmar
-              ? 'bg-[#16A34A] hover:bg-[#15803D] active:scale-[0.98] text-white shadow-sm'
-              : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed'
-            }
-          `}
+          disabled={sinItems}
+          title={faltaClienteParaFiar ? 'Elegiá un cliente para poder fiar productos' : undefined}
+          className={cn(
+            'w-full h-11 rounded-xl text-[15px] font-bold',
+            'transition-[background-color,transform] duration-200',
+            'flex items-center justify-center gap-2',
+            sinItems
+              ? 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed'
+              : faltaClienteParaFiar
+                ? 'bg-amber-500 hover:bg-amber-600 active:scale-[0.98] text-white shadow-sm cursor-pointer'
+                : 'bg-[#16A34A] hover:bg-[#15803D] active:scale-[0.98] text-white shadow-sm cursor-pointer',
+          )}
         >
-          {bloqueadoPorFiado ? 'Elegí un cliente para fiar' : 'Confirmar venta'}
+          {labelBoton}
         </button>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useMemo } from 'react';
+import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import { CheckCircle2, XCircle } from 'lucide-react';
 import { useGetProductos } from '@/features/productos/hooks/useProductos';
 import { useCarrito } from '@/features/ventas/hooks/useCarrito';
@@ -47,7 +47,6 @@ export default function Vender() {
 
   const hayCajaAbierta = !!cajaAbierta;
 
-  // Abrir modal de pago (valida caja abierta primero)
   const handleAbrirModalPago = useCallback(() => {
     if (!cajaAbierta?.id) {
       setModalAbrirOpen(true);
@@ -56,6 +55,23 @@ export default function Vender() {
     if (carrito.items.length === 0) return;
     setModalPagoOpen(true);
   }, [cajaAbierta, carrito.items.length]);
+
+  // Atajo de teclado: Enter para abrir modal de pago (ignora campos editables y diálogos abiertos)
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Enter') return;
+      const active = document.activeElement as HTMLElement | null;
+      if (active) {
+        const tag = active.tagName.toLowerCase();
+        if (tag === 'input' || tag === 'textarea' || active.isContentEditable) return;
+      }
+      // No abrir si algún modal está abierto
+      if (modalPagoOpen || modalAbrirOpen || modalCerrarOpen) return;
+      handleAbrirModalPago();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [modalPagoOpen, modalAbrirOpen, modalCerrarOpen, handleAbrirModalPago]);
 
   // Confirmar venta desde el modal de pago
   const handleConfirmarVenta = useCallback(
@@ -195,6 +211,8 @@ export default function Vender() {
             onSetDescuentoGlobal={carrito.setDescuentoGlobal}
             clienteSeleccionado={clienteSeleccionado}
             onClienteChange={setClienteSeleccionado}
+            mostrarToast={mostrarToast}
+            faltaClienteParaFiar={carrito.items.some(i=>i.fiado) && clienteEsConsumidorFinal}
           />
         </div>
       </div>
@@ -228,8 +246,10 @@ export default function Vender() {
       {/* Toast de feedback */}
       {toast && (
         <div
+          role="alert"
+          aria-live="assertive"
           className={`
-            fixed bottom-6 left-1/2 -translate-x-1/2 z-50
+            fixed bottom-20 left-1/2 -translate-x-1/2 z-50
             flex items-center gap-2.5 px-5 py-3 rounded-xl shadow-lg
             text-[14px] font-semibold
             animate-in fade-in slide-in-from-bottom-4 duration-300

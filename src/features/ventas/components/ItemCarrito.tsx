@@ -9,9 +9,11 @@ interface ItemCarritoProps {
   onActualizarCantidad: (productId: string, cantidad: number) => void;
   onQuitar: (productId: string) => void;
   onToggleFiado: (productId: string) => void;
+  faltaClienteParaFiar?: boolean;
+  mostrarToast?: (tipo: 'exito' | 'error', mensaje: string) => void;
 }
 
-export default memo(function ItemCarrito({ item, onActualizarCantidad, onQuitar, onToggleFiado }: ItemCarritoProps) {
+export default memo(function ItemCarrito({ item, onActualizarCantidad, onQuitar, onToggleFiado, faltaClienteParaFiar }: ItemCarritoProps) {
   const subtotal = item.unitPrice * item.quantity - item.discountAmount;
   const superaStock = item.quantity > item.maxStock;
 
@@ -51,7 +53,11 @@ export default memo(function ItemCarrito({ item, onActualizarCantidad, onQuitar,
             {formatearPesos(item.unitPrice)} c/u
           </span>
           {superaStock && (
-            <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
+            <span
+              role="alert"
+              aria-live="polite"
+              className="text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider"
+            >
               ¡Supera stock!
             </span>
           )}
@@ -59,17 +65,20 @@ export default memo(function ItemCarrito({ item, onActualizarCantidad, onQuitar,
 
         {/* Lado derecho: Fiar → Eliminar → Cantidad */}
         <div className="flex items-center gap-3">
-          {/* Botón Fiar / Fiado */}
+          {/* Botón Fiar / Fiado — siempre toggleable */}
           <button
             type="button"
             onClick={() => onToggleFiado(item.productId)}
             title={item.fiado ? 'Quitar de fiado' : 'Marcar como fiado'}
+            aria-pressed={item.fiado}
             className={cn(
               'h-8 px-2.5 flex items-center justify-center gap-1.5 rounded-lg',
               'text-[11px] transition-[background-color,border-color,color] duration-150 cursor-pointer border-[1.5px]',
-              item.fiado
-                ? 'bg-blue-600 dark:bg-blue-600 border-blue-600 dark:border-blue-500 text-white font-bold shadow-xs'
-                : 'border-[#D1D5DB] bg-[#F3F4F6] dark:bg-slate-800 dark:border-slate-600 text-[#111827] dark:text-slate-100 font-semibold hover:bg-slate-200 dark:hover:bg-slate-700',
+              item.fiado && faltaClienteParaFiar
+                ? 'bg-amber-500 dark:bg-amber-500 border-amber-500 text-white font-bold shadow-xs'
+                : item.fiado
+                  ? 'bg-blue-600 dark:bg-blue-600 border-blue-600 dark:border-blue-500 text-white font-bold shadow-xs'
+                  : 'border-[#D1D5DB] bg-[#F3F4F6] dark:bg-slate-800 dark:border-slate-600 text-[#111827] dark:text-slate-100 font-semibold hover:bg-slate-200 dark:hover:bg-slate-700',
             )}
           >
             {item.fiado && <Check className="w-3.5 h-3.5 stroke-[2.5] shrink-0 text-white" />}

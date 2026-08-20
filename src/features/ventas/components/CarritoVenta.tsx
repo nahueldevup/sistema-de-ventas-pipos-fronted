@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { Trash2, ChevronDown, Search, Check, UserPlus } from 'lucide-react';
 import type { CarritoItem } from '../hooks/useCarrito';
 import ItemCarrito from './ItemCarrito';
@@ -47,6 +47,8 @@ interface CarritoVentaProps {
   onSetDescuentoGlobal: (descuento: number) => void;
   // Cliente elevado a Vender.tsx
   clienteSeleccionado: string;
+  mostrarToast?: (tipo: 'exito' | 'error', mensaje: string) => void;
+  faltaClienteParaFiar?: boolean;
   onClienteChange: (id: string) => void;
 }
 
@@ -66,9 +68,30 @@ export default function CarritoVenta({
   onAbrirModalPago,
   onSetDescuentoGlobal,
   clienteSeleccionado,
+  mostrarToast,
+  faltaClienteParaFiar,
   onClienteChange,
 }: CarritoVentaProps) {
   const [confirmandoVaciar, setConfirmandoVaciar] = useState(false);
+  // Estado de resaltado del selector de cliente (cuando se intenta confirmar con fiado sin cliente)
+  const [resaltarCliente, setResaltarCliente] = useState(false);
+  const resaltarTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  const dispararResaltarCliente = useCallback(() => {
+    setResaltarCliente(true);
+    if (resaltarTimeout.current) clearTimeout(resaltarTimeout.current);
+    resaltarTimeout.current = setTimeout(() => setResaltarCliente(false), 1200);
+  }, []);
+
+  // Wrapper del modal de pago: si falta cliente para fiar, resalta el selector
+  const handleAbrirModalPagoGuardado = useCallback(() => {
+    if (faltaClienteParaFiar) {
+      dispararResaltarCliente();
+      setClientePopoverOpen(true);
+      return;
+    }
+    onAbrirModalPago();
+  }, [faltaClienteParaFiar, dispararResaltarCliente, onAbrirModalPago]);
 
   // Estado de los popovers
   const [comprobanteSeleccionado, setComprobanteSeleccionado] = useState('factura-c');
@@ -80,7 +103,6 @@ export default function CarritoVenta({
   const hayItemsFiados = items.some((i) => i.fiado);
   const todosFiados = items.length > 0 && items.every((i) => i.fiado);
   const clienteEsConsumidorFinal = clienteSeleccionado === 'consumidor-final';
-  const faltaClienteParaFiar = hayItemsFiados && clienteEsConsumidorFinal;
 
   const handleVaciar = () => {
     if (confirmandoVaciar) {
@@ -173,12 +195,14 @@ export default function CarritoVenta({
                 'text-[11px] whitespace-nowrap transition-colors outline-none select-none cursor-pointer',
                 'bg-transparent hover:bg-brand-50 dark:bg-brand-900/20 dark:hover:bg-brand-900/30',
                 'focus-visible:ring-2 focus-visible:ring-brand-500/40',
-                // Resaltar en rojo si falta cliente para fiar
-                faltaClienteParaFiar && 'border-red-400 dark:border-red-500/60 ring-1 ring-red-400/30',
+                // Advertencia ámbar si falta cliente para fiar (pulso continuo)
+                faltaClienteParaFiar && 'border-amber-400 dark:border-amber-500/60 animate-pulse-border',
+                // Onda de agua puntual al intentar confirmar sin cliente
+                resaltarCliente && 'animate-ripple-border border-amber-500',
                 'group',
               )}
             >
-              <span className={cn('truncate', faltaClienteParaFiar && 'text-red-500 dark:text-red-400')}>
+              <span className={cn('truncate', faltaClienteParaFiar && 'text-amber-600 dark:text-amber-400')}>
                 {clienteActual?.nombre || 'Cliente'}
               </span>
               <ChevronDown className="h-3.5 w-3.5 opacity-50 shrink-0 transition-transform duration-150 ease-linear group-data-[state=open]:rotate-180" />
@@ -306,38 +330,38 @@ export default function CarritoVenta({
         </Popover>
       </div>
 
-      {/* Lista de items o estado vacío */}
-      {items.length === 0 ? (
-        <CarritoVacio />
-      ) : (
-        <>
-          <div className="flex-1 overflow-y-auto scrollbar-thin">
-            {items.map((item) => (
-              <ItemCarrito
-                key={item.productId}
-                item={item}
-                onActualizarCantidad={onActualizarCantidad}
-                onQuitar={onQuitarProducto}
-                onToggleFiado={onToggleFiado}
-              />
-            ))}
-          </div>
+      {/* Lista de items — siempre se muestra la sección de cobro */}
+      <div className="flex-1 overflow-y-auto scrollbar-thin">
+        {items.length === 0 ? (
+          <CarritoVacio />
+        ) : (
+          items.map((item) => (
+            <ItemCarrito
+              key={item.productId}
+              item={item}
+              onActualizarCantidad={onActualizarCantidad}
+              onQuitar={onQuitarProducto}
+              onToggleFiado={onToggleFiado}
+              faltaClienteParaFiar={faltaClienteParaFiar}
+              mostrarToast={mostrarToast}
+            />
+          ))
+        )}
+      </div>
 
-          {/* Sección de cobro sticky */}
-          <SeccionCobro
-            subtotal={subtotal}
-            descuentoGlobal={descuentoGlobal}
-            total={total}
-            totalFiado={totalFiado}
-            totalAPagar={totalAPagar}
-            nombreClienteFiado={nombreClienteFiado}
-            cantidadItems={cantidadItems}
-            onAbrirModalPago={onAbrirModalPago}
-            onSetDescuentoGlobal={onSetDescuentoGlobal}
-            bloqueadoPorFiado={faltaClienteParaFiar}
-          />
-        </>
-      )}
+      {/* Sección de cobro sticky — siempre visible */}
+      <SeccionCobro
+        subtotal={subtotal}
+        descuentoGlobal={descuentoGlobal}
+        total={total}
+        totalFiado={totalFiado}
+        totalAPagar={totalAPagar}
+        nombreClienteFiado={nombreClienteFiado}
+        cantidadItems={cantidadItems}
+        onAbrirModalPago={handleAbrirModalPagoGuardado}
+        onSetDescuentoGlobal={onSetDescuentoGlobal}
+        faltaClienteParaFiar={faltaClienteParaFiar}
+      />
     </div>
   );
 }

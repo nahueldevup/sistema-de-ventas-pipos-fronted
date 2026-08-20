@@ -1,4 +1,4 @@
-import { useReducer, useMemo, useCallback } from 'react';
+import { useReducer, useMemo, useCallback, useEffect } from 'react';
 import type { Product } from '@/schemas/product.schema';
 import type { CarritoItem, CarritoState } from '../types/carrito.types';
 
@@ -164,7 +164,24 @@ export function useCarrito() {
     [total, totalFiado]
   );
 
-  // Acciones memorizadas
+  // Detect inconsistencies in totals (debug only)
+  useEffect(() => {
+    const computedTotal = Math.max(0, subtotal - state.descuentoGlobal);
+    if (computedTotal !== total) {
+      console.warn('[CONSISTENCIA] total mismatch', {computedTotal, total});
+    }
+    const computedTotalFiado = state.items
+      .filter(i => i.fiado)
+      .reduce((acc, i) => acc + (i.unitPrice * i.quantity - i.discountAmount), 0);
+    if (computedTotalFiado !== totalFiado) {
+      console.warn('[CONSISTENCIA] totalFiado mismatch', {computedTotalFiado, totalFiado});
+    }
+    const computedTotalAPagar = Math.max(0, computedTotal - computedTotalFiado);
+    if (computedTotalAPagar !== totalAPagar) {
+      console.warn('[CONSISTENCIA] totalAPagar mismatch', {computedTotalAPagar, totalAPagar});
+    }
+  }, [subtotal, state.descuentoGlobal, total, totalFiado, totalAPagar]);
+
   const agregarProducto = useCallback(
     (producto: Product) => dispatch({ type: 'AGREGAR_PRODUCTO', payload: producto }),
     []

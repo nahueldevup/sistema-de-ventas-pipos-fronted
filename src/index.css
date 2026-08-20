@@ -334,4 +334,25 @@ html.dark {
   :is(.dark *) .shadow-dropdown {
     box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.5);
   }
+
+  /* ── Onda de agua en el borde del selector de cliente ───────────── */
+  @keyframes ripple-border {
+    0%   { box-shadow: 0 0 0 0px rgba(245, 158, 11, 0.7); }
+    50%  { box-shadow: 0 0 0 5px rgba(245, 158, 11, 0.15); }
+    100% { box-shadow: 0 0 0 9px rgba(245, 158, 11, 0); }
+  }
+
+  .animate-ripple-border {
+    animation: ripple-border 0.7s ease-out 3;
+  }
+
+  /* ── Pulso continuo en el borde del selector (mientras falta cliente) */
+  @keyframes pulse-border {
+    0%, 100% { box-shadow: 0 0 0 0px rgba(245, 158, 11, 0.55); }
+    50%       { box-shadow: 0 0 0 4px rgba(245, 158, 11, 0); }
+  }
+
+  .animate-pulse-border {
+    animation: pulse-border 1.6s ease-in-out infinite;
+  }
 }
